@@ -1,4 +1,4 @@
-# ml-on-gcp
+# Machine Learning on Google Cloud Platform
 
 Guides to bringing your code from various Machine Learning frameworks
 to Google Cloud Platform.
