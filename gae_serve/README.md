@@ -53,7 +53,7 @@ A GCP project that has GAE, GCS, and Cloud Endpoints enabled.
 
 1. Update `app.yaml`:  
 
-    - Replace `PROJECT_ID` with your project's id in this line:
+    - Replace `PROJECT_ID` with your project's id.
 
     - Replace `BUCKET_NAME` with the name of the bucket you created on GCS above.
 
