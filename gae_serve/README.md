@@ -51,13 +51,13 @@ A GCP project that has GAE, GCS, and Cloud Endpoints enabled.
     gsutil cp lr.pkl gs://BUCKET_NAME
     ```
 
-1. Update `app.yaml`:  Replace `PROJECT_ID` with your project's id in this line:
+1. Update `app.yaml`:  
 
-    `  name: modelserve.endpoints.PROJECT_ID.cloud.goog`
+    - Replace `PROJECT_ID` with your project's id in this line:
 
-    Replace `BUCKET_NAME` with the name of the bucket you created on GCS above.
+    - Replace `BUCKET_NAME` with the name of the bucket you created on GCS above.
 
-    Replace `CONFIG_ID` with the config id you got from the service endpoint deployment.
+    - Replace `CONFIG_ID` with the config id you got from the service endpoint deployment.
 
 1. Deploy the backend service:
 
