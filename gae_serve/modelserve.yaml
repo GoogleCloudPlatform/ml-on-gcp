@@ -14,10 +14,10 @@
 ---
 swagger: "2.0"
 info:
-  title: "skserve"
+  title: "modelserve"
   description: "Get prediction from sklearn model."
   version: "1.0.0"
-host: "skserve.endpoints.rising-sea-112358.cloud.goog"
+host: "modelserve.endpoints.PROJECT_ID.cloud.goog"
 schemes:
   - "https"
 security:

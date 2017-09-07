@@ -27,11 +27,7 @@ MODEL = None
 
 app = Flask(__name__)
 
-_CURL = """
-curl -H "Content-Type: application/json" -X POST -d '{"X": [[1, 2], [5, -1], [1, 0]]}' "https://skserve-dot-rising-sea-112358.appspot.com/predict?key=AIzaSyAmTTe0NktLMOTaqTY7G1v1yNw1SaTyXuw"
-"""
-
-# NOTE: the first response could be slower
+# NOTE: the first response could be slower if the model is large.
 @app.before_first_request
 def _load_model():
     global MODEL

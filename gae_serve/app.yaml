@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-service: skserve
+service: modelserve
 runtime: python
 env: flex
 entrypoint: gunicorn -b :$PORT main:app
@@ -23,10 +23,10 @@ manual_scaling:
   instances: 1
 
 endpoints_api_service:
-  name: skserve.endpoints.rising-sea-112358.cloud.goog
+  name: modelserve.endpoints.PROJECT_ID.cloud.goog
   config_id: 2017-08-03r0
 
 env_variables:
-    # gs://skserve/lr.pkl
-    MODEL_BUCKET: skserve
+    # gs://BUCKET_NAME/lr.pkl
+    MODEL_BUCKET: BUCKET_NAME
     MODEL_FILENAME: lr.pkl
