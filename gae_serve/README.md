@@ -42,6 +42,8 @@ A GCP project that has GAE, GCS, and Cloud Endpoints enabled.
 
     This step deploys a [Cloud Endpoint](https://cloud.google.com/endpoints/) service, which allows us to monitor the API usage.
 
+1. If the deploymenti s successful, get the deployment's config id from console.  It should look like `2017-08-03r0`.
+
 1. Create a GCS bucket and copy the model file over:
 
     ```
@@ -54,6 +56,8 @@ A GCP project that has GAE, GCS, and Cloud Endpoints enabled.
     `  name: modelserve.endpoints.PROJECT_ID.cloud.goog`
 
     Replace `BUCKET_NAME` with the name of the bucket you created on GCS above.
+
+    Replace `CONFIG_ID` with the config id you got from the service endpoint deployment.
 
 1. Deploy the backend service:
 

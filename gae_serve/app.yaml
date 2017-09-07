@@ -24,7 +24,7 @@ manual_scaling:
 
 endpoints_api_service:
   name: modelserve.endpoints.PROJECT_ID.cloud.goog
-  config_id: 2017-08-03r0
+  config_id: CONFIG_ID
 
 env_variables:
     # gs://BUCKET_NAME/lr.pkl
