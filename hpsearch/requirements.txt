@@ -1,0 +1,4 @@
+google-api-python-client
+kubernetes
+
+scikit-learn==0.19.0
