@@ -30,6 +30,18 @@ endpoints_api_service:
   config_id: CONFIG_ID
 
 env_variables:
-    # gs://BUCKET_NAME/lr.pkl
+    # The app will look for the model file at: gs://BUCKET_NAME/lr.pkl
     MODEL_BUCKET: BUCKET_NAME
     MODEL_FILENAME: lr.pkl
+
+# To enable readiness check, run the following:
+# gcloud beta app update --split-health-checks --project PROJECT_ID
+# Update the parameters according to how long it takes to load the model.
+# For more information: https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml#enabling_updated_health_checks
+readiness_check:
+  path: ‘/readiness_check’
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300

@@ -81,6 +81,8 @@ The benefits of this configuration include:
 
         - **Note that you will not be able to delete the `default` service from your project.**
 
+    See the [documentation](https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml) for more information about `app.yaml`.
+
 1. Deploy the backend service:
 
     `gcloud app deploy`
@@ -118,3 +120,15 @@ The benefits of this configuration include:
     `gcloud app services delete modelserve`
 
     `gcloud service-management delete PROJECT_ID.appspot.com`
+
+
+## Advanced usage
+
+### Healthcheck
+
+Note that in the `main.py` file, the model is not loaded until the first request has been received.  For the model
+
+
+### Autoscaling
+
+TODO

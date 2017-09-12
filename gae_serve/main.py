@@ -27,9 +27,13 @@ MODEL = None
 
 app = Flask(__name__)
 
+
 # NOTE: the first response could be slower if the model is large.
 @app.before_first_request
 def _load_model():
+    import time
+    time.sleep(45)
+
     global MODEL
     client = storage.Client()
     bucket = client.get_bucket(MODEL_BUCKET)
@@ -38,15 +42,31 @@ def _load_model():
 
     MODEL = pickle.loads(s)
 
+
+# Use health check to make sure the model is loaded before allowing
+# the instance to receive traffic.  Un-comment the readiness_check
+# lines in app.yaml to enable this.
+@app.route('/readiness_check')
+def readiness_check():
+    global MODEL
+
+    if MODEL is not None:
+        return 'OK', 200
+    else:
+        _load_model()
+
+
 @app.route('/', methods=['GET'])
 def index():
     return str(MODEL), 200
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
     X = request.get_json()['X']
     y = MODEL.predict(X).tolist()
     return json.dumps({'y': y}), 200
+
 
 @app.errorhandler(500)
 def server_error(e):
@@ -55,6 +75,7 @@ def server_error(e):
     An internal error occurred: <pre>{}</pre>
     See logs for full stacktrace.
     """.format(e), 500
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
