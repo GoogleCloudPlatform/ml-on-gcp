@@ -126,9 +126,9 @@ The benefits of this configuration include:
 
 ### Healthcheck
 
-Note that in the `main.py` file, the model is not loaded until the first request has been received.  For the model
+For information about configuring the service's healthcheck, see the [documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml#health_checks).
 
 
 ### Autoscaling
 
-TODO
+For information about configuring the service's autoscaling, see the [documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml#services).

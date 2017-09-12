@@ -43,19 +43,6 @@ def _load_model():
     MODEL = pickle.loads(s)
 
 
-# Use health check to make sure the model is loaded before allowing
-# the instance to receive traffic.  Un-comment the readiness_check
-# lines in app.yaml to enable this.
-@app.route('/readiness_check')
-def readiness_check():
-    global MODEL
-
-    if MODEL is not None:
-        return 'OK', 200
-    else:
-        _load_model()
-
-
 @app.route('/', methods=['GET'])
 def index():
     return str(MODEL), 200
