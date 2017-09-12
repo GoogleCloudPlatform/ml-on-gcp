@@ -11,6 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+# If this is the first Google App Engine Service you are deploying,
+# change 'modelserve' to 'default', since the first service must be
+# named 'default'.
 service: modelserve
 runtime: python
 env: flex
@@ -23,7 +26,7 @@ manual_scaling:
   instances: 1
 
 endpoints_api_service:
-  name: modelserve.endpoints.PROJECT_ID.cloud.goog
+  name: PROJECT_ID.appspot.com
   config_id: CONFIG_ID
 
 env_variables:

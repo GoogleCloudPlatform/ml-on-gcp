@@ -17,7 +17,7 @@ info:
   title: "modelserve"
   description: "Get prediction from sklearn model."
   version: "1.0.0"
-host: "modelserve.endpoints.PROJECT_ID.cloud.goog"
+host: "PROJECT_ID.appspot.com"
 schemes:
   - "https"
 security:
