@@ -20,6 +20,17 @@ credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
+
+#####
+project_id = 'rising-sea-112358'
+service = discovery.build('cloudbuild', 'v1', credentials=credentials)
+builds = service.projects().builds().list(projectId=project_id).execute()
+
+
+
+
+#####
+
 # create a cluster
 zone = 'us-central1-b'
 project_id = 'rising-sea-112358'
@@ -36,6 +47,7 @@ body = {
 create = service.projects().zones().clusters().create(body=body, zone=zone, projectId=project_id).execute()
 
 clusters = service.projects().zones().clusters().list(zone=zone, projectId=project_id).execute()
+
 cluster_id = cluster['name']
 
 cluster = service.projects().zones().clusters().get(zone=zone, projectId=project_id, clusterId=cluster_id).execute()
@@ -46,11 +58,39 @@ if False:
 
 
 ####
-config.kube_config.configuration.host = clusters['clusters'][0]['selfLink']
+from kubernetes import client, config
+# kubectl get credntial to make sure config loads
+config.load_kube_config()
 
-klient = client.CoreV1Api()
+
+v1 = client.CoreV1Api()
+
+# brew install python to get 2.7.13 which has updated openssl
+# check openssl version with python -c "import ssl; print ssl.OPENSSL_VERSION"
+# mkvirtualenv -p /usr/local/Cellar/python/2.7.13_1/bin/python2 hpsearch  
+
+v1.list_node()
 
 klient.get_api_resources_with_http_info()
 
 
 klient.list_pod_for_all_namespaces(watch=False)
+
+
+
+
+"""
+steps:
+    create wrapper SearchCVGCP object specifying GCS bucket (and estimator)
+    [e.g. grid_search = GridSearchCV(); search = SearchGCP(grid_search, ...)]
+    upload source (part of sample) to GCS
+    cloudbuild docker image from source on GCS (.zip), passing in paths to estimator, X, y(LRO1)
+    create cluster with prescribed number of nodes(LRO2)
+    upload pickled estimator, X, y to GCS (in timestamp folder)
+    (check LRO1 LRO2)
+    deploy containers passing in partial parameter grids
+    source sends output data to GCS (same bucket) [use callback to store partial results?]
+    delete cluster when all jobs are done [how to tell?]
+    wrapper SearchCVGCP object has method to retrieve the output data and merge them.
+    allow now instance wrapper object to retrieve previous runs by specifying bucket name
+"""
