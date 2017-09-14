@@ -39,6 +39,8 @@ def _load_model():
     blob = bucket.get_blob(MODEL_FILENAME)
     s = blob.download_as_string()
 
+    # Note: Change the save/load mechanism according to the framework
+    # used to build the model.
     MODEL = pickle.loads(s)
 
 
