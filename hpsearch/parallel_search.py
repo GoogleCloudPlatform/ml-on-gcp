@@ -14,20 +14,60 @@ class GridSearchCVGCP(GridSearchCV):
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-from kubernetes import client, config
-
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('container', 'v1', credentials=credentials)
 
 
 #####
+from googleapiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+from google.cloud import storage
+
+import shutil
+
+shutil.make_archive('source', 'zip', 'source')
+
+sc = storage.Client()
+
+bucket = sc.get_bucket('hpsearch')
+blob = bucket.blob('source.zip')
+blob.upload_from_filename('source.zip')
+
+
+
+credentials = GoogleCredentials.get_application_default()
+
 project_id = 'rising-sea-112358'
 service = discovery.build('cloudbuild', 'v1', credentials=credentials)
 builds = service.projects().builds().list(projectId=project_id).execute()
 
 
+body = {
+    'source': {
+        'storageSource': {
+            'bucket': 'hpsearch',
+            'object': 'source.zip'
+        }
+    },
+    'steps': [
+        {
+            'name': 'gcr.io/cloud-builders/docker',
+            'args': [
+                'build',
+                '-t',
+                'gcr.io/$PROJECT_ID/hpsearch',
+                '/workspace'
+            ]
+        }
+    ],
+    'images': [
+        'gcr.io/$PROJECT_ID/hpsearch'
+    ]
+}
 
+build = service.projects().builds().create(projectId=project_id, body=body).execute()
 
 #####
 
@@ -59,6 +99,7 @@ if False:
 
 ####
 from kubernetes import client, config
+# gcloud container get-server-config
 # kubectl get credntial to make sure config loads
 config.load_kube_config()
 
