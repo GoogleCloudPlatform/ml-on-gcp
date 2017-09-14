@@ -18,8 +18,8 @@ import logging
 import os
 
 import pickle
-from google.cloud import storage
 from flask import Flask, request
+from google.cloud import storage
 
 MODEL_BUCKET = os.environ['MODEL_BUCKET']
 MODEL_FILENAME = os.environ['MODEL_FILENAME']
@@ -28,7 +28,6 @@ MODEL = None
 app = Flask(__name__)
 
 
-# NOTE: the first response could be slower if the model is large.
 @app.before_first_request
 def _load_model():
     import time
