@@ -32,11 +32,13 @@ The benefits of this configuration include:
 
 1. `cd ml-on-gcp/gae_serve`
 
-1. The name `modelserve` (appearing in `app.yaml` and `modelserve.yaml`) is tentative which can be changed.  You should make the same change in the steps below.
+1. This samples demostrates how to deploy a GAE service named `modelserve`.  If you prefer to deploy to the `default` service (for example, if this is the first GAE service in your project, it must be named `default`), use the yaml files in the `default/` subdirectory by copying them over the yaml files in the root directory of this sample.
+
+    - **Note that GAE does not allow deleting the `default` service from your project.**
 
 1. Update `modelserve.yaml`:  Replace `PROJECT_ID` with your GCP project's id in this line:
 
-    `host: "PROJECT_ID.appspot.com"`
+    `host: "modelserve-dot-PROJECT_ID.appspot.com"`
 
     * Note that this file defines the API specifying the input `X` to be an array of arrays of floats, and output `y` to be an array of floats.  The model included in this sample code `lr.pkl` is a pickled [linear regression model](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) with 2-dimensional inputs.
 
@@ -48,7 +50,7 @@ The benefits of this configuration include:
 
 1. If the deployment is successful, get the deployment's config id either from the [Endpoints](https://console.cloud.google.com/endpoints) console page under the service's Deployment history tab, or you can find all the configuration IDs by running the following:
 
-    `gcloud service-management configs list --service="PROJECT_ID.appspot.com"`
+    `gcloud service-management configs list --service="modelserve-dot-PROJECT_ID.appspot.com"`
 
     The configuration ID should look like `2017-08-03r0`.  The `r0, r1, ...` part in the configuration IDs indicate the revision numbers, and you should use the highest (most recent) revision number.
 
@@ -69,18 +71,6 @@ The benefits of this configuration include:
 
         - Replace `CONFIG_ID` with the configuration ID you got from the service endpoint deployment.
 
-    * If you have not deployed any service to GAE with this GCP project:
-
-        - Replace `service: modelserve` with `service: default` in `app.yaml`.  The first service deployed to GAE must be named `default`.
-
-        - Replace `PROJECT_ID` with your GCP project's id.
-
-        - Replace `BUCKET_NAME` with the name of the bucket you created on GCS above.
-
-        - Replace `CONFIG_ID` with the configuration ID you got from the service endpoint deployment.
-
-        - **Note that you will not be able to delete the `default` service from your project.**
-
     See the [documentation](https://cloud.google.com/appengine/docs/flexible/python/configuring-your-app-with-app-yaml) for more information about `app.yaml`.
 
 1. Deploy the backend service:
@@ -96,30 +86,44 @@ The benefits of this configuration include:
 
     - Now you can test the service endpoint: (Remember to replace `PROJECT_ID` and `API_KEY` with their actual values below.)
 
-        * If you have `service: modelserve` in `app.yaml`:
+    `curl -H "Content-Type: application/json" -X POST -d '{"X": [[1, 2], [5, -1], [1, 0]]}' "https://modelserve-dot-PROJECT_ID.appspot.com/predict?key=API_KEY"`
 
-            `curl -H "Content-Type: application/json" -X POST -d '{"X": [[1, 2], [5, -1], [1, 0]]}' "https://modelserve-dot-PROJECT_ID.appspot.com/predict?key=API_KEY"`
+    (Change the host URL to `PROJECT_ID.appspot.com` if you deployed the service as `default`.)
 
-        * If you have `service: default` in `app.yaml`:
+    You should get the following response:
 
-            `curl -H "Content-Type: application/json" -X POST -d '{"X": [[1, 2], [5, -1], [1, 0]]}' "https://PROJECT_ID.appspot.com/predict?key=API_KEY"`
+    `{"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}`
 
-        You should get the following response:
+    The deployed model `lr.pkl` is a simple [linear regression model](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) with 2-dimensional inputs.
 
-        `{"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}`
 
-        The deployed model `lr.pkl` is a simple [linear regression model](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) with 2-dimensional inputs.
+1. Alternatively, you can generate a client from `modelserve.yaml` following the instructions for [swagger-codegen](https://github.com/swagger-api/swagger-codegen).  With a generated python client library, for example, you can test the service with the following code:
+
+
+```python
+import swagger_client
+
+swagger_client.configuration.api_key['key'] = 'API_KEY'
+api = swagger_client.DefaultApi()
+
+body = swagger_client.X([[1, 2], [5, -1], [1, 0]])
+
+response = api.predict(body)
+
+# response = {"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}
+```
 
 
 ## Clean up
 
-* If the service was deployed as the `default` service (that is, with `service: default` in `app.yaml`), then the service cannot be deleted from the project.
+Delete service by running:
 
-* If the service was deployed as the `modelserve` service (that is, with `service: modelserve` in `app.yaml`), then you can delete service by running:
+`gcloud app services delete modelserve`
 
-    `gcloud app services delete modelserve`
+`gcloud service-management delete modelserve-dot-PROJECT_ID.appspot.com`
 
-    `gcloud service-management delete PROJECT_ID.appspot.com`
+
+(If the service was deployed as the `default` service, it cannot be deleted.)
 
 
 ## Advanced usage
