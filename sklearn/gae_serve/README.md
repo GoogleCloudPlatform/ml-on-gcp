@@ -80,11 +80,12 @@ The benefits of this configuration include:
     **This step could take several minutes to complete.**
 
 
-1. If the deployment is successful, you can test it from the command line:
+1. If the deployment is successful, you can access it by first creating an API key with the "Create credentials" button on the [Credentials](https://console.cloud.google.com/apis/credentials) page.  Make sure you switch to the correct GCP project first.
 
-    - Create an API key with the "Create credentials" button on the [Credentials](https://console.cloud.google.com/apis/credentials) page.  Make sure you switch to the correct GCP project first.
 
-    - Now you can test the service endpoint: (Remember to replace `PROJECT_ID` and `API_KEY` with their actual values below.)
+1. You can access the deployed service in a few different ways: (Remember to replace `PROJECT_ID` and `API_KEY` with their actual values below.)
+
+    * From the command line:
 
     `curl -H "Content-Type: application/json" -X POST -d '{"X": [[1, 2], [5, -1], [1, 0]]}' "https://modelserve-dot-PROJECT_ID.appspot.com/predict?key=API_KEY"`
 
@@ -96,22 +97,32 @@ The benefits of this configuration include:
 
     The deployed model `lr.pkl` is a simple [linear regression model](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) with 2-dimensional inputs.
 
+    * With the simple python client included in this sample:
 
-1. Alternatively, you can generate a client from `modelserve.yaml` following the instructions for [swagger-codegen](https://github.com/swagger-api/swagger-codegen).  With a generated python client library, for example, you can test the service with the following code:
+    ```python
+    from client import ModelServiceClient
 
+    model_service_client = ModelServiceClient(host='https://modelserve-dot-PROJECT_ID.appspot.com', api_key='API_KEY')
 
-```python
-import swagger_client
+    model_service_client.predict([[1, 2], [5, -1], [1, 0]])
 
-swagger_client.configuration.api_key['key'] = 'API_KEY'
-api = swagger_client.DefaultApi()
+    # => [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]
+    ```
 
-body = swagger_client.X([[1, 2], [5, -1], [1, 0]])
+    * With the [automatically generated swagger client]((https://github.com/swagger-api/swagger-codegen):
 
-response = api.predict(body)
+    ```python
+    import swagger_client
 
-# response = {"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}
-```
+    swagger_client.configuration.api_key['key'] = 'API_KEY'
+    api = swagger_client.DefaultApi()
+
+    body = swagger_client.X([[1, 2], [5, -1], [1, 0]])
+
+    response = api.predict(body)
+
+    # response = {"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}
+    ```
 
 
 ## Clean up
