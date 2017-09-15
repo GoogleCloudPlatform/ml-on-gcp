@@ -87,51 +87,52 @@ The benefits of this configuration include:
 
     * From the command line:
 
-    `curl -H "Content-Type: application/json" -X POST -d '{"X": [[1, 2], [5, -1], [1, 0]]}' "https://modelserve-dot-PROJECT_ID.appspot.com/predict?key=API_KEY"`
+        `curl -H "Content-Type: application/json" -X POST -d '{"X": [[1, 2], [5, -1], [1, 0]]}' "https://modelserve-dot-PROJECT_ID.appspot.com/predict?key=API_KEY"`
 
-    (Change the host URL to `PROJECT_ID.appspot.com` if you deployed the service as `default`.)
+        (Change the host URL to `PROJECT_ID.appspot.com` if you deployed the service as `default`.)
 
-    You should get the following response:
+        You should get the following response:
 
-    `{"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}`
+        `{"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}`
 
-    The deployed model `lr.pkl` is a simple [linear regression model](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) with 2-dimensional inputs.
+        The deployed model `lr.pkl` is a simple [linear regression model](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) with 2-dimensional inputs.
 
     * With the simple python client included in this sample:
 
-    ```python
-    from client import ModelServiceClient
+        ```python
+        from client import ModelServiceClient
 
-    model_service_client = ModelServiceClient(host='https://modelserve-dot-PROJECT_ID.appspot.com', api_key='API_KEY')
+        model_service_client = ModelServiceClient(host='https://modelserve-dot-PROJECT_ID.appspot.com', api_key='API_KEY')
 
-    model_service_client.predict([[1, 2], [5, -1], [1, 0]])
+        model_service_client.predict([[1, 2], [5, -1], [1, 0]])
 
-    # => [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]
-    ```
+        # => [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]
+        ```
 
     * With the [automatically generated swagger client]((https://github.com/swagger-api/swagger-codegen):
 
-    ```python
-    import swagger_client
+        ```python
+        import swagger_client
 
-    swagger_client.configuration.api_key['key'] = 'API_KEY'
-    api = swagger_client.DefaultApi()
+        swagger_client.configuration.api_key['key'] = 'API_KEY'
+        api = swagger_client.DefaultApi()
 
-    body = swagger_client.X([[1, 2], [5, -1], [1, 0]])
+        body = swagger_client.X([[1, 2], [5, -1], [1, 0]])
 
-    response = api.predict(body)
+        response = api.predict(body)
 
-    # response = {"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}
-    ```
+        # response = {"y": [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]}
+        ```
 
 
 ## Clean up
 
 Delete service by running:
 
-`gcloud app services delete modelserve`
-
-`gcloud service-management delete modelserve-dot-PROJECT_ID.appspot.com`
+```
+gcloud app services delete modelserve
+gcloud service-management delete modelserve-dot-PROJECT_ID.appspot.com
+```
 
 
 (If the service was deployed as the `default` service, it cannot be deleted.)
