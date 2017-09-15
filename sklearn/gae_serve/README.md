@@ -109,7 +109,7 @@ The benefits of this configuration include:
         # => [0.6473534912754967, -0.7187842827829021, 0.3882338314071392]
         ```
 
-    * With the [automatically generated swagger client]((https://github.com/swagger-api/swagger-codegen):
+    * With the automatically generated swagger client ([instruction](https://github.com/swagger-api/swagger-codegen)):
 
         ```python
         import swagger_client
