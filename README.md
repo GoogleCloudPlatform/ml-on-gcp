@@ -20,6 +20,6 @@ really care about.
 
 ## scikit-learn
 
-1. [Model serve](sklearn/gae_serve/README.md) - Serve model with Google App
+1. [Model serve](sklearn/gae_serve) - Serve model with Google App
 	Engine and Cloud Endpoints.
 
