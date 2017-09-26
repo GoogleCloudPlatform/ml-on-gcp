@@ -3,11 +3,11 @@
 
 This is a simple sample that shows how to:
 
-- Create a Google App Engine (GAE) service on Google Cloud Platform (GCP) that loads a pickled scikit-learn model from Google Cloud Storage (GCS), and use it to serve prediction requests through Google Cloud Endpoints.
+- Create a Google App Engine service on Google Cloud Platform that loads a pickled scikit-learn model from Google Cloud Storage, and use it to serve prediction requests through Google Cloud Endpoints.
 
 The benefits of this configuration include:
 
-1. GAE's autoscaling and load balancing.
+1. App Engine's autoscaling and load balancing.
 1. Cloud Endpoints' monitoring and access control.
 
 
@@ -15,15 +15,15 @@ The benefits of this configuration include:
 
 - [Python](https://www.python.org/).  The version (2.7 or 3) used for local developement of the model should match the version used in the service, which is specified in the file `app.yaml`.
 
-- [Google Cloud Platform SDK](https://cloud.google.com/sdk/).  The SDK includes the commandline tools `gcloud` for deploying the service and [`gsutil`](https://cloud.google.com/storage/docs/gsutil) for managing files on GCS.
+- [Google Cloud Platform SDK](https://cloud.google.com/sdk/).  The SDK includes the commandline tools `gcloud` for deploying the service and [`gsutil`](https://cloud.google.com/storage/docs/gsutil) for managing files on Cloud Storage.
 
 - A Google Cloud Platform project which as the following products enabled:
 
-    - [Google App Engine (GAE)](https://cloud.google.com/appengine/)
+    - [Google App Engine](https://cloud.google.com/appengine/)
 
-    - [Google Cloud Storage (GCS)](https://cloud.google.com/storage/)
+    - [Google Cloud Storage](https://cloud.google.com/storage/)
 
-    - [Cloud Endpoints (CE)](https://cloud.google.com/endpoints/)
+    - [Google Cloud Endpoints](https://cloud.google.com/endpoints/)
 
 
 ## Setup
@@ -32,11 +32,11 @@ The benefits of this configuration include:
 
 1. `cd ml-on-gcp/gae_serve`
 
-1. This samples demostrates how to deploy a GAE service named `modelserve`.  If you prefer to deploy to the `default` service (for example, if this is the first GAE service in your project, it must be named `default`), use the yaml files in the `default/` subdirectory by copying them over the yaml files in the root directory of this sample.
+1. This samples demostrates how to deploy an App Engine service named `modelserve`.  If you prefer to deploy to the `default` service (for example, if this is the first App Engine service in your project, it must be named `default`), use the yaml files in the `default/` subdirectory by copying them over the yaml files in the root directory of this sample.
 
-    - **Note that GAE does not allow deleting the `default` service from your project.**
+    - **Note that App Engine does not allow deleting the `default` service from your project.**
 
-1. Update `modelserve.yaml`:  Replace `PROJECT_ID` with your GCP project's id in this line:
+1. Update `modelserve.yaml`:  Replace `PROJECT_ID` with your Google Cloud Platform project's id in this line:
 
     `host: "modelserve-dot-PROJECT_ID.appspot.com"`
 
@@ -54,7 +54,7 @@ The benefits of this configuration include:
 
     The configuration ID should look like `2017-08-03r0`.  The `r0, r1, ...` part in the configuration IDs indicate the revision numbers, and you should use the highest (most recent) revision number.
 
-1. Create a GCS bucket with your choice of a `BUCKET_NAME`, and copy the sample model file over:
+1. Create a Cloud Storage bucket with your choice of a `BUCKET_NAME`, and copy the sample model file over:
 
     ```
     gsutil mb gs://BUCKET_NAME
@@ -63,11 +63,11 @@ The benefits of this configuration include:
 
 1. Update `app.yaml`:
 
-    * If you already have at least one GAE service in your GCP project:
+    * If you already have at least one App Engine service in your Google Cloud Platform project:
 
-        - Replace `PROJECT_ID` with your GCP project's id.
+        - Replace `PROJECT_ID` with your Google Cloud Platform project's id.
 
-        - Replace `BUCKET_NAME` with the name of the bucket you created on GCS above.
+        - Replace `BUCKET_NAME` with the name of the bucket you created on Cloud Storage above.
 
         - Replace `CONFIG_ID` with the configuration ID you got from the service endpoint deployment.
 
@@ -80,7 +80,7 @@ The benefits of this configuration include:
     **This step could take several minutes to complete.**
 
 
-1. If the deployment is successful, you can access it by first creating an API key with the "Create credentials" button on the [Credentials](https://console.cloud.google.com/apis/credentials) page.  Make sure you switch to the correct GCP project first.
+1. If the deployment is successful, you can access it by first creating an API key with the "Create credentials" button on the [Credentials](https://console.cloud.google.com/apis/credentials) page.  Make sure you switch to the correct Google Cloud Platform project first.
 
 
 1. You can access the deployed service in a few different ways: (Remember to replace `PROJECT_ID` and `API_KEY` with their actual values below.)
