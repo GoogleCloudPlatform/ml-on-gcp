@@ -20,42 +20,41 @@ from gcs_helper import archive_and_upload
 
 credentials = GoogleCredentials.get_application_default()
 
-BODY = {
-    'source': {
-        'storageSource': {
-            'bucket': None,
-            'object': None
-        }
-    },
-    'steps': [
-        {
-            'name': 'gcr.io/cloud-builders/docker',
-            'args': [
-                'build',
-                '-t',
-                'gcr.io/$PROJECT_ID/hpsearch',
-                '/workspace'
-            ]
-        }
-    ],
-    'images': [
-        'gcr.io/$PROJECT_ID/hpsearch'
-    ]
-}
 
-def build(project_id, source_dir, bucket_name):
-	"""This uses the provided bucket (must be writable by the project)
-	to store intermediate source archive, and then builds an image.
+def _make_body(source_bucket_name, source_object_name, image_name):
+    body = {
+        'source': {
+            'storageSource': {
+                'bucket': source_bucket_name,
+                'object': source_object_name
+            }
+        },
+        'steps': [
+            {
+                'name': 'gcr.io/cloud-builders/docker',
+                'args': ['build', '-t', 'gcr.io/$PROJECT_ID/{}'.format(image_name), '.']
+            }
+        ],
+        'images': [
+            'gcr.io/$PROJECT_ID/{}'.format(image_name)
+        ]
+    }
+    return body
 
-	"""
-	archive_and_upload(bucket_name, source_dir)
 
-	body = BODY
-	body['source']['storageSource']['bucket'] = bucket_name
-	body['source']['storageSource']['object'] = '{}.zip'.format(source_dir)
+def build(project_id, source_dir, bucket_name, image_name):
+    """This uses the provided bucket (must be writable by the project)
+    to store the intermediate source archive, and then builds an image using
+    the Dockerfile in source_dir.
 
-	service = discovery.build('cloudbuild', 'v1', credentials=credentials)
-	build = service.projects().builds().create(projectId=project_id, body=body).execute()
+    If the build is successful the image will be pushed to container registry.
+    """
+    archive_and_upload(bucket_name, source_dir)
 
-	return build
+    body = _make_body(bucket_name, '{}.zip'.format(source_dir), image_name)
+
+    service = discovery.build('cloudbuild', 'v1', credentials=credentials)
+    build = service.projects().builds().create(projectId=project_id, body=body).execute()
+
+    return build
 
