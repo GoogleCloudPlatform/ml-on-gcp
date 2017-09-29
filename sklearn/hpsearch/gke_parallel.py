@@ -131,10 +131,14 @@ class GKEParallel(object):
         self._done = False
         self._cancelled = False
 
-        if not(type(X) == str and X.startswith('gs://')):
+        if type(X) == str and X.startswith('gs://'):
+            X_uri = X
+        else:
             X_uri = pickle_and_upload(X, self.bucket_name, '{}/X.pkl'.format(self.task_name))
 
-        if not(type(y) == str and y.startswith('gs://')):
+        if type(y) == str and y.startswith('gs://'):
+            y_uri = y
+        else:
             y_uri = pickle_and_upload(y, self.bucket_name, '{}/y.pkl'.format(self.task_name))
 
         pickle_and_upload(self.search, self.bucket_name, '{}/search.pkl'.format(self.task_name))
@@ -220,13 +224,14 @@ class GKEParallel(object):
                 self.best_estimator_ = result.best_estimator_
 
 
-    # TODO: test and deligate other methods also to self.best_estimator_
-    # such as predict_proba.
     def predict(self, *args, **kwargs):
         return self.best_estimator_.predict(*args, **kwargs)
 
 
+    def predict_proba(self, *args, **kwargs):
+        return self.best_estimator_.predict_proba(*args, **kwargs)
 
 
-
+    def predict_log_proba(self, *args, **kwargs):
+        return self.best_estimator_.predict_log_proba(*args, **kwargs)
 
