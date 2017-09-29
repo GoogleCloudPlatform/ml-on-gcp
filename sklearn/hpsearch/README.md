@@ -27,7 +27,7 @@ In addition, to follow the steps of the sample we recommend you work in a [Jupyt
 
 1. `git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git`
 
-1. `cd ml-on-gcp`
+1. `cd ml-on-gcp/sklearn/hpsearch`
 
 1. `pip install -r requirements.txt`
 
