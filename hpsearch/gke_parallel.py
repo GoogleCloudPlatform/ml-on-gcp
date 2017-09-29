@@ -223,7 +223,7 @@ class GKEParallel(object):
     # TODO: test and deligate other methods also to self.best_estimator_
     # such as predict_proba.
     def predict(self, *args, **kwargs):
-        return self.best_estimator_.fit(*args, **kwargs)
+        return self.best_estimator_.predict(*args, **kwargs)
 
 
 
