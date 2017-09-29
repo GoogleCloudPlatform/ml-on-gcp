@@ -13,17 +13,22 @@
 # limitations under the License.
 
 
-import logging
 import time
 from gke_helper import get_cluster
 from gcs_helper import pickle_and_upload, get_uri_blob, download_uri_and_unpickle
 from kubernetes_helper import create_job, delete_jobs_pods
 from copy import deepcopy
 from itertools import product
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
 
 class GKEParallel(object):
+    SUPPORTED_SEARCH = [GridSearchCV, RandomizedSearchCV]
+
     def __init__(self, search, project_id, zone, cluster_id, bucket_name, image_name, task_name=None):
+        if type(search) not in self.SUPPORTED_SEARCH:
+            raise TypeError('Search type {} not supported.  Only supporting {}.'.format(type(search), [s.__name__ for s in self.SUPPORTED_SEARCH]))
+
         self.search = search
         self.project_id = project_id
         self.cluster_id = cluster_id
@@ -36,7 +41,13 @@ class GKEParallel(object):
         self.n_nodes = self.cluster['currentNodeCount']
 
         self.task_name = None
+
+        # For GridSearchCV
         self.param_grids = {}
+        # For RandomizedSearchCV
+        self.param_distributions = None
+        self.n_iter = None
+
         self.job_names = {}
         self.output_uris = {}
         self.dones = {}
@@ -45,9 +56,47 @@ class GKEParallel(object):
         self.best_estimator_ = None
         self.best_params_ = None
         self.best_score_ = None
+        self.best_search_ = None
 
         self._cancelled = False
         self._done = False
+
+
+    def _make_job_name(self, worker_id):
+        return '{}.worker.{}'.format(self.task_name, worker_id)
+
+
+    def _make_job_body(self, worker_id, X_uri, y_uri):
+        body = {
+            'apiVersion': 'batch/v1',
+            'kind': 'Job',
+            'metadata': {
+                'name': self._make_job_name(worker_id)
+            },
+            'spec': {
+                'template': {
+                    'spec': {
+                        'containers': [
+                            {
+                                'image': 'gcr.io/{}/{}'.format(self.project_id, self.image_name),
+                                'command': ['python'],
+                                'args': ['worker.py', self.bucket_name, self.task_name, worker_id, X_uri, y_uri],
+                                'name': 'worker'
+                            }
+                        ],
+                'restartPolicy': 'OnFailure'}
+                }
+            }
+        }
+
+        return body
+
+
+    def _deploy_job(self, worker_id, X_uri, y_uri):
+        job_body = self._make_job_body(worker_id, X_uri, y_uri)
+
+        print('Deploying worker {}'.format(worker_id))
+        create_job(job_body)
 
 
     def _expand(self, param_grid_dict, expand_keys):
@@ -93,56 +142,7 @@ class GKEParallel(object):
             return expanded
 
 
-    def _make_job_name(self, worker_id):
-        return '{}.worker.{}'.format(self.task_name, worker_id)
-
-
-    def _make_job_body(self, worker_id, X_uri, y_uri):
-        body = {
-            'apiVersion': 'batch/v1',
-            'kind': 'Job',
-            'metadata': {
-                'name': self._make_job_name(worker_id)
-            },
-            'spec': {
-                'template': {
-                    'spec': {
-                        'containers': [
-                            {
-                                'image': 'gcr.io/{}/{}'.format(self.project_id, self.image_name),
-                                'command': ['python'],
-                                'args': ['worker.py', self.bucket_name, self.task_name, worker_id, X_uri, y_uri],
-                                'name': 'worker'
-                            }
-                        ],
-                'restartPolicy': 'OnFailure'}
-                }
-            }
-        }
-
-        return body
-
-
-    def fit(self, X, y, per_node=2):
-        """Returns an `operation` object that implements `done()` and `result()`.
-        """
-        timestamp = str(int(time.time()))
-        self.task_name = self.task_name or '{}.{}.{}'.format(self.cluster_id, self.image_name, timestamp)
-        self._done = False
-        self._cancelled = False
-
-        if type(X) == str and X.startswith('gs://'):
-            X_uri = X
-        else:
-            X_uri = pickle_and_upload(X, self.bucket_name, '{}/X.pkl'.format(self.task_name))
-
-        if type(y) == str and y.startswith('gs://'):
-            y_uri = y
-        else:
-            y_uri = pickle_and_upload(y, self.bucket_name, '{}/y.pkl'.format(self.task_name))
-
-        pickle_and_upload(self.search, self.bucket_name, '{}/search.pkl'.format(self.task_name))
-
+    def _handle_grid_search(self, X_uri, y_uri, per_node):
         param_grids = self._expand_param_grid(self.search.param_grid, per_node * self.n_nodes)
 
         for i, param_grid in enumerate(param_grids):
@@ -155,11 +155,59 @@ class GKEParallel(object):
 
             pickle_and_upload(param_grid, self.bucket_name, '{}/{}/param_grid.pkl'.format(self.task_name, worker_id))
 
-            job_body = self._make_job_body(worker_id, X_uri, y_uri)
+            self._deploy_job(worker_id, X_uri, y_uri)
 
-            logging.info('Deploying worker {}'.format(worker_id))
-            create_job(job_body)
 
+    def _handle_randomized_search(self, X_uri, y_uri, per_node):
+        self.param_distributions = self.search.param_distributions
+        self.n_iter = self.search.n_iter
+        n_iter = self.n_iter / (per_node * self.n_nodes) + 1
+
+        for i in xrange(per_node * self.n_nodes):
+            worker_id = str(i)
+
+            self.job_names[worker_id] = self._make_job_name(worker_id)
+            self.output_uris[worker_id] = 'gs://{}/{}/{}/fitted_search.pkl'.format(self.bucket_name, self.task_name, worker_id)
+            self.dones[worker_id] = False
+
+            pickle_and_upload(self.param_distributions, self.bucket_name, '{}/{}/param_distributions.pkl'.format(self.task_name, worker_id))
+            pickle_and_upload(n_iter, self.bucket_name, '{}/{}/n_iter.pkl'.format(self.task_name, worker_id))
+
+            self._deploy_job(worker_id, X_uri, y_uri)
+
+
+    def _upload_data(self, X, y):
+        if type(X) == str and X.startswith('gs://'):
+            X_uri = X
+        else:
+            X_uri = pickle_and_upload(X, self.bucket_name, '{}/X.pkl'.format(self.task_name))
+
+        if type(y) == str and y.startswith('gs://'):
+            y_uri = y
+        else:
+            y_uri = pickle_and_upload(y, self.bucket_name, '{}/y.pkl'.format(self.task_name))
+
+        search_uri = pickle_and_upload(self.search, self.bucket_name, '{}/search.pkl'.format(self.task_name))
+
+        return X_uri, y_uri, search_uri
+
+
+    def fit(self, X, y, per_node=2):
+        """Returns an `operation` object that implements `done()` and `result()`.
+        """
+        timestamp = str(int(time.time()))
+        self.task_name = self.task_name or '{}.{}.{}'.format(self.cluster_id, self.image_name, timestamp)
+        self._done = False
+        self._cancelled = False
+
+        X_uri, y_uri, _ = self._upload_data(X, y)
+
+        if type(self.search) == GridSearchCV:
+            handler = self._handle_grid_search
+        elif type(self.search) == RandomizedSearchCV:
+            handler = self._handle_randomized_search
+
+        handler(X_uri, y_uri, per_node)
 
         self.persist()
 
@@ -174,7 +222,7 @@ class GKEParallel(object):
         # TODO: consider using kubernetes API to check if pod completed
         if not self._done:
             for worker_id, output_uri in self.output_uris.items():
-                logging.info('Checking if worker {} is done'.format(worker_id))
+                print('Checking if worker {} is done'.format(worker_id))
                 self.dones[worker_id] = get_uri_blob(output_uri).exists()
 
             self._done = all(self.dones.values())
@@ -201,7 +249,7 @@ class GKEParallel(object):
 
         if not self.results:
             for worker_id, output_uri in self.output_uris.items():
-                logging.info('Getting result from worker {}'.format(worker_id))
+                print('Getting result from worker {}'.format(worker_id))
                 self.results[worker_id] = download_uri_and_unpickle(output_uri)
 
             self._aggregate_results()
@@ -216,14 +264,17 @@ class GKEParallel(object):
         self.best_score_ = result.best_score_
         self.best_params_ = result.best_params_
         self.best_estimator_ = result.best_estimator_
+        self.best_search_ = result
 
         for result in self.results.values()[1:]:
             if result.best_score_ > self.best_score_:
                 self.best_score_ = result.best_score_
                 self.best_params_ = result.best_params_
                 self.best_estimator_ = result.best_estimator_
+                self.best_search_ = result
 
 
+    # Implement part of SearchCV interface by delegation.
     def predict(self, *args, **kwargs):
         return self.best_estimator_.predict(*args, **kwargs)
 

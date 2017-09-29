@@ -48,6 +48,7 @@ def delete_job(job_name, namespace='default'):
     config.load_kube_config()
     batch_v1 = client.BatchV1Api()
 
+    print('deleting job {} with namespace {}'.format(job_name, namespace))
     delete = batch_v1.delete_namespaced_job(name=job_name, body=client.V1DeleteOptions(), namespace=namespace)
     return delete
 
@@ -56,6 +57,7 @@ def delete_pod(pod_name, namespace='default'):
     config.load_kube_config()
     v1 = client.CoreV1Api()
 
+    print('deleting pod {} with namespace {}'.format(pod_name, namespace))
     delete = v1.delete_namespaced_pod(name=pod_name, body=client.V1DeleteOptions(), namespace=namespace)
     return delete
 

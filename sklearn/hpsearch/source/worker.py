@@ -19,17 +19,7 @@ import pickle
 import re
 from google.cloud import storage
 from gcs_helper import pickle_and_upload, download_and_unpickle, download_uri_and_unpickle
-
-
-def _split_uri(gcs_uri):
-    """Splits gs://bucket_name/object_name to (bucket_name, object_name)"""
-    pattern = r'gs://([^/]+)/(.+)'
-    match = re.match(pattern, gcs_uri)
-
-    bucket_name = match.group(1)
-    object_name = match.group(2)
-
-    return bucket_name, object_name
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
 
 def execute(bucket_name, task_name, worker_id, X_uri, y_uri):
@@ -37,9 +27,16 @@ def execute(bucket_name, task_name, worker_id, X_uri, y_uri):
     X = download_uri_and_unpickle(X_uri)
     y = download_uri_and_unpickle(y_uri)
     search = download_and_unpickle(bucket_name, '{}/search.pkl'.format(task_name))
-    param_grid = download_and_unpickle(bucket_name, '{}/{}/param_grid.pkl'.format(task_name, worker_id))
 
-    search.param_grid = param_grid
+    if type(search) == GridSearchCV:
+        param_grid = download_and_unpickle(bucket_name, '{}/{}/param_grid.pkl'.format(task_name, worker_id))
+        search.param_grid = param_grid
+
+    elif type(search) == RandomizedSearchCV:
+        param_distributions = download_and_unpickle(bucket_name, '{}/{}/param_distributions.pkl'.format(task_name, worker_id))
+        n_iter = download_and_unpickle(bucket_name, '{}/{}/n_iter.pkl'.format(task_name, worker_id))
+        search.param_distributions = param_distributions
+        search.n_iter = n_iter
 
     search.fit(X, y)
 
