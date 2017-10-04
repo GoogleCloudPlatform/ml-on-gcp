@@ -4,10 +4,10 @@ import gym
 
 OBSERVATION_DIM = 80*80
 HIDDEN_DIM = 200
-BATCH_SIZE = 5
+BATCH_SIZE = 10
 NUM_BATCHES = 2000
 GAMMA = 0.99 # for discounted reward
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-4
 DECAY = 0.99 # for RMSProp
 
 W1_SHAPE = (HIDDEN_DIM, OBSERVATION_DIM)
@@ -44,7 +44,7 @@ output = tf.nn.sigmoid(activation)
 
 # action_class is 1 or 0, for up or down
 action_class = tf.placeholder(shape=(1,), dtype=tf.float32)
-loss = action_class - output
+loss = - (action_class * tf.log(output) + (1 - action_class) * (1 - tf.log(output)))
 
 grad_w1 = tf.placeholder(shape=W1_SHAPE, dtype=tf.float32)
 grad_w2 = tf.placeholder(shape=W2_SHAPE, dtype=tf.float32)
