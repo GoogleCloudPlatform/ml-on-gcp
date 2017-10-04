@@ -7,13 +7,13 @@ HIDDEN_DIM = 200
 BATCH_SIZE = 10
 NUM_BATCHES = 2000
 GAMMA = 0.99 # for discounted reward
-LEARNING_RATE = 1e-4
+LEARNING_RATE = 3e-3
 DECAY = 0.99 # for RMSProp
 
 W1_SHAPE = (HIDDEN_DIM, OBSERVATION_DIM)
 W2_SHAPE = (1, HIDDEN_DIM)
 
-RENDER = True
+RENDER = False
 RESTORE = True
 SAVE_PATH = './model.ckpt'
 
@@ -60,6 +60,7 @@ saver = tf.train.Saver()
 with tf.Session() as sess:
     if RESTORE:
         saver.restore(sess, SAVE_PATH)
+        print(optimizer._learning_rate)
     else:
         sess.run(init)
     env = gym.make("Pong-v0")
@@ -75,6 +76,7 @@ with tf.Session() as sess:
             step_number = 0
             gradient_w1 = np.zeros(W1_SHAPE)
             gradient_w2 = np.zeros(W2_SHAPE)
+            episode_reward = 0
 
             # The while loop for actions/steps
             while True:
@@ -92,6 +94,7 @@ with tf.Session() as sess:
                 y = [1.0] if action == 2 else [0.0]
 
                 state, reward, done, info = env.step(action)
+                episode_reward += reward
 
                 # calculate gradients after each action to be used later
                 gradients = sess.run(compute_gradients, feed_dict={input_:observation, action_class:y})
@@ -113,9 +116,14 @@ with tf.Session() as sess:
                     gradient_w2 = np.zeros(W2_SHAPE)
                                 
                 if done:
+                    print('\t\tepisode_reward: {}{}'.format(episode_reward, '' if episode_reward < 0 else ' <<---- WIN'))
                     break
 
         print('updating weights!!!')
         _ = sess.run(apply_gradients, feed_dict={grad_w1:batch_gradient_w1, grad_w2:batch_gradient_w2})
+
+        print(np.mean(batch_gradient_w1), np.var(batch_gradient_w1))
+        print(np.mean(batch_gradient_w2), np.var(batch_gradient_w2))
+
         save_path = saver.save(sess, SAVE_PATH)
         print('model saved: {}'.format(save_path))
