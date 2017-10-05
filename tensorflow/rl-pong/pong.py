@@ -2,13 +2,13 @@ import numpy as np
 import tensorflow as tf
 import gym
 
-OBSERVATION_DIM = 80*80
+OBSERVATION_DIM = 80 * 80
 HIDDEN_DIM = 200
 BATCH_SIZE = 10
 NUM_BATCHES = 2000
-GAMMA = 0.99 # for discounted reward
+GAMMA = 0.9 # for discounted reward
 LEARNING_RATE = 3e-3
-DECAY = 0.99 # for RMSProp
+DECAY = 0.9 # for RMSProp
 
 W1_SHAPE = (HIDDEN_DIM, OBSERVATION_DIM)
 W2_SHAPE = (1, HIDDEN_DIM)
@@ -16,6 +16,8 @@ W2_SHAPE = (1, HIDDEN_DIM)
 RENDER = False
 RESTORE = True
 SAVE_PATH = './model.ckpt'
+SUMMARY_PATH = './summary'
+SUMMARY_STEP = 10
 
 # preprocessing taken from:
 # https://gist.github.com/karpathy/a4166c7fe253700972fcbc77e4ea32c5
@@ -55,7 +57,18 @@ compute_gradients = optimizer.compute_gradients(loss, var_list=[w1, w2])
 apply_gradients = optimizer.apply_gradients([(grad_w1, w1), (grad_w2, w2)])
 
 init = tf.global_variables_initializer()
+
 saver = tf.train.Saver()
+
+b_reward = tf.placeholder(shape=(), dtype=tf.float32)
+tf.summary.scalar('batch_reward', b_reward)
+
+for h in xrange(HIDDEN_DIM):
+    slice_ = tf.slice(w1, [h, 0], [1, -1])
+    image = tf.reshape(slice_, [1, 80, 80, 1])
+    tf.summary.image('w1{:04d}'.format(h), image)
+
+merged = tf.summary.merge_all()
 
 with tf.Session() as sess:
     if RESTORE:
@@ -63,11 +76,14 @@ with tf.Session() as sess:
         print(optimizer._learning_rate)
     else:
         sess.run(init)
+
     env = gym.make("Pong-v0")
+    summary_writer = tf.summary.FileWriter(SUMMARY_PATH, sess.graph)
 
     for i in range(NUM_BATCHES):
         batch_gradient_w1 = np.zeros(W1_SHAPE)
         batch_gradient_w2 = np.zeros(W2_SHAPE)
+        batch_reward = 0.0
 
         for j in range(BATCH_SIZE):
             print('>>>>>>> {} / {} of batch {}'.format(j+1, BATCH_SIZE, i))
@@ -76,7 +92,6 @@ with tf.Session() as sess:
             step_number = 0
             gradient_w1 = np.zeros(W1_SHAPE)
             gradient_w2 = np.zeros(W2_SHAPE)
-            episode_reward = 0
 
             # The while loop for actions/steps
             while True:
@@ -94,7 +109,7 @@ with tf.Session() as sess:
                 y = [1.0] if action == 2 else [0.0]
 
                 state, reward, done, info = env.step(action)
-                episode_reward += reward
+                batch_reward += reward
 
                 # calculate gradients after each action to be used later
                 gradients = sess.run(compute_gradients, feed_dict={input_:observation, action_class:y})
@@ -106,24 +121,25 @@ with tf.Session() as sess:
                 gradient_w2 *= GAMMA                
 
                 if reward != 0:
-                    gradient_w1 *= reward
-                    gradient_w2 *= reward  
-
-                    batch_gradient_w1 += gradient_w1
-                    batch_gradient_w2 += gradient_w2               
+                    batch_gradient_w1 += reward * gradient_w1
+                    batch_gradient_w2 += reward * gradient_w2               
 
                     gradient_w1 = np.zeros(W1_SHAPE)
                     gradient_w2 = np.zeros(W2_SHAPE)
                                 
                 if done:
-                    print('\t\tepisode_reward: {}{}'.format(episode_reward, '' if episode_reward < 0 else ' <<---- WIN'))
                     break
+
+        batch_reward /= BATCH_SIZE
+        print('\t\tbatch_reward: {}'.format(batch_reward))
+
+        if i % SUMMARY_STEP == 0:
+            print('Writing summary')
+            summary = sess.run(merged, feed_dict={b_reward:batch_reward})
+            summary_writer.add_summary(summary, i)
 
         print('updating weights!!!')
         _ = sess.run(apply_gradients, feed_dict={grad_w1:batch_gradient_w1, grad_w2:batch_gradient_w2})
-
-        print(np.mean(batch_gradient_w1), np.var(batch_gradient_w1))
-        print(np.mean(batch_gradient_w2), np.var(batch_gradient_w2))
 
         save_path = saver.save(sess, SAVE_PATH)
         print('model saved: {}'.format(save_path))
