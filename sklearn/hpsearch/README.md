@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This sample package helps you run `scikit-learn`'s `GridSearchCV` and `RandomSearchCV` on [Google Container Engine](https://cloud.google.com/container-engine/).
+This sample package helps you run `scikit-learn`'s `GridSearchCV` and `RandomizedSearchCV` on [Google Container Engine](https://cloud.google.com/container-engine/).
 
 
 ## Requirements
@@ -19,7 +19,7 @@ You will need a Google Cloud Platform project which has the following products e
 In addition, to follow the steps of the sample we recommend you work in a [Jupyter notebook](https://jupyter.org/) running [Python](https://www.python.org/) v2.7.10 or newer.
 
 
-## Steps
+## Before you start
 
 1. Install [Google Cloud Platform SDK](https://cloud.google.com/sdk/downloads).
 
@@ -31,4 +31,4 @@ In addition, to follow the steps of the sample we recommend you work in a [Jupyt
 
 1. `pip install -r requirements.txt`
 
-1. Follow the steps in `gke_search.ipynb`.
+1. Follow the steps in either `gke_grid_search.ipynb` or `gke_randomized_search.ipynb`.
