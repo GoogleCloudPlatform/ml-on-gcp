@@ -10,6 +10,12 @@ really care about.
 
 - - -
 
+## Blog posts
+
+1. [Genomic ancestry inference with deep learning](https://cloud.google.com/blog/big-data/2017/09/genomic-ancestry-inference-with-deep-learning) - Ancestry inference on Google Cloud Platform using the [1000 Genomes dataset](https://cloud.google.com/genomics/data/1000-genomes)
+
+- - -
+
 ## TensorFlow
 
 1. [Estimators](tensorflow/tf-estimators.ipynb) - A guide to the Estimator
