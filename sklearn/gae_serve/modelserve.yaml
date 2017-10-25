@@ -27,6 +27,19 @@ securityDefinitions:
     type: "apiKey"
     name: "key"
     in: "query"
+x-google-management:
+  metrics:
+    - name: "modelserve-predict"
+      displayName: "modelserve predict"
+      valueType: INT64
+      metricKind: DELTA
+  quota:
+    limits:
+      - name: "modelserve-predict-limit"
+        metric: "modelserve-predict"
+        unit: "1/min/{project}"
+        values:
+          STANDARD: 1000
 paths:
   "/predict":
     post:
@@ -50,6 +63,9 @@ paths:
             $ref: "#/definitions/y"
         400:
           description: "Missing X."
+      x-google-quota:
+        metricCosts:
+          modelserve-predict: 1
 definitions:
   X:
     type: "object"

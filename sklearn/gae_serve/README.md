@@ -148,3 +148,8 @@ For information about configuring the service's healthcheck, see the [documentat
 ### Autoscaling
 
 For information about configuring the service's autoscaling, see the [documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml#services).
+
+
+### Quota
+
+For information about configuring the service's quota, see the [documentation](https://cloud.google.com/endpoints/docs/openapi/quotas-configure).
