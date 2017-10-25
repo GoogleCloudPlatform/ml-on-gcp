@@ -30,6 +30,6 @@ endpoints_api_service:
   config_id: CONFIG_ID
 
 env_variables:
-    # The app will look for the model file at: gs://BUCKET_NAME/lr.pkl
+    # The app will look for the model file at: gs://MODEL_BUCKET/MODEL_FILENAME
     MODEL_BUCKET: BUCKET_NAME
     MODEL_FILENAME: lr.pkl

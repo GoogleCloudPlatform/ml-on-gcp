@@ -30,9 +30,6 @@ app = Flask(__name__)
 
 @app.before_first_request
 def _load_model():
-    import time
-    time.sleep(45)
-
     global MODEL
     client = storage.Client()
     bucket = client.get_bucket(MODEL_BUCKET)
