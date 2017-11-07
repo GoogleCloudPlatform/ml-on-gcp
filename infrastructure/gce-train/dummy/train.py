@@ -41,26 +41,30 @@ def runner(
     total_steps,
     checkpoint_steps,
     hyperparameters
-  ):
+    ):
   """Runs a training job.
 
   Args:
-    1. trainer_initializer - Function which accepts hyperparameter dictionary as
-    its only argument and returns a callable representing a single step of
-    training.
-    2. job_dir - Directory in which checkpoints should be stored.
-    3. total_steps - Total number of steps for which training should be
-    performed.
-    4. checkpoint_steps - Training steps between checkpoints.
-    5. hyperparameters - Dictionary containing hyperparameter specification for
-    the training job.
+    trainer_initializer: Function which accepts hyperparameter dictionary as its
+    only argument and returns a callable representing a single step of training.
+    job_dir: Directory in which checkpoints should be stored.
+    total_steps: Total number of steps for which training should be performed.
+    checkpoint_steps: Training steps between checkpoints.
+    hyperparameters: Dictionary containing hyperparameter specification for the
+    training job.
+
+  Returns:
+    None
+
+  Raises:
+    ValueError: If hyperparameters are inconsistent with existing checkpoints in
+    job_dir.
   """
   current_checkpoint_index = 0
   current_hyperparameters = copy.copy(hyperparameters)
 
-  last_checkpoint = latest_checkpoint(get_checkpoints(job_dir))
-  if last_checkpoint is not None:
-    last_path, last_index = last_checkpoint
+  last_path, last_index = latest_checkpoint(get_checkpoints(job_dir))
+  if last_index is not None:
     current_checkpoint_index = last_index + 1
     last_data = load_checkpoint(last_path)
     last_hp = last_data.get("hyperparameters")
@@ -114,9 +118,9 @@ def generate_checkpoint(step, hyperparameters, model_state):
   """Generates checkpoint contents.
 
   Args:
-    1. step - Training step at which this checkpoint was generated.
-    2. hyperparameters - Dictionary specifying the model hyperparameters.
-    3. model_state - A JSON serializable representation of the model state.
+    step: Training step at which this checkpoint was generated.
+    hyperparameters: Dictionary specifying the model hyperparameters.
+    model_state: A JSON serializable representation of the model state.
 
   Returns:
     Dictionary representing the content to be checkpointed.
@@ -137,7 +141,7 @@ def get_checkpoints(job_dir):
 
 def latest_checkpoint(checkpoint_paths):
   if not checkpoint_paths:
-    return None
+    return (None, None)
 
   checkpoint_indices = map(checkpoint_index, checkpoint_paths)
   indexed_checkpoints = zip(checkpoint_paths, checkpoint_indices)

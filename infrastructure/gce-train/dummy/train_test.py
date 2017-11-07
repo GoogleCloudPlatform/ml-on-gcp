@@ -94,7 +94,7 @@ class TrainTest(unittest.TestCase):
 
   def test_latest_checkpoint_2(self):
     latest_checkpoint = train.latest_checkpoint([])
-    self.assertIsNone(latest_checkpoint)
+    self.assertEqual(latest_checkpoint, (None, None))
 
   def test_save_checkpoint(self):
     self.assertEqual(len(glob.glob(self.test_job_file_glob)), 0)
