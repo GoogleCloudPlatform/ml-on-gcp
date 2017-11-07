@@ -18,19 +18,50 @@ import glob
 import json
 import os
 import random
-import time
 
 
-def dummy_trainer(job_dir, total_steps, checkpoint_steps, hyperparameters):
+def generate_trainer(hyperparameters):
+  """Generates a callable which performs a single step of training when called.
+
+  Args:
+    1. hyperparameters - hyperparameters to train with.
+
+  Returns:
+    trainer callable
+  """
+  def _trainer():
+    return random.random()
+
+  return _trainer
+
+
+def runner(
+    trainer_initializer,
+    job_dir,
+    total_steps,
+    checkpoint_steps,
+    hyperparameters
+  ):
+  """Runs a training job.
+
+  Args:
+    1. trainer_initializer - Function which accepts hyperparameter dictionary as
+    its only argument and returns a callable representing a single step of
+    training.
+    2. job_dir - Directory in which checkpoints should be stored.
+    3. total_steps - Total number of steps for which training should be
+    performed.
+    4. checkpoint_steps - Training steps between checkpoints.
+    5. hyperparameters - Dictionary containing hyperparameter specification for
+    the training job.
+  """
   current_checkpoint_index = 0
   current_hyperparameters = copy.copy(hyperparameters)
 
   last_checkpoint = latest_checkpoint(get_checkpoints(job_dir))
   if last_checkpoint is not None:
     last_path, last_index = last_checkpoint
-
     current_checkpoint_index = last_index + 1
-
     last_data = load_checkpoint(last_path)
     last_hp = last_data.get("hyperparameters")
     for hyperparameter in current_hyperparameters:
@@ -46,18 +77,25 @@ def dummy_trainer(job_dir, total_steps, checkpoint_steps, hyperparameters):
 
     current_hyperparameters = last_hp
 
+  train_step = trainer_initializer(hyperparameters)
+
   def finished(step):
+    """Returns True if job is complete and False otherwise."""
     if total_steps is None:
       return False
     else:
       return step > total_steps
 
+  result = None
   i = 1
   while not finished(i):
+    result = train_step()
+
     if i%checkpoint_steps == 0:
       checkpoint_data = generate_checkpoint(
           current_checkpoint_index,
-          hyperparameters
+          hyperparameters,
+          result
       )
       save_checkpoint(job_dir, current_checkpoint_index, checkpoint_data)
       current_checkpoint_index += 1
@@ -66,16 +104,27 @@ def dummy_trainer(job_dir, total_steps, checkpoint_steps, hyperparameters):
 
   checkpoint_data = generate_checkpoint(
       current_checkpoint_index,
-      hyperparameters
+      hyperparameters,
+      result
   )
   save_checkpoint(job_dir, current_checkpoint_index, checkpoint_data)
 
 
-def generate_checkpoint(step, hyperparameters):
+def generate_checkpoint(step, hyperparameters, model_state):
+  """Generates checkpoint contents.
+
+  Args:
+    1. step - Training step at which this checkpoint was generated.
+    2. hyperparameters - Dictionary specifying the model hyperparameters.
+    3. model_state - A JSON serializable representation of the model state.
+
+  Returns:
+    Dictionary representing the content to be checkpointed.
+  """
   checkpoint_data = {
       "steps": step,
       "hyperparameters": hyperparameters,
-      "state": random.random()
+      "model": model_state
   }
   return checkpoint_data
 
@@ -156,4 +205,10 @@ if __name__ == "__main__":
       "hyperparameter_2": args.hyperparameter_2
   }
 
-  dummy_trainer(args.job_dir, args.total_steps, args.checkpoint_steps, hparams)
+  runner(
+      generate_trainer,
+      args.job_dir,
+      args.total_steps,
+      args.checkpoint_steps,
+      hparams
+  )

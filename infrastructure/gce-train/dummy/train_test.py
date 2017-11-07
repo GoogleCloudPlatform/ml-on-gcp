@@ -49,7 +49,7 @@ class TrainTest(unittest.TestCase):
               "hyperparameter_1": self.hyperparameter_1,
               "hyperparameter_2": self.hyperparameter_2
           },
-          "state": random.random()
+          "model": random.random()
       }
 
       with open(path, "w") as fp:
@@ -115,7 +115,7 @@ class TrainTest(unittest.TestCase):
 
     self.assertDictEqual(saved_object, checkpoint_data)
 
-  def test_dummy_trainer(self):
+  def test_runner(self):
     self.assertEqual(len(glob.glob(self.test_job_file_glob)), 0)
 
     hyperparameters = {
@@ -126,7 +126,8 @@ class TrainTest(unittest.TestCase):
     total_steps = 100
     checkpoint_steps = 10
 
-    train.dummy_trainer(
+    train.runner(
+        train.generate_trainer,
         self.test_job_dir,
         total_steps,
         checkpoint_steps,
