@@ -21,10 +21,7 @@ import random
 import time
 
 
-PAUSE = os.environ.get('PAUSE', 10)
-
-
-def dummy_trainer(job_dir, checkpoint_steps, hyperparameters):
+def dummy_trainer(job_dir, total_steps, checkpoint_steps, hyperparameters):
   current_checkpoint_index = 0
   current_hyperparameters = copy.copy(hyperparameters)
 
@@ -49,14 +46,38 @@ def dummy_trainer(job_dir, checkpoint_steps, hyperparameters):
 
     current_hyperparameters = last_hp
 
-  while True:
-    time.sleep(PAUSE)
-    checkpoint_data = {
-        "steps": current_checkpoint_index*checkpoint_steps,
-        "hyperparameters": current_hyperparameters,
-        "metric": random.random()
-    }
-    #TODO: Complete
+  def finished(step):
+    if total_steps is None:
+      return False
+    else:
+      return step > total_steps
+
+  i = 1
+  while not finished(i):
+    if i%checkpoint_steps == 0:
+      checkpoint_data = generate_checkpoint(
+          current_checkpoint_index,
+          hyperparameters
+      )
+      save_checkpoint(job_dir, current_checkpoint_index, checkpoint_data)
+      current_checkpoint_index += 1
+
+    i += 1
+
+  checkpoint_data = generate_checkpoint(
+      current_checkpoint_index,
+      hyperparameters
+  )
+  save_checkpoint(job_dir, current_checkpoint_index, checkpoint_data)
+
+
+def generate_checkpoint(step, hyperparameters):
+  checkpoint_data = {
+      "steps": step,
+      "hyperparameters": hyperparameters,
+      "state": random.random()
+  }
+  return checkpoint_data
 
 
 def get_checkpoints(job_dir):
@@ -93,6 +114,7 @@ def save_checkpoint(job_dir, index, checkpoint_data):
   checkpoint_path = os.path.join(job_dir, checkpoint_file)
   with open(checkpoint_path, "w") as fp:
     json.dump(checkpoint_data, fp)
+  return checkpoint_path
 
 
 if __name__ == "__main__":
@@ -106,6 +128,13 @@ if __name__ == "__main__":
       "--checkpoint-steps",
       type=int,
       help="Number of steps per checkpointing operation"
+  )
+  parser.add_argument(
+      "--total-steps",
+      type=int,
+      default=None,
+      help=("Total number of steps that you would like to train for -- "
+            "trains forever if this argument is not specified")
   )
   parser.add_argument(
       "--hyperparameter-1",
@@ -122,9 +151,9 @@ if __name__ == "__main__":
 
   args = parser.parse_args()
 
-  params = {
+  hparams = {
       "hyperparameter_1": args.hyperparameter_1,
       "hyperparameter_2": args.hyperparameter_2
   }
 
-  dummy_trainer(args.job_dir, args.checkpoint_steps, params)
+  dummy_trainer(args.job_dir, args.total_steps, args.checkpoint_steps, hparams)

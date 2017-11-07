@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+import glob
 import os
 import random
 import tempfile
@@ -28,6 +29,9 @@ class TrainTest(unittest.TestCase):
     self.num_checkpoints = 10
     self.checkpoint_files = []
     self.checkpoint_steps = 100
+
+    self.test_job_dir = tempfile.mkdtemp()
+    self.test_job_file_glob = os.path.join(self.test_job_dir, "*")
 
     # Note that hyperparameters are intended to be constant across checkpoints
     self.hyperparameter_1 = 17
@@ -45,7 +49,7 @@ class TrainTest(unittest.TestCase):
               "hyperparameter_1": self.hyperparameter_1,
               "hyperparameter_2": self.hyperparameter_2
           },
-          "metric": random.random()
+          "state": random.random()
       }
 
       with open(path, "w") as fp:
@@ -64,6 +68,12 @@ class TrainTest(unittest.TestCase):
       os.remove(path)
 
     os.rmdir(self.job_dir)
+
+    test_job_files = glob.glob(self.test_job_file_glob)
+    for path in test_job_files:
+      os.remove(path)
+
+    os.rmdir(self.test_job_dir)
 
   def test_get_checkpoints(self):
     checkpoints = train.get_checkpoints(self.job_dir)
@@ -85,6 +95,49 @@ class TrainTest(unittest.TestCase):
   def test_latest_checkpoint_2(self):
     latest_checkpoint = train.latest_checkpoint([])
     self.assertIsNone(latest_checkpoint)
+
+  def test_save_checkpoint(self):
+    self.assertEqual(len(glob.glob(self.test_job_file_glob)), 0)
+
+    checkpoint_data = {
+        "test_key": "test_value"
+    }
+    checkpoint_file = train.save_checkpoint(
+        self.test_job_dir,
+        1,
+        checkpoint_data
+    )
+
+    self.assertEqual(len(glob.glob(self.test_job_file_glob)), 1)
+
+    with open(checkpoint_file) as fp:
+      saved_object = json.load(fp)
+
+    self.assertDictEqual(saved_object, checkpoint_data)
+
+  def test_dummy_trainer(self):
+    self.assertEqual(len(glob.glob(self.test_job_file_glob)), 0)
+
+    hyperparameters = {
+        "hyperparameter_1": self.hyperparameter_1,
+        "hyperparameter_2": self.hyperparameter_2
+    }
+
+    total_steps = 100
+    checkpoint_steps = 10
+
+    train.dummy_trainer(
+        self.test_job_dir,
+        total_steps,
+        checkpoint_steps,
+        hyperparameters
+    )
+
+    self.assertEqual(
+        len(glob.glob(self.test_job_file_glob)),
+        int(total_steps/checkpoint_steps) + 1
+    )
+
 
 if __name__ == "__main__":
   unittest.main()
