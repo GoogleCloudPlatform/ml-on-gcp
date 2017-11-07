@@ -123,20 +123,20 @@ class TrainTest(unittest.TestCase):
         "hyperparameter_2": self.hyperparameter_2
     }
 
-    total_steps = 100
+    train_steps = 100
     checkpoint_steps = 10
 
     train.runner(
         train.generate_trainer,
         self.test_job_dir,
-        total_steps,
+        train_steps,
         checkpoint_steps,
         hyperparameters
     )
 
     self.assertEqual(
         len(glob.glob(self.test_job_file_glob)),
-        int(total_steps/checkpoint_steps) + 1
+        int(train_steps/checkpoint_steps) + 1
     )
 
 

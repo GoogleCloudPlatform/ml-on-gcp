@@ -38,7 +38,7 @@ def generate_trainer(hyperparameters):
 def runner(
     trainer_initializer,
     job_dir,
-    total_steps,
+    train_steps,
     checkpoint_steps,
     hyperparameters
     ):
@@ -48,7 +48,7 @@ def runner(
     trainer_initializer: Function which accepts hyperparameter dictionary as its
     only argument and returns a callable representing a single step of training.
     job_dir: Directory in which checkpoints should be stored.
-    total_steps: Total number of steps for which training should be performed.
+    train_steps: Total number of steps for which training should be performed.
     checkpoint_steps: Training steps between checkpoints.
     hyperparameters: Dictionary containing hyperparameter specification for the
     training job.
@@ -85,10 +85,10 @@ def runner(
 
   def finished(step):
     """Returns True if job is complete and False otherwise."""
-    if total_steps is None:
+    if train_steps is None:
       return False
     else:
-      return step > total_steps
+      return step > train_steps
 
   result = None
   i = 1
@@ -212,7 +212,7 @@ if __name__ == "__main__":
   runner(
       generate_trainer,
       args.job_dir,
-      args.total_steps,
+      args.train_steps,
       args.checkpoint_steps,
       hparams
   )
