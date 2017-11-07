@@ -183,7 +183,7 @@ if __name__ == "__main__":
       help="Number of steps per checkpointing operation"
   )
   parser.add_argument(
-      "--total-steps",
+      "--train-steps",
       type=int,
       default=None,
       help=("Total number of steps that you would like to train for -- "
