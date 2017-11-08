@@ -1,4 +1,4 @@
-# The GCE survival guide: TensorFlow Estimator
+# GCE survival training: TensorFlow Estimator
 
 The nice thing about the [TensorFlow Estimator API](https://www.tensorflow.org/programmers_guide/estimators) is that it provides the same checkpointing semantics as the ones we are using as part of our survival process.
 
@@ -183,6 +183,8 @@ You can easily create the image in the Cloud Console from the disk attached to t
 ```bash
 gcloud compute images create gpu-tensorflow --source-disk cifar10-estimator --source-disk-zone us-west1-b
 ```
+
+This concludes the image creation process. It *was* fairly involved, but the beauty of this is that you only have to do it once. Although no one can offer such an image publicly (because of the step where you had to register as an nvidia developer), once you have created your base image, you barely need to think about this process at all. [Images are shareable between GCP projects](https://cloud.google.com/compute/docs/images/sharing-images-across-projects), for example, so you can just pass it along from project to project as necessary.
 
 - - -
 

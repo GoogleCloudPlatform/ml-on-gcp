@@ -1,4 +1,4 @@
-# The GCE survival guide
+# GCE survival training
 
 [Google Compute Engine](https://cloud.google.com/compute/docs/) (GCE) gives you direct access to the computational backbone of Google Cloud Platform. You can use GCE to create virtual machines provisioned with the resources of your choosing ([satisfying the constraints of any quotas that you define](https://cloud.google.com/compute/quotas)).
 
