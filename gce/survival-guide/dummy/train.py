@@ -91,6 +91,7 @@ def runner(
       return step > train_steps
 
   result = None
+  # TODO(nkashy1): Add test for "up to N steps" rather than "additional N steps"
   i = current_checkpoint_index*checkpoint_steps + 1
   while not finished(i):
     result = train_step()
