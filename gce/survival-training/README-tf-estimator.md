@@ -392,7 +392,9 @@ and start it back up again with
 gcloud compute instances start cifar10-estimator
 ```
 
-You should very quickly see a new checkpoint of value 1 greater than the last one you saw before stopping the instance. That means that TensorFlow has started training the CIFAR-10 estimator from where it left off before your instance shut down:
+You should very quickly see a new checkpoint of value 1 greater than the last one you saw before stopping the instance. That means that TensorFlow has started training the CIFAR-10 estimator from where it left off before your instance shut down.
+
+With the instance corresponding to the image below, I shut down the instance after checkpoint 8754. When it started back up, it checkpointed step 8755 and kept on going from where it left off:
 
 ![Proof](./img/tf-proof.png)
 
