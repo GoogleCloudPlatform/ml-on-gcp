@@ -356,6 +356,46 @@ gcloud compute instances describe cifar10-estimator
 ```
 
 
+## Starting your training job
+
+We are now ready to start our training job. And starting it is very simple with the custom metadata and the startup script set on our GCE instance. All we do is:
+
+```bash
+gcloud compute instances start cifar10-estimator
+```
+
+If you want to see what's going on with the instance, you can use the following command to stream the output to your terminal:
+
+```bash
+gcloud compute instances tail-serial-port-output cifar10-estimator --port 1
+```
+
+If this times out at first, just try a few more times, as it relies on your instance start up reaching a certain stage.
+
+(Alternatively, you can look at the output from serial port 1 on the page describing your instance in the Cloud Console. But beware, as that output does not auto-refresh.)
+
+If you would like to test that the process actually works, wait for a couple of checkpoints to get stored to your `$JOB_DIR`, which you can monitor with:
+
+```bash
+gsutil ls $JOB_DIR
+```
+
+Then stop the instance with
+
+```bash
+gcloud compute instances stop cifar10-estimator
+```
+
+and start it back up again with
+
+```bash
+gcloud compute instances start cifar10-estimator
+```
+
+You should very quickly see a new checkpoint of value 1 greater than the last one you saw before stopping the instance. That means that TensorFlow has started training the CIFAR-10 estimator from where it left off before your instance shut down:
+
+![Proof](./img/tf-proof.png)
+
 
 - - -
 

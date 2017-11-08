@@ -26,7 +26,16 @@ cd "/home/$GCE_USER/$TRAINER_REPO"
 
 git pull origin master
 
-runuser -p -l $GCE_USER -c "python -m $TRAINER_MODULE --data-dir=$DATA_DIR --job-dir=$JOB_DIR --train-steps=$TRAIN_STEPS --num-gpus=$NUM_GPUS --momentum=$MOMENTUM --weight-decay=$WEIGHT_DECAY --learning-rate=$LEARNING_RATE --batch-norm-decay=$BATCH_NORM_DECAY --batch-norm-epsilon=$BATCH_NORM_EPSILON"
+sudo -u $GCE_USER python -m $TRAINER_MODULE \
+  --data-dir=$DATA_DIR \
+  --job-dir=$JOB_DIR \
+  --train-steps=$TRAIN_STEPS \
+  --num-gpus=$NUM_GPUS \
+  --momentum=$MOMENTUM \
+  --weight-decay=$WEIGHT_DECAY \
+  --learning-rate=$LEARNING_RATE \
+  --batch-norm-decay=$BATCH_NORM_DECAY \
+  --batch-norm-epsilon=$BATCH_NORM_EPSILON
 
 if ! [ $KEEP_ALIVE = "true" ] ; then
   sudo shutdown -h now
