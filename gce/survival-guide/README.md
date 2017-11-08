@@ -76,11 +76,16 @@ In this guide, in the interests of flexibility, we will go with the Cloud Source
 
 ## Examples
 
-### TensorFlow CIFAR-10 estimator
++ [TensorFlow estimator](###TensorFlow-estimator)
+
++ [sklearn model](###sklearn-model) - under development
+
+
+(###TensorFlow-estimator)
 
 WIP
 
 
-### sklearn model
+(###sklearn-model)
 
 WIP
