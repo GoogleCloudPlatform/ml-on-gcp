@@ -4,9 +4,9 @@ The nice thing about the [TensorFlow Estimator API](https://www.tensorflow.org/p
 
 Moreover, the [Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer) also accepts model parameters and hyperparameters in the same fashion suggested here. So we should easily be able to take a model intended to run on Cloud ML Engine and run it on a single (but beefy) GCE instance.
 
-Exactly such a model exists! We will make use of the tensorflow/models [CIFAR-10 estimator example](https://github.com/tensorflow/models/tree/master/tutorials/image/cifar10_estimator).
+Exactly such a model exists! We will make use of the tensorflow/models [CIFAR-10 estimator example](https://github.com/tensorflow/models/tree/master/tutorials/image/cifar10_estimator). The estimator in question wraps a neural network designed to address the image classification task posed by the [CIFAR-10 dataset](https://www.cs.toronto.edu/~kriz/cifar.html) (which consists of 60,000 images distributed uniformly over 10 classes).
 
-Let us follow each of the steps as outlined in [the main README](./README.md).
+Let us follow each of the steps as outlined in [the main README](./README.md) to set this particular model to train on a GPU-enabled GCE instance.
 
 
 ## Custom image
