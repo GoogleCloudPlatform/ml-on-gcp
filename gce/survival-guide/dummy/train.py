@@ -91,7 +91,7 @@ def runner(
       return step > train_steps
 
   result = None
-  i = 1
+  i = current_checkpoint_index*checkpoint_steps + 1
   while not finished(i):
     result = train_step()
 
