@@ -170,7 +170,7 @@ mv cud* image-setup/
 ```
 
 
-#### Creating the image
+### Creating the image
 
 And now, we can create the image. It is possible to create an image from a running instance, but it is much safer to do so from a stopped instance, so let us take the safe route. Stop the `cifar10-estimator` instance either in the Cloud Console or using `gcloud` as follows:
 
@@ -184,7 +184,178 @@ You can easily create the image in the Cloud Console from the disk attached to t
 gcloud compute images create gpu-tensorflow --source-disk cifar10-estimator --source-disk-zone us-west1-b
 ```
 
-This concludes the image creation process. It *was* fairly involved, but the beauty of this is that you only have to do it once. Although no one can offer such an image publicly (because of the step where you had to register as an nvidia developer), once you have created your base image, you barely need to think about this process at all. [Images are shareable between GCP projects](https://cloud.google.com/compute/docs/images/sharing-images-across-projects), for example, so you can just pass it along from project to project as necessary.
+This concludes the image creation process. It *was* fairly involved, but the beauty of this is that you only have to do it once. Although no one can offer such an image publicly (because of the step where you had to register as an nvidia developer), once you have created your base image, you barely need to think about this process at all. [Images are shareable between GCP projects](https://cloud.google.com/compute/docs/images/sharing-images-across-projects), for example, so you can just pass it along from project to project as necessary. In short, this is worth doing (exactly) once.
+
+In the case of this example, we can just use the same instance from which we created the image to train a classifier on the CIFAR-10 dataset. If you wanted to do something like simultaneously train with different sets of hyperparameters, though, you would create a new VM based off of the same image, and create a separate training job on that with the new hyperparameter specification.
+
+
+## Trainer CLI
+
+Fortunately, [the CIFAR-10 estimator](https://github.com/tensorflow/models/tree/master/tutorials/image/cifar10_estimator) example [comes wrapped in a CLI whose semantics are very similar to those of our dummy trainer](https://github.com/tensorflow/models/blob/master/tutorials/image/cifar10_estimator/cifar10_main.py). That is the interface we will use for our training job.
+
+
+### Arguments
+
+These are the arguments that we need to specify to the trainer to kick off the training job:
+
+1. `--data-dir` - Directory in which the CIFAR-10 data is stored. Below, we will do the required work to load this data onto a [GCS bucket](https://cloud.google.com/storage/), which the trainer will be able to make use of because TensorFlow integrates very nicely with GCS.
+
+1. `--job-dir` - Directory in which the estimator should store its checkpoints. We will, again, provide a GCS bucket for this.
+
+1. `--num-gpus` - The number of GPUs available to TensorFlow. In the case of this guide, the value will be 4, but this may be different from you depending on the setup that you decided to use. We will parametrize this in our procedure so that we don't have to go editing scripts or code to change this behaviour.
+
+1. `--train-steps` - The number of training steps we want our trainer to perform. Since the trainer in question does not allow us to train forever, we will set this to some large number, like `99999999`.
+
+1. `--momentum` - Momentum hyperparameter which determines, at each time step, the fraction of the previous gradient update that gets added to the current update.
+
+1. `--weight-decay` - Hyperparameter which specifies the degree to which the magnitudes of the weights of the connections from the convolutional layer affect the training loss.
+
+1. `--learning-rate` - Hyperparameter defining the size of the mesh with respect to which we perform our optimization.
+
+1. `--batch-norm-decay` - Hyperparameter specifying the time-discount in moving average of batch means in batch normalization.
+
+1. `--batch-norm-epsilon` - Hyperparameter for batch normalization which represents a slight increase to the batch variance estimate.
+
+
+We can specify most of these parameters right now. We will run the following command for training:
+
+```bash
+python cifar10_main.py \
+    --data-dir <TBD> \
+    --job-dir <TBD> \
+    --num-gpus 4 \
+    --train-steps 99999999 \
+    --momentum 0.9 \
+    --weight-decay 0.0002 \
+    --learning-rate 0.1 \
+    --batch-norm-decay 0.997 \
+    --batch-norm-epsilon 0.00001
+```
+
+For the hyperparameters, these are the default values provided by the trainer CLI, but we include them here explicitly so that it is easy to adapt this guide to training with different hyperparameters.
+
+Now we have to settle the matter of `--data-dir` and `--job-dir`.
+
+
+### Data
+
+The CIFAR-10 tutorial provides very friendly instructions for the generation of the training, evaluation, and validation datasets (as tfrecords). What we will do is:
+
+1. Download the dataset and generate the `.tfrecords` files locally
+
+1. Push them to a GCS bucket available to our GCE instances
+
+1. At training time, we will pass the GCS path to the data to the `--data-dir` argument
+
+To download the dataset and generate the `.tfrecords`, choose a local path at which you would like to do so, say `/tmp/cifar-10-data`. Then simply navigate to the [CIFAR-10 tutorial](https://github.com/tensorflow/models/tree/master/tutorials/image/cifar10_estimator) folder (you should have `git clone`d [tensorflow/models](https://github.com/tensorflow/models) to your local machine) and run:
+
+```bash
+python generate_cifar10_tfrecords.py --data-dir=/tmp/cifar-10-data
+```
+
+
+Now make a bucket in which to store this data (note that bucket names have to be globally unique, so we will prefix this with our project name):
+
+```bash
+gsutil mb gs://$(gcloud config get-value project)-cifar-10-data
+```
+
+Now we can upload our data to the bucket:
+
+```bash
+gsutil -m cp -r /tmp/cifar-10-data/*  gs://$(gcloud config get-value project)-cifar-10-data/
+```
+
+You can test that the data has been transferred using
+
+```bash
+gsutil ls gs://$(gcloud config get-value project)-cifar-10-data/
+```
+
+
+### Checkpoints
+
+In the course of training, checkpoints will be stored at the path provided to the trainer using the `--job-dir` argument. We can provide a GCS path for this argument, as well, and we will do so.
+
+Let us make ourselves a checkpoint bucket:
+
+```bash
+gsutil mb gs://$(gcloud config get-value project)-cifar-10-checkpoints
+```
+
+With all this preparation in place, we are ready to specify a startup script and define our instance metadata.
+
+
+## Cloud Source Repositories
+
+The [tensorflow/models](https://github.com/tensorflow/models) repo exposes each of its subdirectories as Python modules, which is really handy. What we are going to do is push a copy of TensorFlow models as one of our own Cloud Source repositories and run the training job from there. This way, if you want to experiment with the model architecture in the future, you can easily do so in your GCE environment (using the same kinds of tagging semantics mentioned in the [README](./README.md)).
+
+To do so, we must create a source repo, which [you can do from Cloud Console here](https://console.cloud.google.com/code/develop/repo). Alternatively, you can use the `gcloud` tool:
+
+```bash
+gcloud source repos create tensorflow-models
+```
+
+If this is the first time you are using source repos, make sure to run the following command from your local machine:
+
+```bash
+git config credential.helper gcloud.sh
+```
+
+Now navigate to your local clone of [tensorflow/models](https://github.com/tensorflow/models) and add this new repo as a remote:
+
+```
+git remote add gcp https://source.developers.google.com/p/$(gcloud config get-value project)/r/tensorflow-models
+```
+
+Finally,
+
+```bash
+git push -u gcp-or-whatever master
+```
+
+This push might take some time because of the size of `tensorflow/models`.
+
+
+## Startup script
+
+We will use the [tf-estimator-startup.sh](./gce/tf-estimator-startup.sh) script, which is only a slight modification of [our origina dummy script](./gce/startup.sh).
+
+
+## Instance metadata
+
+We can set instance metadata either by editing our instance in the cloud console or through the `gcloud` CLI. Let us use `gcloud` for this.
+
+First, let us define two environment variables:
+
+```bash
+export DATA_DIR=gs://$(gcloud config get-value project)-cifar-10-data/ JOB_DIR=gs://$(gcloud config get-value project)-cifar-10-checkpoints
+```
+
+You should also export your username on the GCE instance (the one under which you created your environment) into the `GCE_USER` environment variable. In my case, I export
+
+```bash
+export GCE_USER=nkash
+```
+
+
+Assuming you are executing the command from the same directory as this guide:
+
+```bash
+gcloud compute instances add-metadata cifar10-estimator \
+    --metadata-from-file startup-script=./gce/tf-estimator-startup.sh \
+    --metadata gceUser=$GCE_USER,trainerRepo=tensorflow-models,trainerModule=tutorials.image.cifar10_estimator.cifar10_main,dataDir=$DATA_DIR,jobDir=$JOB_DIR,trainSteps=99999999,numGpus=4,momentum=0.9,weightDecay=0.0002,learningRate=0.1,batchNormDecay=0.997,batchNormEpsilon=0.00001
+```
+
+(Note: Remember that we had called our instances `cifar10-estimator`. If you name yours something different, you should make the appropriate modification to the above command.)
+
+You can verify that this metadata has actually been attached to the instance using:
+
+```bash
+gcloud compute instances describe cifar10-estimator
+```
+
+
 
 - - -
 

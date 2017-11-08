@@ -1,5 +1,9 @@
 # GCE survival training
 
+Training jobs that survive GCE shutdowns
+
+- - -
+
 [Google Compute Engine](https://cloud.google.com/compute/docs/) (GCE) gives you direct access to the computational backbone of Google Cloud Platform. You can use GCE to create virtual machines provisioned with the resources of your choosing ([satisfying the constraints of any quotas that you define](https://cloud.google.com/compute/quotas)).
 
 This has particular value when it comes to training machine learning models, as this gives you access to resources beyond those available to you physically. For example, GCE will soon offer preemptible GPU instances. This means that, if you designed your trainer appropriately, your cost per training step could be a fraction of what it would be on a dedicated instance.
@@ -45,7 +49,20 @@ Our strategy will have the GCE instance automatically kick off your training job
 It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a [boilerplate CLI](./dummy/train.py) in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we will provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
 
 
-### Startup scripts
+### Cloud Source Repositories
+
+We need a mechanism by which we can get our trainer code into the GCE instance. There are several solutions available to us:
+
+1. We could simply store the trainer application on the custom image from which we create the GCE instance.
+
+1. We could store the code in a [GCS](https://cloud.google.com/storage/) bucket and have the startup script download it to the instance before doing anything else.
+
+1. We could store the code in a [Cloud Source Repository](https://cloud.google.com/source-repositories/) and have the startup script clone it to the instance before doing anything else.
+
+In this guide, in the interests of flexibility, we will go with the Cloud Source Repository option. The reason this is attractive is that it lets you apply `git` semantics to your training jobs -- for example, you can [tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) different model architectures and specify them through the instance metadata. Or you could just use the trainer on some special branch of the repository which, again, would be specified at deployment time using instance metadata. This setup is much more powerful than the others.
+
+
+### Startup script
 
 GCE instances have an in-built mechanism that triggers a script on instance startup (for the appropriate definition of startup, but this need not concern us for now). This is the mechanism we will use to kick off a training job or to pick it up where it left off before a shutdown. We will make use of it through [startup scripts](https://cloud.google.com/compute/docs/startupscript#troubleshooting).
 
@@ -61,26 +78,16 @@ Instance metadata is where we will store things like model hyperparameters and p
 If you are using the [example startup script provided in this guide](./gce/startup.sh), you will only have to make minimal changes to do so. The important thing again is to understand where instance metadata fits into our picture and that GCE guarantees that it will be available to our startup script when it runs.
 
 
-### Cloud Source Repositories
-
-Finally, we need a mechanism by which we can get our trainer code into the GCE instance. There are several solutions available to us:
-
-1. We could simply store the trainer application on the custom image from which we create the GCE instance.
-
-1. We could store the code in a [GCS](https://cloud.google.com/storage/) bucket and have the startup script download it to the instance before doing anything else.
-
-1. We could store the code in a [Cloud Source Repository](https://cloud.google.com/source-repositories/) and have the startup script clone it to the instance before doing anything else.
-
-In this guide, in the interests of flexibility, we will go with the Cloud Source Repository option. The reason this is attractive is that it lets you apply `git` semantics to your training jobs -- for example, you can [tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) different model architectures and specify them through the instance metadata. Or you could just use the trainer on some special branch of the repository which, again, would be specified at deployment time using instance metadata. This setup is much more powerful than the others.
-
-
 ## Examples
+
+The following examples demonstrate the use of the framework provided here:
 
 + [TensorFlow estimator](./README-tf-estimator.md)
 
 + [sklearn model](./README-sklearn.md) - work in progress
 
+- - -
 
-## Notes and references
+##### Notes and references
 
 + The trainer CLI suggested here is modeled on the [the Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer). This has the sizable benefit that, should you ever require distribution of any TensorFlow models that you are training through this process on GCE, it should take very little work to move your training to ML Engine.
