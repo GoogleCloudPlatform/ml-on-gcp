@@ -42,7 +42,7 @@ If you do have requirements (in addition to simply the OS) in your training envi
 
 Our strategy will have the GCE instance automatically kick off your training job on startup. As part of this kick off, it will have to provide the job with the appropriate parameters -- how many steps to train for, how often to checkpoint the model, which data to train the model with, what hyperparameters should be used in training the model, etc.
 
-It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a boilerplate CLI in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we will provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
+It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a [boilerplate CLI](./dummy/train.py) in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we will provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
 
 
 ### Startup scripts
@@ -76,16 +76,11 @@ In this guide, in the interests of flexibility, we will go with the Cloud Source
 
 ## Examples
 
-+ [TensorFlow estimator](#TensorFlow-estimator)
++ [TensorFlow estimator](./README-tf-estimator.md)
 
-+ [sklearn model](#sklearn-model) - under development
-
-
-### TensorFlow estimator
-
-WIP
++ [sklearn model](./README-sklearn.md) - work in progress
 
 
-### sklearn model
+## Notes and references
 
-WIP
++ The trainer CLI suggested here is modeled on the [the Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer). This has the sizable benefit that, should you ever require distribution of any TensorFlow models that you are training through this process on GCE, it should take very little work to move your training to ML Engine.
