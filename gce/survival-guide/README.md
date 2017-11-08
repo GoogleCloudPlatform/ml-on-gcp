@@ -6,7 +6,7 @@ This has particular value when it comes to training machine learning models, as 
 
 Even if you want to train on a dedicated instance, GPU-enabled GCE instances have always had the issue that they go down about once a week for maintenance. This introduces a significant amount of overhead (in both time and money) to performing training on GCE instances.
 
-However, GCE *does* expose primitives that allow you set up training jobs *and* your GCE instances so that you can train across instance preemptions and shutdowns.
+However, GCE *does* expose primitives that allow you set up training jobs and your GCE instances in a manner that lets you train across instance preemptions and shutdowns.
 
 This guide provides you with a template to do exactly that.
 
@@ -40,4 +40,47 @@ If you do have requirements (in addition to simply the OS) in your training envi
 
 ### Trainer CLI
 
-Our strategy will have the GCE instance automatically kicking off your training job on startup. 
+Our strategy will have the GCE instance automatically kick off your training job on startup. As part of this kick off, it will have to provide the job with the appropriate parameters -- how many steps to train for, how often to checkpoint the model, which data to train the model with, what hyperparameters should be used in training the model, etc.
+
+It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a boilerplate CLI in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we will provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
+
+
+### Startup scripts
+
+GCE instances have an in-built mechanism that triggers a script on instance startup (for the appropriate definition of startup, but this need not concern us for now). This is the mechanism we will use to kick off a training job or to pick it up where it left off before a shutdown. We will make use of it through [startup scripts](https://cloud.google.com/compute/docs/startupscript#troubleshooting).
+
+It is alright if you are not familiar with these things. What is more important at the moment is to know that they exist and have a general sense for how they fit into the training process.
+
+
+### Instance metadata
+
+You may want to deploy different parametrizations of a training job to multiple GCE instances at different times. For this purpose, [we will make use of the metadata server available to every GCE instance](https://cloud.google.com/compute/docs/storing-retrieving-metadata#custom).
+
+Instance metadata is where we will store things like model hyperparameters and paths to training and evaluation data. We will store metadata on our instances before we start our training jobs, and our startup scripts will make use of this metadata on instance startup.
+
+If you are using the [example startup script provided in this guide](./gce/startup.sh), you will only have to make minimal changes to do so. The important thing again is to understand where instance metadata fits into our picture and that GCE guarantees that it will be available to our startup script when it runs.
+
+
+### Cloud Source Repositories
+
+Finally, we need a mechanism by which we can get our trainer code into the GCE instance. There are several solutions available to us:
+
+1. We could simply store the trainer application on the custom image from which we create the GCE instance.
+
+1. We could store the code in a [GCS](https://cloud.google.com/storage/) bucket and have the startup script download it to the instance before doing anything else.
+
+1. We could store the code in a [Cloud Source Repository](https://cloud.google.com/source-repositories/) and have the startup script clone it to the instance before doing anything else.
+
+In this guide, in the interests of flexibility, we will go with the Cloud Source Repository option. The reason this is attractive is that it lets you apply `git` semantics to your training jobs -- for example, you can [tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) different model architectures and specify them through the instance metadata. Or you could just use the trainer on some special branch of the repository which, again, would be specified at deployment time using instance metadata. This setup is much more powerful than the others.
+
+
+## Examples
+
+### TensorFlow CIFAR-10 estimator
+
+WIP
+
+
+### sklearn model
+
+WIP
