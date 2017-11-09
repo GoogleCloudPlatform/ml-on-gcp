@@ -332,10 +332,10 @@ First, let us define two environment variables:
 export DATA_DIR=gs://$(gcloud config get-value project)-cifar-10-data/ JOB_DIR=gs://$(gcloud config get-value project)-cifar-10-checkpoints
 ```
 
-You should also export your username on the Compute Engine instance (the one under which you created your environment) into the `Compute Engine_USER` environment variable. In my case, I export
+You should also export your username on the Compute Engine instance (the one under which you created your environment) into the `GCE_USER` environment variable:
 
 ```bash
-export Compute Engine_USER=nkash
+export GCE_USER=<your username on the GCE instance>
 ```
 
 
@@ -344,7 +344,7 @@ Assuming you are executing the command from the same directory as this guide:
 ```bash
 gcloud compute instances add-metadata cifar10-estimator \
     --metadata-from-file startup-script=./Compute Engine/tf-estimator-startup.sh \
-    --metadata Compute EngineUser=$Compute Engine_USER,trainerRepo=tensorflow-models,trainerModule=tutorials.image.cifar10_estimator.cifar10_main,dataDir=$DATA_DIR,jobDir=$JOB_DIR,trainSteps=99999999,numGpus=4,momentum=0.9,weightDecay=0.0002,learningRate=0.1,batchNormDecay=0.997,batchNormEpsilon=0.00001
+    --metadata Compute EngineUser=$GCE_USER,trainerRepo=tensorflow-models,trainerModule=tutorials.image.cifar10_estimator.cifar10_main,dataDir=$DATA_DIR,jobDir=$JOB_DIR,trainSteps=99999999,numGpus=4,momentum=0.9,weightDecay=0.0002,learningRate=0.1,batchNormDecay=0.997,batchNormEpsilon=0.00001
 ```
 
 (Note: Remember that we had called our instances `cifar10-estimator`. If you name yours something different, you should make the appropriate modification to the above command.)
