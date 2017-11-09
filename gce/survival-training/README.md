@@ -77,11 +77,19 @@ It is alright if you are not familiar with these things. What is more important 
 
 ### Instance metadata
 
-You may want to deploy different parametrizations of a training job to multiple Compute Engine instances at different times. For this purpose, [we will make use of the metadata server available to every Compute Engine instance](https://cloud.google.com/compute/docs/storing-retrieving-metadata#custom).
+Compute Engine instances have a [metadata server that we use to store specific parameter settings](https://cloud.google.com/compute/docs/storing-retrieving-metadata#custom), or parametrizations, for training jobs. This gives you the flexibility to deploy training jobs with different parameterizations to multiple Compute Engine instances at different times.
 
-Instance metadata is where we will store things like model hyperparameters and paths to training and evaluation data. We will store metadata on our instances before we start our training jobs, and our startup scripts will make use of this metadata on instance startup.
+We will use instance metadata to store information such as:
 
-If you are using the [example startup script provided in this guide](./Compute Engine/startup.sh), you will only have to make minimal changes to do so. The important thing again is to understand where instance metadata fits into our picture and that Compute Engine guarantees that it will be available to our startup script when it runs.
++ model hyperparameters
+
++ locations of training data
+
++ locations of evaluation data
+
+We will store these types of training information as instance metadata before we start our training jobs. Once the Compute Engine instance starts up, our startup scripts make use of this metadata immediately.
+
+Adapting [our example startup script](./Compute Engine/startup.sh) to your training requires minimal changes. Instance metadata and startup scripts work together to start the training process in your Compute Engine instance.
 
 
 ## Examples
