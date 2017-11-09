@@ -33,5 +33,5 @@ really care about.
 
 ## Google Cloud Platform
 
-1. [GCE survival trainin](gce/survival-training/README.md) - A guide to and a
+1. [Compute Engine survival training](gce/survival-training/README.md) - A guide to and a
    framework for running resilient training jobs on Google Compute Engine.
