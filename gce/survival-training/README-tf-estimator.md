@@ -319,7 +319,7 @@ This push might take some time because of the size of `tensorflow/models`.
 
 ## Startup script
 
-We will use the [tf-estimator-startup.sh](./gce/tf-estimator-startup.sh) script, which is only a slight modification of [our origina dummy script](./gce/startup.sh).
+We will use the [tf-estimator-startup.sh](./gce/tf-estimator-startup.sh) script, which is only a slight modification of [our dummy original startup script](./gce/startup.sh).
 
 
 ## Instance metadata
