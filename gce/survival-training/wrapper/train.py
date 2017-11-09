@@ -27,9 +27,19 @@ def generate_trainer(hyperparameters):
     1. hyperparameters - hyperparameters to train with.
 
   Returns:
-    trainer callable
+    trainer callable, which performs a single step of training every time it is
+    called and returns a JSON serializable representation of its state at the
+    end
   """
   def _trainer():
+    """Dummy callable.
+
+    Args:
+      None
+
+    Returns:
+      A random number between 0 and 1.
+    """
     return random.random()
 
   return _trainer
@@ -135,12 +145,29 @@ def generate_checkpoint(step, hyperparameters, model_state):
 
 
 def get_checkpoints(job_dir):
+  """Get all the checkpoints in a given directory.
+
+  Args:
+    job_dir: Directory containing checkpoints.
+
+  Returns:
+    List of paths to checkpoint files in the given directory.
+  """
   checkpoint_glob = os.path.join(job_dir, "dummy-checkpoint-*.json")
   checkpoints = glob.glob(checkpoint_glob)
   return checkpoints
 
 
 def latest_checkpoint(checkpoint_paths):
+  """Returns the path to the most recently stored checkpoint from a list of
+  checkpoints.
+
+  Args:
+    checkpoint_paths: List of paths to checkpoint files.
+
+  Returns:
+    Path to the most recent checkpoint from the provided list.
+  """
   if not checkpoint_paths:
     return (None, None)
 
@@ -151,6 +178,16 @@ def latest_checkpoint(checkpoint_paths):
 
 
 def checkpoint_index(checkpoint_path):
+  """Returns the index of the checkpoint along a given path.
+
+  Args:
+    checkpoint_path: Path to a checkpoint file.
+
+  Returns:
+    Integer specifying which checkpoint the path represents. For example,
+    dummy-checkpoint-173.json represents the 173rd checkpoint, and this function
+    would return the integer 173.
+  """
   checkpoint_file = os.path.basename(checkpoint_path)
   prefix = "dummy-checkpoint-"
   suffix = ".json"
@@ -158,12 +195,31 @@ def checkpoint_index(checkpoint_path):
 
 
 def load_checkpoint(checkpoint_path):
+  """Loads the checkpoint object stored at a given path.
+
+  Args:
+    checkpoint_path: Path along which checkpoint is stored.
+
+  Returns:
+    Python dictionary representing the data serialized in the checkpoint.
+  """
   with open(checkpoint_path, "r") as fp:
     checkpoint_data = json.load(fp)
   return checkpoint_data
 
 
 def save_checkpoint(job_dir, index, checkpoint_data):
+  """Serializes checkpoint data and stores it in a given directory.
+
+  Args:
+    job_dir: Directory in which to store checkpoint data.
+    index: Ordinal index of the checkpoint.
+    checkpoint_data: Data to be stored in the checkpoint. (Note: currently
+    assumed to be JSON serializable.)
+
+  Returns:
+    The path to the saved checkpoint file.
+  """
   checkpoint_file = "dummy-checkpoint-{}.json".format(index)
   checkpoint_path = os.path.join(job_dir, checkpoint_file)
   with open(checkpoint_path, "w") as fp:
