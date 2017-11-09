@@ -92,11 +92,11 @@ def runner(
 
   result = None
   # TODO(nkashy1): Add test for "up to N steps" rather than "additional N steps"
-  i = current_checkpoint_index*checkpoint_steps + 1
-  while not finished(i):
+  current_step = current_checkpoint_index*checkpoint_steps + 1
+  while not finished(current_step):
     result = train_step()
 
-    if i%checkpoint_steps == 0:
+    if current_step%checkpoint_steps == 0:
       checkpoint_data = generate_checkpoint(
           current_checkpoint_index,
           hyperparameters,
@@ -105,7 +105,7 @@ def runner(
       save_checkpoint(job_dir, current_checkpoint_index, checkpoint_data)
       current_checkpoint_index += 1
 
-    i += 1
+    current_step += 1
 
   checkpoint_data = generate_checkpoint(
       current_checkpoint_index,
