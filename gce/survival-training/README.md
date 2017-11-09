@@ -19,6 +19,12 @@ This guide provides you with a template to do exactly that.
 
 ## Survival strategy
 
+We will adopt a relatively simple survival strategy. Throughout a training run, we will expect trainers to persist the state of the model being trained in checkpoints. We will survive our training job using only Compute Engine primitives to start them back up from the most recently saved checkpoint after a VM restart.
+
+Note that, under this policy, we are willing to lose some amount of training computation -- specifically, the computation done between when the most recent checkpoint was stored and the time of a potential failure.
+
+It is possible to use Compute Engine semantics to go one step further and ensure that a checkpoint is stored on maintenance or preemptions. However, this puts more burden on your checkpointing setup, and is slightly more touchy to implement. Given a suitable frequency of checkpointing, the solution presented here should cover most needs.
+
 There are five components to our resilient training jobs:
 
 1. [Compute Engine custom images](https://cloud.google.com/compute/docs/images#custom_images)
