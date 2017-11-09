@@ -319,7 +319,7 @@ This push might take some time because of the size of `tensorflow/models`.
 
 ## Startup script
 
-We will use the [tf-estimator-startup.sh](./Compute Engine/tf-estimator-startup.sh) script, which is only a slight modification of [our origina dummy script](./Compute Engine/startup.sh).
+We will use the [tf-estimator-startup.sh](./gce/tf-estimator-startup.sh) script, which is only a slight modification of [our origina dummy script](./gce/startup.sh).
 
 
 ## Instance metadata
@@ -342,12 +342,10 @@ export GCE_USER=<your username on the GCE instance>
 Assuming you are executing the command from the same directory as this guide:
 
 ```bash
-gcloud compute instances add-metadata cifar10-estimator \
-    --metadata-from-file startup-script=./Compute Engine/tf-estimator-startup.sh \
-    --metadata Compute EngineUser=$GCE_USER,trainerRepo=tensorflow-models,trainerModule=tutorials.image.cifar10_estimator.cifar10_main,dataDir=$DATA_DIR,jobDir=$JOB_DIR,trainSteps=99999999,numGpus=4,momentum=0.9,weightDecay=0.0002,learningRate=0.1,batchNormDecay=0.997,batchNormEpsilon=0.00001
+./gce/tf-estimator-set-metadata.sh
 ```
 
-(Note: Remember that we had called our instances `cifar10-estimator`. If you name yours something different, you should make the appropriate modification to the above command.)
+(Note: Remember that we had called our instances `cifar10-estimator`. If you name yours something different, you should make the appropriate modification to the [gce/tf-estimator-set-metadata.sh](./gce/tf-estimator-set-metadata.sh) script.)
 
 You can verify that this metadata has actually been attached to the instance using:
 
