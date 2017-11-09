@@ -1,25 +1,25 @@
-# GCE survival training: TensorFlow Estimator
+# Compute Engine survival training: TensorFlow Estimator
 
 The nice thing about the [TensorFlow Estimator API](https://www.tensorflow.org/programmers_guide/estimators) is that it provides the same checkpointing semantics as the ones we are using as part of our survival process.
 
-Moreover, the [Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer) also accepts model parameters and hyperparameters in the same fashion suggested here. So we should easily be able to take a model intended to run on Cloud ML Engine and run it on a single (but beefy) GCE instance.
+Moreover, the [Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer) also accepts model parameters and hyperparameters in the same fashion suggested here. So we should easily be able to take a model intended to run on Cloud ML Engine and run it on a single (but beefy) Compute Engine instance.
 
 Exactly such a model exists! We will make use of the tensorflow/models [CIFAR-10 estimator example](https://github.com/tensorflow/models/tree/master/tutorials/image/cifar10_estimator). The estimator in question wraps a neural network designed to address the image classification task posed by the [CIFAR-10 dataset](https://www.cs.toronto.edu/~kriz/cifar.html) (which consists of 60,000 images distributed uniformly over 10 classes).
 
-Let us follow each of the steps as outlined in [the main README](./README.md) to set this particular model to train on a GPU-enabled GCE instance.
+Let us follow each of the steps as outlined in [the main README](./README.md) to set this particular model to train on a GPU-enabled Compute Engine instance.
 
 
 ## Custom image
 
-The CIFAR-10 example in question is designed to use multiple GPUs. We will need a GCE instance capable of supporting this. **Let us start out by creating such a GCE instance once and freezing it into a custom image.**
+The CIFAR-10 example in question is designed to use multiple GPUs. We will need a Compute Engine instance capable of supporting this. **Let us start out by creating such a Compute Engine instance once and freezing it into a custom image.**
 
-(Note: If you are following along but don't feel like covering the cost of a multi-GPU GCE instance, you can also use one without any GPUs. If you decide to skip the GPUs, ignore all the CUDA and cuDNN instructions below.)
+(Note: If you are following along but don't feel like covering the cost of a multi-GPU Compute Engine instance, you can also use one without any GPUs. If you decide to skip the GPUs, ignore all the CUDA and cuDNN instructions below.)
 
 ### Instance creation
 
 Before we can create a GPU instance, we must make sure that we have enough GPUs available to us in our project's quota and in our desired region. You can check this on [IAM and admin quota page](https://console.cloud.google.com/iam-admin/quotas). If you do not have enough GPUs in your quota, you will have to request them in the appropriate zone. [This page has a list of zones in which GPUs are available](https://cloud.google.com/compute/docs/gpus/). For the purposes of this guide, I will use four NVIDIA K80 GPUs in `us-west1-b`.
 
-It is simplest to [create the GCE instance through the Cloud Console](https://console.cloud.google.com/compute/instancesAdd):
+It is simplest to [create the Compute Engine instance through the Cloud Console](https://console.cloud.google.com/compute/instancesAdd):
 
 ![woah](./img/tf-estimator-instance-creation.png)
 
@@ -41,7 +41,7 @@ which will show you all of your running instances along with their corresponding
 gcloud compute ssh cifar10-estimator --zone=us-west1-b
 ```
 
-(Note: In the latter case, if this is your first time SSHing into a GCE instance, you will be prompted to generate an SSH key for this purpose.)
+(Note: In the latter case, if this is your first time SSHing into a Compute Engine instance, you will be prompted to generate an SSH key for this purpose.)
 
 Now, we need to make our GPUs available to TensorFlow by installing CUDA drivers and the cuDNN library. We will follow the instructions [here](https://www.tensorflow.org/install/install_linux).
 
@@ -95,7 +95,7 @@ echo $CUDA_HOME $LD_LIBRARY_PATH
 
 Note that [tensorflow requires us to use cuDNN v6](https://www.tensorflow.org/install/install_linux). [You can download this library from nvidia](https://developer.nvidia.com/rdp/cudnn-download), which will require to register as a a developer with them. The registration is free.
 
-Download `cuDNN v6.0 Library for Linux`. This should put a `.tgz` archive on your machine. But we want that file to live on the GCE instance. Luckily, it is easy to make this transfer. Assuming that the file got downloaded to your `!/Downloads` directory, run the following command **from your own machine and not from the VM**:
+Download `cuDNN v6.0 Library for Linux`. This should put a `.tgz` archive on your machine. But we want that file to live on the Compute Engine instance. Luckily, it is easy to make this transfer. Assuming that the file got downloaded to your `!/Downloads` directory, run the following command **from your own machine and not from the VM**:
 
 ```bash
 gcloud compute scp ~/Downloads/cudnn-8.0-linux-x64-v6.0.tgz cifar10-estimator:~/
@@ -243,7 +243,7 @@ The CIFAR-10 tutorial provides very friendly instructions for the generation of 
 
 1. Download the dataset and generate the `.tfrecords` files locally
 
-1. Push them to a GCS bucket available to our GCE instances
+1. Push them to a GCS bucket available to our Compute Engine instances
 
 1. At training time, we will pass the GCS path to the data to the `--data-dir` argument
 
@@ -288,7 +288,7 @@ With all this preparation in place, we are ready to specify a startup script and
 
 ## Cloud Source Repositories
 
-The [tensorflow/models](https://github.com/tensorflow/models) repo exposes each of its subdirectories as Python modules, which is really handy. What we are going to do is push a copy of TensorFlow models as one of our own Cloud Source repositories and run the training job from there. This way, if you want to experiment with the model architecture in the future, you can easily do so in your GCE environment (using the same kinds of tagging semantics mentioned in the [README](./README.md)).
+The [tensorflow/models](https://github.com/tensorflow/models) repo exposes each of its subdirectories as Python modules, which is really handy. What we are going to do is push a copy of TensorFlow models as one of our own Cloud Source repositories and run the training job from there. This way, if you want to experiment with the model architecture in the future, you can easily do so in your Compute Engine environment (using the same kinds of tagging semantics mentioned in the [README](./README.md)).
 
 To do so, we must create a source repo, which [you can do from Cloud Console here](https://console.cloud.google.com/code/develop/repo). Alternatively, you can use the `gcloud` tool:
 
@@ -319,7 +319,7 @@ This push might take some time because of the size of `tensorflow/models`.
 
 ## Startup script
 
-We will use the [tf-estimator-startup.sh](./gce/tf-estimator-startup.sh) script, which is only a slight modification of [our origina dummy script](./gce/startup.sh).
+We will use the [tf-estimator-startup.sh](./Compute Engine/tf-estimator-startup.sh) script, which is only a slight modification of [our origina dummy script](./Compute Engine/startup.sh).
 
 
 ## Instance metadata
@@ -332,10 +332,10 @@ First, let us define two environment variables:
 export DATA_DIR=gs://$(gcloud config get-value project)-cifar-10-data/ JOB_DIR=gs://$(gcloud config get-value project)-cifar-10-checkpoints
 ```
 
-You should also export your username on the GCE instance (the one under which you created your environment) into the `GCE_USER` environment variable. In my case, I export
+You should also export your username on the Compute Engine instance (the one under which you created your environment) into the `Compute Engine_USER` environment variable. In my case, I export
 
 ```bash
-export GCE_USER=nkash
+export Compute Engine_USER=nkash
 ```
 
 
@@ -343,8 +343,8 @@ Assuming you are executing the command from the same directory as this guide:
 
 ```bash
 gcloud compute instances add-metadata cifar10-estimator \
-    --metadata-from-file startup-script=./gce/tf-estimator-startup.sh \
-    --metadata gceUser=$GCE_USER,trainerRepo=tensorflow-models,trainerModule=tutorials.image.cifar10_estimator.cifar10_main,dataDir=$DATA_DIR,jobDir=$JOB_DIR,trainSteps=99999999,numGpus=4,momentum=0.9,weightDecay=0.0002,learningRate=0.1,batchNormDecay=0.997,batchNormEpsilon=0.00001
+    --metadata-from-file startup-script=./Compute Engine/tf-estimator-startup.sh \
+    --metadata Compute EngineUser=$Compute Engine_USER,trainerRepo=tensorflow-models,trainerModule=tutorials.image.cifar10_estimator.cifar10_main,dataDir=$DATA_DIR,jobDir=$JOB_DIR,trainSteps=99999999,numGpus=4,momentum=0.9,weightDecay=0.0002,learningRate=0.1,batchNormDecay=0.997,batchNormEpsilon=0.00001
 ```
 
 (Note: Remember that we had called our instances `cifar10-estimator`. If you name yours something different, you should make the appropriate modification to the above command.)
@@ -358,7 +358,7 @@ gcloud compute instances describe cifar10-estimator
 
 ## Starting your training job
 
-We are now ready to start our training job. And starting it is very simple with the custom metadata and the startup script set on our GCE instance. All we do is:
+We are now ready to start our training job. And starting it is very simple with the custom metadata and the startup script set on our Compute Engine instance. All we do is:
 
 ```bash
 gcloud compute instances start cifar10-estimator

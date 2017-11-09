@@ -1,16 +1,16 @@
-# GCE survival training
+# Compute Engine survival training
 
-Training jobs that survive GCE shutdowns
+Training jobs that survive Compute Engine shutdowns
 
 - - -
 
-[Google Compute Engine](https://cloud.google.com/compute/docs/) (GCE) gives you direct access to the computational backbone of Google Cloud Platform. You can use GCE to create virtual machines provisioned with the resources of your choosing ([satisfying the constraints of any quotas that you define](https://cloud.google.com/compute/quotas)).
+[Google Compute Engine](https://cloud.google.com/compute/docs/) (Compute Engine) gives you direct access to the computational backbone of Google Cloud Platform. You can use Compute Engine to create virtual machines provisioned with the resources of your choosing ([satisfying the constraints of any quotas that you define](https://cloud.google.com/compute/quotas)).
 
-This has particular value when it comes to training machine learning models, as this gives you access to resources beyond those available to you physically. For example, GCE will soon offer preemptible GPU instances. This means that, if you designed your trainer appropriately, your cost per training step could be a fraction of what it would be on a dedicated instance.
+This has particular value when it comes to training machine learning models, as this gives you access to resources beyond those available to you physically. For example, Compute Engine offers preemptible GPU instances. This means that, if you designed your trainer appropriately, your cost per training step could be a fraction of what it would be on a dedicated instance.
 
-Even if you want to train on a dedicated instance, GPU-enabled GCE instances have always had the issue that they go down about once a week for maintenance. This introduces a significant amount of overhead (in both time and money) to performing training on GCE instances.
+Even if you want to train on a dedicated instance, GPU-enabled Compute Engine instances have always had the issue that they go down about once a week for maintenance. This introduces a significant amount of overhead (in both time and money) to performing training on Compute Engine instances.
 
-However, GCE *does* expose primitives that allow you set up training jobs and your GCE instances in a manner that lets you train across instance preemptions and shutdowns.
+However, Compute Engine *does* expose primitives that allow you set up training jobs and your Compute Engine instances in a manner that lets you train across instance preemptions and shutdowns.
 
 This guide provides you with a template to do exactly that.
 
@@ -19,13 +19,13 @@ This guide provides you with a template to do exactly that.
 
 There are five components to our resilient training jobs:
 
-1. [GCE custom images](https://cloud.google.com/compute/docs/images#custom_images)
+1. [Compute Engine custom images](https://cloud.google.com/compute/docs/images#custom_images)
 
 1. A trainer command line interface
 
-1. [GCE startup scripts](https://cloud.google.com/compute/docs/startupscript)
+1. [Compute Engine startup scripts](https://cloud.google.com/compute/docs/startupscript)
 
-1. [GCE instance metadata](https://cloud.google.com/compute/docs/storing-retrieving-metadata)
+1. [Compute Engine instance metadata](https://cloud.google.com/compute/docs/storing-retrieving-metadata)
 
 1. [Cloud Source Repositories](https://cloud.google.com/source-repositories/)
 
@@ -37,23 +37,23 @@ We will be working through the [Google Cloud SDK](https://cloud.google.com/sdk/)
 
 ### Custom images
 
-Your training job may require specific versions of libraries, like [tensorflow](https://www.tensorflow.org/) or [scikit-learn](http://scikit-learn.org). Additionally, in order to take advantage of instances with attached GPUs, you will have to have hardware-specific drivers installed on the instance. [Custom images](https://cloud.google.com/compute/docs/images#custom_images) are a convenient solution to this problem of environment reproduction within a GCE virtual machine.
+Your training job may require specific versions of libraries, like [tensorflow](https://www.tensorflow.org/) or [scikit-learn](http://scikit-learn.org). Additionally, in order to take advantage of instances with attached GPUs, you will have to have hardware-specific drivers installed on the instance. [Custom images](https://cloud.google.com/compute/docs/images#custom_images) are a convenient solution to this problem of environment reproduction within a Compute Engine virtual machine.
 
 If you do have requirements (in addition to simply the OS) in your training environments, it is highly recommended that you create a VM image that you can use to spawn new instances without having to go through the tedious configuration process every time. The examples following this strategy section will demonstrate the creation of such images so, if this seems daunting, don't worry.
 
 
 ### Trainer CLI
 
-Our strategy will have the GCE instance automatically kick off your training job on startup. As part of this kick off, it will have to provide the job with the appropriate parameters -- how many steps to train for, how often to checkpoint the model, which data to train the model with, what hyperparameters should be used in training the model, etc.
+Our strategy will have the Compute Engine instance automatically kick off your training job on startup. As part of this kick off, it will have to provide the job with the appropriate parameters -- how many steps to train for, how often to checkpoint the model, which data to train the model with, what hyperparameters should be used in training the model, etc.
 
 It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a [boilerplate CLI](./dummy/train.py) in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we will provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
 
 
 ### Cloud Source Repositories
 
-We need a mechanism by which we can get our trainer code into the GCE instance. There are several solutions available to us:
+We need a mechanism by which we can get our trainer code into the Compute Engine instance. There are several solutions available to us:
 
-1. We could simply store the trainer application on the custom image from which we create the GCE instance.
+1. We could simply store the trainer application on the custom image from which we create the Compute Engine instance.
 
 1. We could store the code in a [GCS](https://cloud.google.com/storage/) bucket and have the startup script download it to the instance before doing anything else.
 
@@ -64,18 +64,18 @@ In this guide, in the interests of flexibility, we will go with the Cloud Source
 
 ### Startup script
 
-GCE instances have an in-built mechanism that triggers a script on instance startup (for the appropriate definition of startup, but this need not concern us for now). This is the mechanism we will use to kick off a training job or to pick it up where it left off before a shutdown. We will make use of it through [startup scripts](https://cloud.google.com/compute/docs/startupscript#troubleshooting).
+Compute Engine instances have an in-built mechanism that triggers a script on instance startup (for the appropriate definition of startup, but this need not concern us for now). This is the mechanism we will use to kick off a training job or to pick it up where it left off before a shutdown. We will make use of it through [startup scripts](https://cloud.google.com/compute/docs/startupscript#troubleshooting).
 
 It is alright if you are not familiar with these things. What is more important at the moment is to know that they exist and have a general sense for how they fit into the training process.
 
 
 ### Instance metadata
 
-You may want to deploy different parametrizations of a training job to multiple GCE instances at different times. For this purpose, [we will make use of the metadata server available to every GCE instance](https://cloud.google.com/compute/docs/storing-retrieving-metadata#custom).
+You may want to deploy different parametrizations of a training job to multiple Compute Engine instances at different times. For this purpose, [we will make use of the metadata server available to every Compute Engine instance](https://cloud.google.com/compute/docs/storing-retrieving-metadata#custom).
 
 Instance metadata is where we will store things like model hyperparameters and paths to training and evaluation data. We will store metadata on our instances before we start our training jobs, and our startup scripts will make use of this metadata on instance startup.
 
-If you are using the [example startup script provided in this guide](./gce/startup.sh), you will only have to make minimal changes to do so. The important thing again is to understand where instance metadata fits into our picture and that GCE guarantees that it will be available to our startup script when it runs.
+If you are using the [example startup script provided in this guide](./Compute Engine/startup.sh), you will only have to make minimal changes to do so. The important thing again is to understand where instance metadata fits into our picture and that Compute Engine guarantees that it will be available to our startup script when it runs.
 
 
 ## Examples
@@ -90,4 +90,4 @@ The following examples demonstrate the use of the framework provided here:
 
 ##### Notes and references
 
-+ The trainer CLI suggested here is modeled on the [the Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer). This has the sizable benefit that, should you ever require distribution of any TensorFlow models that you are training through this process on GCE, it should take very little work to move your training to ML Engine.
++ The trainer CLI suggested here is modeled on the [the Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer). This has the sizable benefit that, should you ever require distribution of any TensorFlow models that you are training through this process on Compute Engine, it should take very little work to move your training to ML Engine.
