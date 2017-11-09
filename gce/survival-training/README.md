@@ -25,16 +25,18 @@ There are five components to our resilient training jobs:
 
 1. A trainer command line interface
 
+1. A delivery mechanism to inject your trainer into a Compute Engine instance
+
 1. [Compute Engine startup scripts](https://cloud.google.com/compute/docs/startupscript)
 
 1. [Compute Engine instance metadata](https://cloud.google.com/compute/docs/storing-retrieving-metadata)
 
-1. [Cloud Source Repositories](https://cloud.google.com/source-repositories/)
 
+### Prerequisites
 
-As a part of this process, if you have not already done so, you will be prompted to enable both the Compute Engine API as well as the Cloud Source Repositories API for your Google Cloud Platform project.
+As a part of this process, if you have not already done so, you will be prompted to enable the Compute Engine API.
 
-We will be working through the [Google Cloud SDK](https://cloud.google.com/sdk/). If you have not already done so, it is worth installing.
+We will be working in large part through the [Google Cloud SDK](https://cloud.google.com/sdk/). If you have not already done so, it is worth installing.
 
 
 ### Custom images
@@ -51,7 +53,7 @@ Our strategy will have the Compute Engine instance automatically kick off your t
 It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a [boilerplate CLI](./dummy/train.py) in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we will provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
 
 
-### Cloud Source Repositories
+### Delivery mechanism
 
 We need a mechanism by which we can get our trainer code into the Compute Engine instance. There are several solutions available to us:
 
@@ -61,7 +63,9 @@ We need a mechanism by which we can get our trainer code into the Compute Engine
 
 1. We could store the code in a [Cloud Source Repository](https://cloud.google.com/source-repositories/) and have the startup script clone it to the instance before doing anything else.
 
-In this guide, in the interests of flexibility, we will go with the Cloud Source Repository option. The reason this is attractive is that it lets you apply `git` semantics to your training jobs -- for example, you can [tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) different model architectures and specify them through the instance metadata. Or you could just use the trainer on some special branch of the repository which, again, would be specified at deployment time using instance metadata. This setup is much more powerful than the others.
+1. We could simply clone an existing repository from [GitHub](https://github.com/) (be careful with this because, if working with private repos, this would require you to set up a git credentials helper in your VM image).
+
+In our sample deployments (below), we will demonstrate some of these options. Changing between them will generally involve only minor tweaks to the startup scripts and instance metadata, so it should not be too challenging to generalize to any of the others. If you do have problems, please raise an issue.
 
 
 ### Startup script
