@@ -5,7 +5,7 @@
 # All this metadata is pulled from the Compute Engine instance metadata server
 
 GCE_USER=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/gceUser -H "Metadata-Flavor: Google")
-TRAINER_REPO=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainerRepo -H "Metadata-Flavor: Google")
+TRAINER_GIT_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainerGitPath -H "Metadata-Flavor: Google")
 TRAINER_MODULE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainerModule -H "Metadata-Flavor: Google")
 
 DATA_DIR=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/dataDir -H "Metadata-Flavor: Google")
@@ -29,9 +29,9 @@ KEEP_ALIVE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/at
 
 cd "/home/$GCE_USER"
 
-gcloud source repos clone "$TRAINER_REPO"
+git clone $TRAINER_GIT_PATH trainer
 
-cd "/home/$GCE_USER/$TRAINER_REPO"
+cd "/home/$GCE_USER/trainer"
 
 git pull origin master
 
