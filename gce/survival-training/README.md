@@ -6,11 +6,13 @@ Training jobs that survive Compute Engine shutdowns
 
 [Google Compute Engine](https://cloud.google.com/compute/docs/) (Compute Engine) gives you direct access to the computational backbone of Google Cloud Platform. You can use Compute Engine to create virtual machines provisioned with the resources of your choosing ([satisfying the constraints of any quotas that you define](https://cloud.google.com/compute/quotas)).
 
-This has particular value when it comes to training machine learning models, as this gives you access to resources beyond those available to you physically. For example, Compute Engine offers preemptible GPU instances. This means that, if you designed your trainer appropriately, your cost per training step could be a fraction of what it would be on a dedicated instance.
+This has particular value when it comes to training machine learning models, as this gives you access to resources beyond those available to you physically. Now Compute Engine offers preemptible GPU instances. This means that, if you design your trainer appropriately, your cost per training step could be a fraction of what it would be on a dedicated instance.
 
-Even if you want to train on a dedicated instance, GPU-enabled Compute Engine instances have always had the issue that they go down about once a week for maintenance. This introduces a significant amount of overhead (in both time and money) to performing training on Compute Engine instances.
+Dedicated GPU-enabled Compute Engine instances go down regularly for maintenance and, by default, restart but without reinitializing the processes that were running on them before the shutdown. This introduces significant overhead in both time and cost to performing training on Compute Engine instances.
 
-However, Compute Engine *does* expose primitives that allow you set up training jobs and your Compute Engine instances in a manner that lets you train across instance preemptions and shutdowns.
+Similarly, preemptible VMs can be shut down at any time with very little advance warning, interrupting whatever processes were running on them. They also have a maximum uptime of 24 hours.
+
+You can design a trainer to be robust against the behaviours of both dedicated GPU instances and preemptible instances using exactly the same semantics - the main issue you have to tackle is of your job surviving through a shutdown.
 
 This guide provides you with a template to do exactly that.
 
