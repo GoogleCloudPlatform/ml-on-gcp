@@ -22,10 +22,15 @@ really care about.
    interface.
 
 
-- - - 
+- - -
 
 ## scikit-learn
 
 1. [Model serve](sklearn/gae_serve) - Serve model with Google App
 	Engine and Cloud Endpoints.
 
+- - -
+
+## Google Cloud Platform
+
+1. [Compute Engine survival training](gce/survival-training/README.md) - Introduces a framework for running resilient training jobs on Google Compute Engine.
