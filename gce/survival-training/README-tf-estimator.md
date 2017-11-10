@@ -93,7 +93,7 @@ echo $CUDA_HOME $LD_LIBRARY_PATH
 
 #### cuDNN library
 
-Note that [tensorflow requires us to use cuDNN v6](https://www.tensorflow.org/install/install_linux). [You can download this library from nvidia](https://developer.nvidia.com/rdp/cudnn-download), which will require to register as a a developer with them. The registration is free.
+Note that [tensorflow requires us to use cuDNN v6](https://www.tensorflow.org/install/install_linux). [You can download this library from nvidia](https://developer.nvidia.com/rdp/cudnn-download), which will require to register as a developer with them. The registration is free.
 
 Download `cuDNN v6.0 Library for Linux`. This should put a `.tgz` archive on your machine. But we want that file to live on the Compute Engine instance. Luckily, it is easy to make this transfer. Assuming that the file got downloaded to your `!/Downloads` directory, run the following command **from your own machine and not from the VM**:
 
