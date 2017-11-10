@@ -4,12 +4,19 @@
 ### Metadata specification
 # All this metadata is pulled from the Compute Engine instance metadata server
 
+# Your username on the GCE image
 GCE_USER=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/gceUser -H "Metadata-Flavor: Google")
+
+# Repo name (in Cloud Source Repositories)
 TRAINER_REPO=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainerRepo -H "Metadata-Flavor: Google")
+
+# Module within repo that should be run (specify relative to repo root)
 TRAINER_MODULE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainerModule -H "Metadata-Flavor: Google")
 
+# Directory in which checkpoints should be stored
 JOB_DIR=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/jobDir -H "Metadata-Flavor: Google")
 
+# Trainer configuration
 TRAIN_STEPS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainSteps -H "Metadata-Flavor: Google")
 CHECKPOINT_STEPS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/checkpointSteps -H "Metadata-Flavor: Google")
 HPARAM1=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/hparam1 -H "Metadata-Flavor: Google")

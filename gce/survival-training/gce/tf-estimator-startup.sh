@@ -4,13 +4,22 @@
 ### Metadata specification
 # All this metadata is pulled from the Compute Engine instance metadata server
 
+# Your username on the GCE image
 GCE_USER=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/gceUser -H "Metadata-Flavor: Google")
+
+# HTTP URL to GitHub repository
 TRAINER_GIT_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainerGitPath -H "Metadata-Flavor: Google")
+
+# Module within repo that should be run (specify relative to repo root)
 TRAINER_MODULE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainerModule -H "Metadata-Flavor: Google")
 
+# Directory in which training data lives (can be GCS path)
 DATA_DIR=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/dataDir -H "Metadata-Flavor: Google")
+
+# Directory in which checkpoinst should be stored (can be GCS path)
 JOB_DIR=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/jobDir -H "Metadata-Flavor: Google")
 
+# Trainer configuration
 TRAIN_STEPS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/trainSteps -H "Metadata-Flavor: Google")
 NUM_GPUS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/numGpus -H "Metadata-Flavor: Google")
 
