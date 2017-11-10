@@ -8,9 +8,7 @@ Training jobs that survive Compute Engine shutdowns
 
 This has particular value when it comes to training machine learning models, as this gives you access to resources beyond those available to you physically. Now Compute Engine offers preemptible GPU instances. This means that, if you design your trainer appropriately, your cost per training step could be a fraction of what it would be on a dedicated instance.
 
-Dedicated GPU-enabled Compute Engine instances go down regularly for maintenance and, by default, restart but without reinitializing the processes that were running on them before the shutdown. This introduces significant overhead in both time and cost to performing training on Compute Engine instances.
-
-Similarly, preemptible VMs can be shut down at any time with very little advance warning, interrupting whatever processes were running on them. They also have a maximum uptime of 24 hours.
+Dedicated GPU-enabled Compute Engine instances go down regularly for maintenance, and they restart without reinitializing the processes that were running on them before the shutdown. Similarly, preemptible VMs can be shut down at any time with very little advance warning, interrupting whichever processes were running on them. They also have a maximum uptime of 24 hours.
 
 You can design a trainer to be robust against the behaviours of both dedicated GPU instances and preemptible instances using exactly the same semantics - the main issue you have to tackle is of your job surviving through a shutdown.
 
@@ -23,7 +21,7 @@ We will adopt a relatively simple survival strategy. Throughout a training run, 
 
 Note that, under this policy, we are willing to lose some amount of training computation -- specifically, the computation done between when the most recent checkpoint was stored and the time of a potential failure.
 
-It is possible to use Compute Engine semantics to go one step further and ensure that a checkpoint is stored on maintenance or preemptions. However, this puts more burden on your checkpointing setup, and is slightly more touchy to implement. Given a suitable frequency of checkpointing, the solution presented here should cover most needs.
+You can use Compute Engine semantics to go one step further and ensure that a checkpoint is stored on maintenance or preemptions. However, this implementation is slightly trickier and it puts more burden on your checkpointing setup. Given a suitable frequency of checkpointing, the solution presented here should cover most needs.
 
 There are five components to our resilient training jobs:
 
