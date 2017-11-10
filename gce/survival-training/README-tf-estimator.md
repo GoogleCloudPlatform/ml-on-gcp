@@ -257,19 +257,25 @@ python generate_cifar10_tfrecords.py --data-dir=/tmp/cifar-10-data
 Now make a bucket in which to store this data (note that bucket names have to be globally unique, so we will prefix this with our project name):
 
 ```bash
-gsutil mb gs://$(gcloud config get-value project)-cifar-10-data
+export GCP_PROJECT=$(gcloud config get-value project)
+```
+
+Then
+
+```bash
+gsutil mb gs://${GCP_PROJECT}-cifar-10-data
 ```
 
 Now we can upload our data to the bucket:
 
 ```bash
-gsutil -m cp -r /tmp/cifar-10-data/*  gs://$(gcloud config get-value project)-cifar-10-data/
+gsutil -m cp -r /tmp/cifar-10-data/*  gs://${GCP_PROJECT}-cifar-10-data/
 ```
 
 You can test that the data has been transferred using
 
 ```bash
-gsutil ls gs://$(gcloud config get-value project)-cifar-10-data/
+gsutil ls gs://${GCP_PROJECT}-cifar-10-data/
 ```
 
 
@@ -280,7 +286,7 @@ In the course of training, checkpoints will be stored at the path provided to th
 Let us make ourselves a checkpoint bucket:
 
 ```bash
-gsutil mb gs://$(gcloud config get-value project)-cifar-10-checkpoints
+gsutil mb gs://${GCP_PROJECT}-cifar-10-checkpoints
 ```
 
 With all this preparation in place, we are ready to specify a startup script and define our instance metadata.
@@ -301,10 +307,10 @@ We will use the [tf-estimator-startup.sh](./gce/tf-estimator-startup.sh) script,
 
 We can set instance metadata either by editing our instance in the cloud console or through the `gcloud` CLI. Let us use `gcloud` for this.
 
-First, let us define two environment variables:
+First, let us define two environment variables (this assumes that we have already exported the `GCP_PROJECT` environment variable as in the [Data](#Data) section:
 
 ```bash
-export DATA_DIR=gs://$(gcloud config get-value project)-cifar-10-data/ JOB_DIR=gs://$(gcloud config get-value project)-cifar-10-checkpoints
+export DATA_DIR=gs://${GCP_PROJECT}-cifar-10-data/ JOB_DIR=gs://${GCP_PROJECT}-cifar-10-checkpoints
 ```
 
 You should also export your username on the Compute Engine instance (the one under which you created your environment) into the `GCE_USER` environment variable:
