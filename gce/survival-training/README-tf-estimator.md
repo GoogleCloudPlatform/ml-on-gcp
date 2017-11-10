@@ -397,6 +397,34 @@ With the instance corresponding to the image below, I shut down the instance aft
 ![Proof](./img/tf-proof.png)
 
 
+## Training on preemptible instances
+
+It is now possible to spawn preemptible virtual machines with attached GPUs. This, combined with the framework here, allows you to train your models at about half of what it would cost you on on-demand instances.
+
+You have two easy options if you want to use preemptible instances. The first one is to do exactly what we did above, but just create your instance with the as preemptible in Cloud Console or with the  `--preemptible` flag using the `gcloud` command line tool.
+
+The second option involves *continuous* training on preemptible instances. Doing so requires a small extension to the process described above, the reason being that preemptible instances don't exhibit the same auto-restart behaviour that on-demand instances do when they fail or get preempted. To replicate this behaviour, we will make use of Compute Engine's concept of [managed instance groups](https://cloud.google.com/compute/docs/instance-groups/creating-groups-of-managed-instances).
+
+A managed instance group allows you to manage a group of instances as a single entity. In our case our managed instance group is going to be managing a single instance. The utility of the concept stems from the fact, as a part of the management features that they offer, managed instance groups support autoscaling. We will use this functionality to ensure that our instance group is always running a single preemptible instance which, in turn, is running a training job.
+
+Before we can create an instance group, we must create an [instance template](https://cloud.google.com/compute/docs/instance-templates) that the managed instance group will apply. This is equivalent to the step where we created an instance and set its metadata in the on-demand instance training process.
+
+I have included the [tf-estimator-instance-template.sh](./gce/tf-estimator-instance-template.sh) script which will let you create a template for a CIFAR10 estimator training instance. This creates a template named `cifar10-default-params` that uses the default values for the hyperparameters.
+
+Now, spinning up the managed training job is as simple as:
+
+```
+gcloud compute instance-groups managed create cifar10-managed --base-instance-name cifar10-managed-instance --size 1 --template cifar10-default-params --zone us-west1-b
+```
+
+This will spin up an instance managed by the instance group `cifar10-managed`. The name of this instance will be prefixed by `cifar10-managed` and look like `cifar10-managed-<xxxx>`. Here is my instance, training away happily on CIFAR10 images:
+
+![Chugging along!](./img/pvm-training.png)
+
+
+Note how I mentioned your two easy options above, and how the second one was for *continuous* training. The reason for this is that a managed instance group will keep spinning up an instance even if the instance shuts itself down. This means that, once your training job is complete, the instance group manager will keep trying to start it back up again only for it to immediately shut itself down. It takes a little more work on our part to avoid this behaviour, but that will be the subject of a future installment of this work. I hope that the options presented here hold you over until then!
+
+
 - - -
 
 [HOME](./README.md)

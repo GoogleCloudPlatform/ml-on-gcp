@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ### Metadata specification
 
 GCE_USER=$GCE_USER
