@@ -196,28 +196,7 @@ Fortunately, [the CIFAR-10 estimator](https://github.com/tensorflow/models/tree/
 
 ### Arguments
 
-These are the arguments that we need to specify to the trainer to kick off the training job:
-
-1. `--data-dir` - Directory in which the CIFAR-10 data is stored. Below, we will do the required work to load this data onto a [GCS bucket](https://cloud.google.com/storage/), which the trainer will be able to make use of because TensorFlow integrates very nicely with GCS.
-
-1. `--job-dir` - Directory in which the estimator should store its checkpoints. We will, again, provide a GCS bucket for this.
-
-1. `--num-gpus` - The number of GPUs available to TensorFlow. In the case of this guide, the value will be 4, but this may be different from you depending on the setup that you decided to use. We will parametrize this in our procedure so that we don't have to go editing scripts or code to change this behaviour.
-
-1. `--train-steps` - The number of training steps we want our trainer to perform. Since the trainer in question does not allow us to train forever, we will set this to some large number, like `99999999`.
-
-1. `--momentum` - Momentum hyperparameter which determines, at each time step, the fraction of the previous gradient update that gets added to the current update.
-
-1. `--weight-decay` - Hyperparameter which specifies the degree to which the magnitudes of the weights of the connections from the convolutional layer affect the training loss.
-
-1. `--learning-rate` - Hyperparameter defining the size of the mesh with respect to which we perform our optimization.
-
-1. `--batch-norm-decay` - Hyperparameter specifying the time-discount in moving average of batch means in batch normalization.
-
-1. `--batch-norm-epsilon` - Hyperparameter for batch normalization which represents a slight increase to the batch variance estimate.
-
-
-We can specify most of these parameters right now. We will run the following command for training:
+The [CIFAR10 estimator training script in tensorflow/models](https://github.com/tensorflow/models/blob/master/tutorials/image/cifar10_estimator/cifar10_main.py) accepts several arguments that we need to specify to kick off the training job. We can specify most of these parameters right now. We will run the following command for training:
 
 ```bash
 python cifar10_main.py \
@@ -232,9 +211,7 @@ python cifar10_main.py \
     --batch-norm-epsilon 0.00001
 ```
 
-For the hyperparameters, these are the default values provided by the trainer CLI, but we include them here explicitly so that it is easy to adapt this guide to training with different hyperparameters.
-
-Now we have to settle the matter of `--data-dir` and `--job-dir`.
+Now we only have to settle the matter of `--data-dir` and `--job-dir`.
 
 
 ### Data
