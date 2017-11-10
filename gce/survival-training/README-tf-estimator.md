@@ -286,36 +286,11 @@ gsutil mb gs://$(gcloud config get-value project)-cifar-10-checkpoints
 With all this preparation in place, we are ready to specify a startup script and define our instance metadata.
 
 
-## Cloud Source Repositories
+## Delivery mechanism
 
-The [tensorflow/models](https://github.com/tensorflow/models) repo exposes each of its subdirectories as Python modules, which is really handy. What we are going to do is push a copy of TensorFlow models as one of our own Cloud Source repositories and run the training job from there. This way, if you want to experiment with the model architecture in the future, you can easily do so in your Compute Engine environment (using the same kinds of tagging semantics mentioned in the [README](./README.md)).
+The [tensorflow/models](https://github.com/tensorflow/models) repo exposes each of its subdirectories as Python modules, which is really handy. We are going to simply clone the GitHub repo into our training environment and run the training job from the clone.
 
-To do so, we must create a source repo, which [you can do from Cloud Console here](https://console.cloud.google.com/code/develop/repo). Alternatively, you can use the `gcloud` tool:
-
-```bash
-gcloud source repos create tensorflow-models
-```
-
-If this is the first time you are using source repos, make sure to run the following command from your local machine:
-
-```bash
-git config credential.helper gcloud.sh
-```
-
-Now navigate to your local clone of [tensorflow/models](https://github.com/tensorflow/models) and add this new repo as a remote:
-
-```
-git remote add gcp https://source.developers.google.com/p/$(gcloud config get-value project)/r/tensorflow-models
-```
-
-Finally,
-
-```bash
-git push -u gcp-or-whatever master
-```
-
-This push might take some time because of the size of `tensorflow/models`.
-
+Since our image is built off of the Ubuntu 16.04 LTS image, git comes pre-installed, and this literally is as simple as a `git clone` command. You can see this command in the [TensorFlow estimator startup script](./gce/tf-estimator-startup.sh).
 
 ## Startup script
 
