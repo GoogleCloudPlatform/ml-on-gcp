@@ -221,8 +221,8 @@ We can specify most of these parameters right now. We will run the following com
 
 ```bash
 python cifar10_main.py \
-    --data-dir <TBD> \
-    --job-dir <TBD> \
+    --data-dir <GCS path to data bucket> \
+    --job-dir <GCS path to checkpoint bucket> \
     --num-gpus 4 \
     --train-steps 99999999 \
     --momentum 0.9 \
