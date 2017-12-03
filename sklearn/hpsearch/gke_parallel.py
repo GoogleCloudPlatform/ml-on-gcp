@@ -50,6 +50,7 @@ class GKEParallel(object):
 
         self.job_names = {}
         self.output_uris = {}
+        self.output_without_estimator_uris = {}
         self.dones = {}
         self.results = {}
 
@@ -151,6 +152,7 @@ class GKEParallel(object):
             self.param_grids[worker_id] = param_grid
             self.job_names[worker_id] = self._make_job_name(worker_id)
             self.output_uris[worker_id] = 'gs://{}/{}/{}/fitted_search.pkl'.format(self.bucket_name, self.task_name, worker_id)
+            self.output_without_estimator_uris[worker_id] = 'gs://{}/{}/{}/fitted_search_without_estimator.pkl'.format(self.bucket_name, self.task_name, worker_id)
             self.dones[worker_id] = False
 
             pickle_and_upload(param_grid, self.bucket_name, '{}/{}/param_grid.pkl'.format(self.task_name, worker_id))
@@ -168,6 +170,7 @@ class GKEParallel(object):
 
             self.job_names[worker_id] = self._make_job_name(worker_id)
             self.output_uris[worker_id] = 'gs://{}/{}/{}/fitted_search.pkl'.format(self.bucket_name, self.task_name, worker_id)
+            self.output_without_estimator_uris[worker_id] = 'gs://{}/{}/{}/fitted_search_without_estimator.pkl'.format(self.bucket_name, self.task_name, worker_id)
             self.dones[worker_id] = False
 
             pickle_and_upload(self.param_distributions, self.bucket_name, '{}/{}/param_distributions.pkl'.format(self.task_name, worker_id))
@@ -207,6 +210,7 @@ class GKEParallel(object):
         elif type(self.search) == RandomizedSearchCV:
             handler = self._handle_randomized_search
 
+        print('Fitting {}'.format(type(self.search)))
         handler(X_uri, y_uri, per_node)
 
         self.persist()
@@ -214,7 +218,7 @@ class GKEParallel(object):
 
     def persist(self):
         self.gcs_uri = pickle_and_upload(self, self.bucket_name, '{}/gke_search.pkl'.format(self.task_name))
-        print('Persised the GKEParallel instance: {}'.format(self.gcs_uri))
+        print('Persisted the GKEParallel instance: {}'.format(self.gcs_uri))
 
 
     # Implement part of the concurrent.future.Future interface.
@@ -241,37 +245,39 @@ class GKEParallel(object):
         return self._cancelled
 
 
-    def result(self):
+    # TODO: allow getting only the best result to save time
+    def result(self, download=False):
         if not self.done():
             n_done = len(d for d in self.dones.values() if d)
             print('Not done: {} out of {} workers completed.'.format(n_done, len(self.dones)))
             return None
 
         if not self.results:
-            for worker_id, output_uri in self.output_uris.items():
+            for worker_id, output_uri in self.output_without_estimator_uris.items():
                 print('Getting result from worker {}'.format(worker_id))
                 self.results[worker_id] = download_uri_and_unpickle(output_uri)
 
-            self._aggregate_results()
-            self.persist()
+            self._aggregate_results(download)
 
         return self.results
 
 
-    def _aggregate_results(self):
-        result = self.results.values()[0]
-        
-        self.best_score_ = result.best_score_
-        self.best_params_ = result.best_params_
-        self.best_estimator_ = result.best_estimator_
-        self.best_search_ = result
+    def _aggregate_results(self, download):
+        best_id = None
+        for worker_id, result in self.results.items():
+            if self.best_score_ is None or result.best_score_ > self.best_score_:
 
-        for result in self.results.values()[1:]:
-            if result.best_score_ > self.best_score_:
                 self.best_score_ = result.best_score_
                 self.best_params_ = result.best_params_
-                self.best_estimator_ = result.best_estimator_
-                self.best_search_ = result
+
+                best_id = worker_id
+
+        if download:
+            # Download only the best estimator among the workers.
+            print('Downloading the best estimator (worker {}).'.format(best_id))
+            output_uri = self.output_uris[best_id]
+            self.best_search_ = download_uri_and_unpickle(output_uri)
+            self.best_estimator_ = self.best_search_.best_estimator_
 
 
     # Implement part of SearchCV interface by delegation.

@@ -42,6 +42,10 @@ def execute(bucket_name, task_name, worker_id, X_uri, y_uri):
 
     pickle_and_upload(search, bucket_name, '{}/{}/fitted_search.pkl'.format(task_name, worker_id))
 
+    # Save a copy of the search object without the estimator
+    del search.best_estimator_
+    pickle_and_upload(search, bucket_name, '{}/{}/fitted_search_without_estimator.pkl'.format(task_name, worker_id))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
