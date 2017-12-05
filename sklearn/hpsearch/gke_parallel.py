@@ -259,6 +259,8 @@ class GKEParallel(object):
 
             self._aggregate_results(download)
 
+            self.persist()
+
         return self.results
 
 
