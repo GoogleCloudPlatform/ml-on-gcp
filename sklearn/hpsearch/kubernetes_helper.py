@@ -44,6 +44,22 @@ def create_job_from_file(job_filename, namespace='default'):
     return job
 
 
+def get_pod_logs(namespace='default'):
+    config.load_kube_config()
+    v1 = client.CoreV1Api()
+
+    pod_list = v1.list_namespaced_pod(namespace=namespace)
+
+    result = {}
+    for pod in pod_list.items:
+        pod_name = pod.metadata.name
+        print('getting logs from pod {}'.format(pod_name))
+
+        result[pod_name] = v1.read_namespaced_pod_log(pod_name, namespace)
+
+    return result
+
+
 def delete_job(job_name, namespace='default'):
     config.load_kube_config()
     batch_v1 = client.BatchV1Api()
