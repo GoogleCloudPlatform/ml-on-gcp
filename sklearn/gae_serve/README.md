@@ -13,11 +13,11 @@ The benefits of this configuration include:
 
 ## Requirements
 
-- [Python](https://www.python.org/).  The version (2.7 or 3) used for local developement of the model should match the version used in the service, which is specified in the file `app.yaml`.
+- Install [Python](https://www.python.org/).  The version (2.7 or 3) used for local developement of the model should match the version used in the service, which is specified in the file `app.yaml`.
 
-- [Google Cloud Platform SDK](https://cloud.google.com/sdk/).  The SDK includes the commandline tools `gcloud` for deploying the service and [`gsutil`](https://cloud.google.com/storage/docs/gsutil) for managing files on Cloud Storage.
+- Install [Google Cloud Platform SDK](https://cloud.google.com/sdk/).  The SDK includes the commandline tools `gcloud` for deploying the service and [`gsutil`](https://cloud.google.com/storage/docs/gsutil) for managing files on Cloud Storage.
 
-- A Google Cloud Platform project which as the following products enabled:
+- Create a Google Cloud Platform project which as the following products enabled:
 
     - [Google App Engine](https://cloud.google.com/appengine/)
 
@@ -26,7 +26,7 @@ The benefits of this configuration include:
     - [Google Cloud Endpoints](https://cloud.google.com/endpoints/)
 
 
-## Setup
+## Steps
 
 1. `git clone https://github.com/GoogleCloudPlatform/ml-on-gcp`
 
