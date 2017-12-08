@@ -24,7 +24,11 @@ class ModelServiceClient(object):
         if type(X) is np.ndarray:
             X = X.tolist()
 
-        response = requests.post(self.host, json={'X': X},
+        response = requests.post(self.host + '/predict', json={'X': X},
             params={'key': self.api_key})
 
-        return response.json()['y']
+        response_json = response.json()
+        if 'y' in response_json:
+            return response_json['y']
+        else:
+            print(response_json)
