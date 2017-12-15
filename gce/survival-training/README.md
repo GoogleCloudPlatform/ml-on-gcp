@@ -40,14 +40,19 @@ There are five components to our resilient training jobs:
 
 As a part of this process, if you have not already done so, you will be prompted to enable the Compute Engine API.
 
-We will be working in large part through the [Google Cloud SDK](https://cloud.google.com/sdk/). If you have not already done so, it is worth installing.
+We will be working in large part through the [Google Cloud SDK](https://cloud.google.com/sdk/).
 
 
 ### Custom images
 
 Your training job may require specific versions of libraries, like [tensorflow](https://www.tensorflow.org/) or [scikit-learn](http://scikit-learn.org). Additionally, in order to take advantage of instances with attached GPUs, you will have to have hardware-specific drivers installed on the instance. [Custom images](https://cloud.google.com/compute/docs/images#custom_images) are a convenient solution to this problem of environment reproduction within a Compute Engine virtual machine.
 
-If you do have requirements (in addition to simply the OS) in your training environments, it is highly recommended that you create a VM image that you can use to spawn new instances without having to go through the tedious configuration process every time. The examples following this strategy section will demonstrate the creation of such images so, if this seems daunting, don't worry.
+If your training environments have additional requirements beyond the OS, it is
+highly recommended that you create a [custom image](https://cloud.google.com/compute/docs/images#custom_images),
+which is a convenient template for virtual machine configuration that you can
+use to create new instances without having to configure each one individually.
+The examples following this strategy section will demonstrate how to create
+custom images.
 
 
 ### Trainer CLI
@@ -101,8 +106,6 @@ Adapting [our example startup script](./Compute Engine/startup.sh) to your train
 The following examples demonstrate the use of the framework provided here:
 
 + [TensorFlow estimator](./README-tf-estimator.md)
-
-+ [sklearn model](./README-sklearn.md) - work in progress
 
 - - -
 

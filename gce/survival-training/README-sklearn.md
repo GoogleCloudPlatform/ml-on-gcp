@@ -1,1 +1,0 @@
-# GCE survival training: sklearn
