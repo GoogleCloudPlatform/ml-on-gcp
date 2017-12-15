@@ -66,13 +66,16 @@ It is helpful, if you intend to do this more than once, to assert a common seman
 
 We need a mechanism by which we can get our trainer code into the Compute Engine instance. There are several solutions available to us:
 
-1. We could simply store the trainer application on the custom image from which we create the Compute Engine instance.
+1. Store the code on the custom image from which we create the Compute Engine
+   instance.
 
-1. We could store the code in a [GCS](https://cloud.google.com/storage/) bucket and have the startup script download it to the instance before doing anything else.
+1. Store the code in a [Cloud Storage](https://cloud.google.com/storage/) bucket
+   and have the startup script download it to the instance as a first step.
 
-1. We could store the code in a [Cloud Source Repository](https://cloud.google.com/source-repositories/) and have the startup script clone it to the instance before doing anything else.
+1. Store the code in a [Cloud Source Repository](https://cloud.google.com/source-repositories/)
+   and have the startup script clone it to the instance as a first step.
 
-1. We could simply clone an existing repository from [GitHub](https://github.com/) (be careful with this because, if working with private repos, this would require you to set up a git credentials helper in your VM image).
+1. Clone an existing repository from [GitHub](https://github.com/) (be careful with this because, if working with private repos, this would require you to set up a git credentials helper in your VM image).
 
 In our sample deployments (below), we will demonstrate some of these options. Changing between them will generally involve only minor tweaks to the startup scripts and instance metadata, so it should not be too challenging to generalize to any of the others. If you do have problems, please raise an issue.
 
