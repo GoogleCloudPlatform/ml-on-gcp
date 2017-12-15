@@ -82,9 +82,10 @@ In our sample deployments (below), we will demonstrate some of these options. Ch
 
 ### Startup script
 
-Compute Engine instances have an in-built mechanism that triggers a script on instance startup (for the appropriate definition of startup, but this need not concern us for now). This is the mechanism we will use to kick off a training job or to pick it up from its last checkpoint before a shutdown. We will make use of it through [startup scripts](https://cloud.google.com/compute/docs/startupscript#troubleshooting).
-
-It is alright if you are not familiar with these things. What is more important at the moment is to know that they exist and have a general sense for how they fit into the training process.
+We use [startup scripts](https://cloud.google.com/compute/docs/startupscript#troubleshooting)
+to begin a new training job or to resume an existing training job. Compute
+Engine instances have a built-in mechanism that triggers such scripts on
+instance startup.
 
 
 ### Instance metadata
