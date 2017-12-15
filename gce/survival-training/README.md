@@ -102,7 +102,7 @@ We use instance metadata to store information such as:
 
 We store these types of training information as instance metadata before we start our training jobs. Once the Compute Engine instance starts up, our startup scripts make use of this metadata immediately.
 
-Adapting [our example startup script](./Compute Engine/startup.sh) to your training requires minimal changes. Instance metadata and startup scripts work together to start the training process in your Compute Engine instance.
+Adapting [our example startup script](./gce/startup.sh) to your training requires minimal changes. Instance metadata and startup scripts work together to start the training process in your Compute Engine instance.
 
 
 ## Examples
