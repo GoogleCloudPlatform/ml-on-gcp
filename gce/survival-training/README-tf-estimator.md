@@ -16,9 +16,9 @@ The CIFAR-10 example in question is designed to use multiple GPUs. We need a Com
 (Note: If you are following along but don't feel like covering the cost of a multi-GPU Compute Engine instance, you can also use one without any GPUs. If you decide to skip the GPUs, ignore all the CUDA and cuDNN instructions below.)
 
 
-## Trainer CLI
+## Trainer command-line interface
 
-Fortunately, [the CIFAR-10 estimator](https://github.com/tensorflow/models/tree/master/tutorials/image/cifar10_estimator) example [comes wrapped in a CLI whose semantics are very similar to those of our dummy trainer](https://github.com/tensorflow/models/blob/master/tutorials/image/cifar10_estimator/cifar10_main.py). That is the interface we use for our training job.
+Fortunately, [the CIFAR-10 estimator](https://github.com/tensorflow/models/tree/master/tutorials/image/cifar10_estimator) example [comes wrapped in a command-line interface whose semantics are very similar to those of our dummy trainer](https://github.com/tensorflow/models/blob/master/tutorials/image/cifar10_estimator/cifar10_main.py). That is the interface we use for our training job.
 
 
 ### Arguments
@@ -109,7 +109,7 @@ We use the [tf-estimator-startup.sh](./gce/tf-estimator-startup.sh) script, whic
 
 ## Instance metadata
 
-We can set instance metadata either by editing our instance in the cloud console or through the `gcloud` CLI. Let us use `gcloud` for this.
+We can set instance metadata either by editing our instance in the cloud console or through the `gcloud` command-line interface. Let us use `gcloud` for this.
 
 First, let us define two environment variables (this assumes that we have already exported the `GCP_PROJECT` environment variable as in the [Data](#Data) section:
 

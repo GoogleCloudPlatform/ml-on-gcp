@@ -23,13 +23,13 @@ Those are the settings I used, which amount to a cost of about $3.34 per hour (i
 
 (Note: Unless otherwise specified, the shell commands in this section should be run on the VM instance that we just created.)
 
-Once you click the "Create Instance" button at the bottom of that screen, you have to give it a couple of minutes for the VM to start up. You can monitor the state of your creation request on [the "VM instances" screen on the Cloud Console](https://console.cloud.google.com/compute/instances) or using the `gcloud` CLI from a terminal
+Once you click the "Create Instance" button at the bottom of that screen, you have to give it a couple of minutes for the VM to start up. You can monitor the state of your creation request on [the "VM instances" screen on the Cloud Console](https://console.cloud.google.com/compute/instances) or using the `gcloud` command-line interface from a terminal
 
 ```bash
 gcloud compute instances list
 ```
 
-which will show you all of your running instances along with their corresponding statuses. Once the instance is up and ready, you will see a green circle with a check mark in it on the Cloud Console or a status of `RUNNING` in your terminal. At that point, you can SSH into the instance to setup your environment, either by selecting the "SSH" option from the three vertical ellipsis beside your instance info in the Cloud Console or, more simply, using the `gcloud` CLI:
+which will show you all of your running instances along with their corresponding statuses. Once the instance is up and ready, you will see a green circle with a check mark in it on the Cloud Console or a status of `RUNNING` in your terminal. At that point, you can SSH into the instance to setup your environment, either by selecting the "SSH" option from the three vertical ellipsis beside your instance info in the Cloud Console or, more simply, using the `gcloud` command-line interface:
 
 ```bash
 gcloud compute ssh cifar10-estimator --zone=us-west1-b
