@@ -115,4 +115,8 @@ The following examples demonstrate the use of the framework provided here:
 
 ##### Notes and references
 
-+ The trainer command-line interface suggested here is modeled on the [the Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer). This has the sizable benefit that, should you ever require distribution of any TensorFlow models that you are training through this process on Compute Engine, it should take very little work to move your training to ML Engine.
++ The trainer command-line interface suggested here is modeled on the
+[the Cloud ML Engine trainer interface](https://cloud.google.com/ml-engine/docs/packaging-trainer).
+In case you want to perform distributed training with TensorFlow models, using
+such a command-line interface for your trainer makes it easier to move your
+training from Compute Engine to Cloud ML Engine.
