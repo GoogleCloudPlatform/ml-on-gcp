@@ -37,7 +37,7 @@ gcloud compute ssh cifar10-estimator --zone=us-west1-b
 
 (Note: In the latter case, if this is your first time SSHing into a Compute Engine instance, you will be prompted to generate an SSH key for this purpose.)
 
-Now, we need to make our GPUs available to TensorFlow by installing CUDA drivers and the cuDNN library. We will follow the instructions [here](https://www.tensorflow.org/install/install_linux).
+Now, we need to make our GPUs available to TensorFlow by installing CUDA drivers and the cuDNN library. We follow the instructions [here](https://www.tensorflow.org/install/install_linux).
 
 
 ### CUDA drivers
@@ -65,7 +65,7 @@ You should see something like this:
 ![nvidia-smi](./img/nvidia-smi.png)
 
 
-Finally, as per the TensorFlow instructions, we need to add the CUDA path to our `LD_LIBRARY_PATH` environment variable, which we will do in our `.bashrc` file on the VM. Add the following lines to the end of your `.bashrc`:
+Finally, as per the TensorFlow instructions, we need to add the CUDA path to our `LD_LIBRARY_PATH` environment variable, which we do in our `.bashrc` file on the VM. Add the following lines to the end of your `.bashrc`:
 
 ```
 export CUDA_HOME=/usr/local/cuda-8.0
@@ -131,7 +131,7 @@ sudo apt-get install libcupti-dev
 
 Note that our Ubuntu 16.04 image comes with Python 2.7.12 installed, which is sufficient to our purposes. If you wanted, though, you could also install whichever flavor of Python best suited you at this time.
 
-We will have to install `pip`, though:
+We have to install `pip`, though:
 
 ```bash
 sudo apt-get install python-pip

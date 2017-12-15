@@ -17,7 +17,7 @@ This guide provides you with a template to do exactly that.
 
 ## Survival strategy
 
-We will adopt a relatively simple survival strategy. Throughout a training run, we will expect trainers to persist the state of the model being trained in checkpoints. We will survive our training job using only Compute Engine primitives to start them back up from the most recently saved checkpoint after a VM restart.
+We adopt a relatively simple survival strategy. Throughout a training run, we expect trainers to persist the state of the model being trained in checkpoints. We survive our training job using only Compute Engine primitives to start them back up from the most recently saved checkpoint after a VM restart.
 
 Note that, under this policy, we are willing to lose some amount of training computation -- specifically, the computation done between when the most recent checkpoint was stored and the time of a potential failure.
 
@@ -40,7 +40,7 @@ There are five components to our resilient training jobs:
 
 As a part of this process, if you have not already done so, you will be prompted to enable the Compute Engine API.
 
-We will be working in large part through the [Google Cloud SDK](https://cloud.google.com/sdk/).
+We be working in large part through the [Google Cloud SDK](https://cloud.google.com/sdk/).
 
 
 ### Custom images
@@ -59,7 +59,7 @@ custom images.
 
 Our strategy will have the Compute Engine instance automatically kick off your training job on startup. As part of this kick off, it will have to provide the job with the appropriate parameters -- how many steps to train for, how often to checkpoint the model, which data to train the model with, what hyperparameters should be used in training the model, etc.
 
-It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a [boilerplate CLI](./wrapper/train.py) in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we will provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
+It is helpful, if you intend to do this more than once, to assert a common semantical system across all your trainers. We provide a [boilerplate CLI](./wrapper/train.py) in this repo. This interface is very similar to that provided by [TensorFlow estimators](https://www.tensorflow.org/programmers_guide/estimators), but can be used even with other frameworks. In the sections that follow, we provide you with both TensorFlow and with scikit-learn examples that demonstrate its use.
 
 
 ### Delivery mechanism
@@ -77,7 +77,7 @@ We need a mechanism by which we can get our trainer code into the Compute Engine
 
 1. Clone an existing repository from [GitHub](https://github.com/) (be careful with this because, if working with private repos, this would require you to set up a git credentials helper in your VM image).
 
-In our sample deployments (below), we will demonstrate some of these options. Changing between them will generally involve only minor tweaks to the startup scripts and instance metadata, so it should not be too challenging to generalize to any of the others. If you do have problems, please raise an issue.
+In our sample deployments (below), we demonstrate some of these options. Changing between them will generally involve only minor tweaks to the startup scripts and instance metadata, so it should not be too challenging to generalize to any of the others. If you do have problems, please raise an issue.
 
 
 ### Startup script
@@ -92,7 +92,7 @@ instance startup.
 
 Compute Engine instances have a [metadata server that we use to store specific parameter settings](https://cloud.google.com/compute/docs/storing-retrieving-metadata#custom), or parametrizations, for training jobs. This gives you the flexibility to deploy training jobs with different parameterizations to multiple Compute Engine instances at different times.
 
-We will use instance metadata to store information such as:
+We use instance metadata to store information such as:
 
 + model hyperparameters
 
@@ -100,7 +100,7 @@ We will use instance metadata to store information such as:
 
 + locations of evaluation data
 
-We will store these types of training information as instance metadata before we start our training jobs. Once the Compute Engine instance starts up, our startup scripts make use of this metadata immediately.
+We store these types of training information as instance metadata before we start our training jobs. Once the Compute Engine instance starts up, our startup scripts make use of this metadata immediately.
 
 Adapting [our example startup script](./Compute Engine/startup.sh) to your training requires minimal changes. Instance metadata and startup scripts work together to start the training process in your Compute Engine instance.
 
