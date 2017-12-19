@@ -14,9 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sudo apt-get update && apt-get install -y python-pip
+IMAGE_INSTANCE_NAME=$1
+IMAGE_FAMILY=$2
+IMAGE_NAME="${IMAGE_FAMILY}-$(date +%s)"
 
-sudo pip install numpy pandas scipy scikit-learn tensorflow xgboost
+gcloud compute instances create --image-family $IMAGE_FAMILY --metadata-from-file startup-script=image.sh $IMAGE_INSTANCE_NAME
 
-sudo shutdown -h now
+while :
+do
+  sleep 30
+  echo "Polling for status of $IMAGE_INSTANCE_NAME ..."
+  STATUS=$(gcloud compute instances list --filter $IMAGE_INSTANCE_NAME --format 'value(STATUS)')
+  echo "Status: $STATUS"
+  if [[ $STATUS == "TERMINATED" ]]; then
+        break
+  fi
+done
+
+gcloud compute images create --source-disk $IMAGE_INSTANCE_NAME --family $IMAGE_FAMILY $IMAGE_NAME
+
+gcloud compute instances delete $IMAGE_INSTANCE_NAME --quiet
 
