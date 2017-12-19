@@ -6,7 +6,6 @@ import pickle
 import tensorflow as tf
 import scipy
 import sklearn
-import subprocess
 import xgboost as xgb
 
 
