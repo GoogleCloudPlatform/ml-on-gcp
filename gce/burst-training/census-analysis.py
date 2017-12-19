@@ -84,8 +84,13 @@ def main(census_data_path, model_output_path, cv_iterations=1):
     classifier.fit(train_features_df, train_labels_df, verbose=10)
     final_score = classifier.score(test_features_df, test_labels_df)
 
+    model_export = {
+        'preprocessor': encoders,
+        'classifier': classifier
+    }
+
     with tf.gfile.Open(model_output_path, 'wb') as model_file:
-        pickle.dump(classifier, model_file)
+        pickle.dump(model_export, model_file)
 
     return (final_score, model_output_path)
 
