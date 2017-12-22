@@ -14,9 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sudo apt-get update && apt-get install -y python-pip
+### Arguments
+INSTANCE_NAME=$1
+TRAINING_SCRIPT_DIR=$2
 
-sudo pip install joblib numpy pandas scipy scikit-learn tensorflow xgboost
-
-sudo shutdown -h now
-
+gcloud compute instances create \
+  --machine-type=n1-standard-64 \
+  --image-family=ml \
+  --metadata-from-file startup-script=census-startup.sh \
+  --metadata TRAINING_SCRIPT_DIR=$TRAINING_SCRIPT_DIR,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$TRAINING_SCRIPT_DIR/census,MODEL_OUTPUT_PATH=$TRAINING_SCRIPT_DIR/census.model,CV_ITERATIONS=300 \
+  --scopes=cloud-platform \
+  $INSTANCE_NAME
