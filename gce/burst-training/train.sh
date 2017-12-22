@@ -17,10 +17,11 @@
 ### Arguments
 INSTANCE_NAME=$1
 TRAINING_SCRIPT_DIR=$2
+IMAGE_FAMILY=$3
 
 gcloud compute instances create \
   --machine-type=n1-standard-64 \
-  --image-family=ml \
+  --image-family=$IMAGE_FAMILY \
   --metadata-from-file startup-script=census-startup.sh \
   --metadata TRAINING_SCRIPT_DIR=$TRAINING_SCRIPT_DIR,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$TRAINING_SCRIPT_DIR/census,MODEL_OUTPUT_PATH=$TRAINING_SCRIPT_DIR/census.model,CV_ITERATIONS=300 \
   --scopes=cloud-platform \
