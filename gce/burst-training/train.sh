@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 
 # Copyright 2017 Google Inc. All Rights Reserved.
 #
@@ -19,10 +19,14 @@ INSTANCE_NAME=$1
 TRAINING_SCRIPT_DIR=$2
 IMAGE_FAMILY=$3
 
+TIMESTAMP=$(date +%s)
+
+gsutil cp census-analysis.py "$TRAINING_SCRIPT_DIR/"
+
 gcloud compute instances create \
   --machine-type=n1-standard-64 \
   --image-family=$IMAGE_FAMILY \
   --metadata-from-file startup-script=census-startup.sh \
-  --metadata TRAINING_SCRIPT_DIR=$TRAINING_SCRIPT_DIR,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$TRAINING_SCRIPT_DIR/census,MODEL_OUTPUT_PATH=$TRAINING_SCRIPT_DIR/census.model,CV_ITERATIONS=300 \
+  --metadata TRAINING_SCRIPT_DIR=$TRAINING_SCRIPT_DIR,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$TRAINING_SCRIPT_DIR/census,MODEL_OUTPUT_PATH=$TRAINING_SCRIPT_DIR/census-$TIMESTAMP.model,CV_ITERATIONS=300 \
   --scopes=cloud-platform \
   $INSTANCE_NAME
