@@ -207,3 +207,36 @@ You can adapt the procedure described here to perform burst training of your own
 models. Moreover, you should be able to do so with only slight modifications to
 the code. Here is a checklist:
 
+1. Modify [image.sh](./image.sh) to install whatever software you require.
+
+2. Run [build-image.sh](./build-image.sh) to create a new image in your desired
+   `IMAGE_FAMILY`.
+
+3. Upload your data and your trainer to Google Cloud Storage. Although, in this
+   example, our trainer consisted of a single Python file, you can also use a
+   full Python package. Note that you may have to modify your trainer to accept
+   parameters from the command line.
+
+4. Decide on what instance metadata you will use for your burst training.
+
+5. Modify [census-startup.sh](./census-startup.sh) to
+
+   - Load this metadata
+
+   - Download your trainer script or package
+
+   - Run the trainer with the appropriate parameters
+
+   Do not remove the final shutdown command unless you want the instance to keep
+   running even after training has completed.
+
+6. Modify [train.sh](./train.sh) to
+
+   - Create an instance of the appropriate [machine type](https://cloud.google.com/compute/docs/machine-types).
+     Note that you can also specify a custom machine type.
+
+   - Make sure that it is pointing at your modified startup script.
+
+   - Set your desired metadata.
+
+7. Run your trainer!
