@@ -34,3 +34,7 @@ really care about.
 ## Google Cloud Platform
 
 1. [Compute Engine survival training](gce/survival-training/README.md) - Introduces a framework for running resilient training jobs on Google Compute Engine.
+
+1. [Compute Engine burst training](gce/burst-training/README.md) - A guide to
+   using powerful VMs to quickly and cheaply perform computationally intensive
+   training jobs.
