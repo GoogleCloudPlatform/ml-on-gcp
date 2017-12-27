@@ -153,10 +153,57 @@ environment.
 [tf.gfile](https://www.tensorflow.org/api_docs/python/tf/gfile) to store and
 retrieve data from Cloud Storage. This is the only capacity in which it uses
 TensorFlow. This is also a very useful module to know about -- it allows you to
-interact with Cloud Storage objects just as you would interact with files on
-your own filesystem.*
+interact with Cloud Storage objects through your Python environment just as you
+would interact with files on your own filesystem.*
 
 
 ### Execution
 
+The core of the execution step is a call to `python census-analysis.py`.
+However, this call needs to take place on a Compute Engine instance on which the
+image containing our environment has been loaded. Moreover:
+
+1. The `python census-analysis.py` call must be made with the right command line
+   arguments.
+
+2. The Compute Engine instance should be shut down immediately after the `python
+   censys-analysis.py` call has returned. This will keep Compute Engine charges
+   to a minimum.
+
+We use two Compute Engine mechanisms to achieve this behavior:
+
+1. [Instance
+   metadata](https://cloud.google.com/compute/docs/storing-retrieving-metadata)
+   -- These are key-value pairs of strings that you can set on a Compute Engine
+   VM. In burst training, we use them to set values for command line arguments
+   as well as to deliver the training code to the instance. The additional
+   benefit to using metadata like this is that they are visible on your
+   instances either through the Cloud Console or through `gcloud compute
+   instances describe <INSTANCE_NAME>`.
+
+2. [Startup scripts](https://cloud.google.com/compute/docs/startupscript) --
+   This is a script that is executed immediately once a Compute Engine instance
+   has started. In burst training, as we are using a Linux image (although you
+   can alter this as necessary), we use a
+   [bash](https://www.gnu.org/software/bash/) script which:
+
+   - Loads the appropriate instance metadata
+
+   - Downloads the trainer code to the VM from Google Cloud Storage
+
+   - Runs the training job specifying the appropriate command line arguments
+     from the metadata
+
+   - Shuts down the instance once the training is complete
+
+The [training script](./train.sh) shows this process in action. Once you have
+built your VM image, you can run this script to execute your first burst
+training job.
+
+
+## Customization
+
+You can adapt the procedure described here to perform burst training of your own
+models. Moreover, you should be able to do so with only slight modifications to
+the code. Here is a checklist:
 
