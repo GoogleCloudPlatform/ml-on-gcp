@@ -1,15 +1,15 @@
 # Compute Engine burst training
 
 [Google Compute Engine](https://cloud.google.com/compute/) gives you access to
-very powerful virtual machines which you can use for as much or, more
-importantly for most data science use cases, as little time as you need.
+very powerful virtual machines which you can use for as much or as little time
+as you need.
 
 Common tasks that might take tens of minutes or even hours on your personal can
 be completed in seconds on a machine with 64 cores and almost half a terabyte of
 memory, and this can be done at a cost of under $1.
 
-This makes Google Cloud Platform (or any equivalent cloud infrastructure for
-that matter) a powerful tool for model training. The idea is simple:
+This makes Google Cloud Platform a powerful tool for training parallelizable
+models. The idea is simple:
 
 1. Write a trainer locally, testing it on a small sample of your training data
    to make sure that the training job is sound in principle (that it has no
@@ -18,13 +18,13 @@ that matter) a powerful tool for model training. The idea is simple:
 2. Package the trainer and deploy it to a virtual machine (VM) instance with
    many, many CPU cores and as much RAM as necessary.
 
-3. Wait for a few minutes for the training job to complete, having it dump a
+3. Wait a little while for the training job to complete, having it dump a
    model binary on distributed storage so that you can use it later.
 
 4. Have the virtual machine instance shutdown on completion of the training job
    so that you are not charged for unused uptime.
 
-This is particularly valuable if you want to train a model on a very large
+This is particularly valuable if you want to train a model on a large
 dataset or if you want to perform a large-scale hyperparameter search.
 
 This guide presents a framework for executing this process on Google Cloud
@@ -100,7 +100,7 @@ build your image - [build-image.sh](./build-image.sh). This script brings up a
 VM instance, installs the appropriate libraries and packages, creates the image,
 and then deletes the Compute Engine instance when it is done.
 
-Packages are installed on the VM is done by means of a [startup
+Packages are installed on the VM by means of a [startup
 script](https://cloud.google.com/deployment-manager/docs/step-by-step-guide/setting-metadata-and-startup-scripts),
 which is executed on the VM immediately after it starts. For the Census example,
 we are using [image.sh](./image.sh). In your own work, it should suffice to make
@@ -144,7 +144,7 @@ the job:
 3. `--cv-iterations` -- the number of hyperparameter configurations that
    `RandomizedSearchCV` should try
 
-That particular trainer, also allows you to specify a `--mode`, which defaults
+That particular trainer also allows you to specify a `--mode`, which defaults
 to `train`. This `--mode` argument will be useful to us once the training job
 has completed, as it will allow us to test out the trained model from our local
 environment.
