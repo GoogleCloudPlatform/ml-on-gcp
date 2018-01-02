@@ -201,6 +201,27 @@ built your VM image, you can run this script to execute your first burst
 training job.
 
 
+#### Preemptibility
+
+The [sample training script](./train.sh) specifies that training should be
+performed on a [preemptible VM
+instance](https://cloud.google.com/compute/docs/instances/preemptible). This
+makes burst training even cheaper than it otherwise would be -- preemptible
+Compute Engine VMs can be up to 80% cheaper than regular VMs.
+
+In the case of a census sample, using a preemptible VM makes sense because, even
+at scale, the job is short-lived. If you have a longer-running training job, you
+have two options:
+
+1. Specify that you do not want to use a preemptible VM for training by removing
+   the `--preemptible` flag from `gcloud compute instances create` command in
+   the training script.
+
+2. Set your job up as per our [survival training
+   guide](https://github.com/GoogleCloudPlatform/ml-on-gcp/tree/master/gce/survival-training)
+   so that it can take advantage of preemptible VMs on Compute Engine.
+
+
 ## Customization
 
 You can adapt the procedure described here to perform burst training of your own
