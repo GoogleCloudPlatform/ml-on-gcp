@@ -29,4 +29,5 @@ gcloud compute instances create \
   --metadata-from-file startup-script=census-startup.sh \
   --metadata TRAINING_SCRIPT_DIR=$TRAINING_SCRIPT_DIR,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$TRAINING_SCRIPT_DIR/census,MODEL_OUTPUT_PATH=$TRAINING_SCRIPT_DIR/census-$TIMESTAMP.model,CV_ITERATIONS=300 \
   --scopes=cloud-platform \
+  --preemptible \
   $INSTANCE_NAME
