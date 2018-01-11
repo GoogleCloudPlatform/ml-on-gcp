@@ -28,8 +28,8 @@ from sklearn.model_selection import RandomizedSearchCV
 
 
 def main(mode, census_data_path, model_output_path, cv_iterations=1):
-    TRAIN_DATA = '{}/adult.data'.format(census_data_path)
-    TEST_DATA = '{}/adult.test'.format(census_data_path)
+    TRAIN_DATA = os.path.join(census_data_path, 'adult.data')
+    TEST_DATA = os.path.join(census_data_path, 'adult.test')
 
     COLUMNS = (
         'age',
