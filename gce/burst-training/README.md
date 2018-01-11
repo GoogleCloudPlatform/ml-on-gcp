@@ -4,9 +4,10 @@
 very powerful virtual machines which you can use for as much or as little time
 as you need.
 
-Common tasks that might take tens of minutes or even hours on your personal can
-be completed in seconds on a machine with 64 cores and almost half a terabyte of
-memory, and this can be done at a cost of under $1.
+Common tasks that might take tens of minutes or even hours on your personal
+machine can be completed in seconds on a machine with up to 64 cores and
+terabytes of memory, and this can be done at negligible cost given that the jobs
+complete so quickly
 
 This makes Google Cloud Platform a powerful tool for training parallelizable
 models. The idea is simple:
