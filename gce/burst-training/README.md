@@ -70,16 +70,20 @@ compared to what would be possible on even a powerful laptop.
 There are three types of code in this directory:
 
 1. Code facilitating the reproduction of your development environment on a
-   Compute Engine virtual machine.
+   Compute Engine virtual machine - [build-image.sh](./build-image.sh) and
+   [image.sh](./image.sh).
 
 2. Code which defines your training job -- this is the kind of code that you
    write every day using frameworks like [pandas](https://pandas.pydata.org/),
    [scikit-learn](http://scikit-learn.org/stable/), and
-   [xgboost](https://github.com/dmlc/xgboost). In the case of this guide, this
-   is the code which directly pertains to the Census income problem.
+   [xgboost](https://github.com/dmlc/xgboost) -
+   [census-analysis.py](./census-analysis.py)
 
 3. Code which executes your training job in a Compute Engine instance running
-   your development environment as specified in step 1.
+   your development environment as specified in step 1 - [train.sh](./train.sh)
+   and [census-startup.sh](./census-startup.sh)
+
+The sections below describe the function of each component.
 
 
 ### Reproducing your environment on Compute Engine
