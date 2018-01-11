@@ -16,18 +16,18 @@
 
 ### Arguments
 INSTANCE_NAME=$1
-TRAINING_SCRIPT_DIR=$2
+BUCKET_NAME=$2
 IMAGE_FAMILY=$3
 
 TIMESTAMP=$(date +%s)
 
-gsutil cp census-analysis.py "$TRAINING_SCRIPT_DIR/"
+gsutil cp census-analysis.py "$BUCKET_NAME/"
 
 gcloud compute instances create \
   --machine-type=n1-standard-64 \
   --image-family=$IMAGE_FAMILY \
   --metadata-from-file startup-script=census-startup.sh \
-  --metadata TRAINING_SCRIPT_DIR=$TRAINING_SCRIPT_DIR,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$TRAINING_SCRIPT_DIR/census,MODEL_OUTPUT_PATH=$TRAINING_SCRIPT_DIR/census-$TIMESTAMP.model,CV_ITERATIONS=300 \
+  --metadata BUCKET_NAME=$BUCKET_NAME,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$BUCKET_NAME/census,MODEL_OUTPUT_PATH=$BUCKET_NAME/census-$TIMESTAMP.model,CV_ITERATIONS=300 \
   --scopes=cloud-platform \
   --preemptible \
   $INSTANCE_NAME

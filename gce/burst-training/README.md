@@ -106,12 +106,24 @@ which is executed on the VM immediately after it starts. For the Census example,
 we are using [image.sh](./image.sh). In your own work, it should suffice to make
 the appropriate modifications to that file.
 
-You can run [build-image.sh](./build-image.sh) from your terminal:
+To begin with, if your desired image family does not yet exist, run:
 ```
-./build-image.sh <INSTANCE-NAME> <IMAGE-FAMILY>
+gcloud compute images create <BASE-IMAGE-NAME> --family <IMAGE-FAMILY>
+--source-image-family ubuntu-1604-lts --source-image-project ubuntu-os-cloud
 ```
 
-Here `<INSTANCE-NAME>` is a name you would like to assign to the temporary GCE
+In this case, we are basing our images off of Compute Engine's official Ubuntu
+16.04 image. You could also use any of the other images listed
+[here](https://cloud.google.com/compute/docs/images) by replacing the
+`--source-image-family` and `--source-image-project` arguments above.
+
+Next you build the actual image you want by running
+[build-image.sh](./build-image.sh) from your terminal:
+```
+./build-image.sh <BUILDING-INSTANCE-NAME> <IMAGE-FAMILY>
+```
+
+Here `<BUILDING-INSTANCE-NAME>` is a name you would like to assign to the temporary GCE
 instance on which we build the environment as specified in
 [image.sh](./image.sh). This instance will be deleted once the image has built,
 so you won't have to deal with it for very long.
@@ -122,7 +134,8 @@ by referring to the image family rather than an individual image when you create
 your burst training instances, the most up-to-date image in that family will be
 used in your training jobs.
 
-**Please replace `<INSTANCE-NAME>` and `<IMAGE-FAMILY>` with your own names.**
+**Please replace `<BASE-IMAGE-NAME>`, `<BUILDING-INSTANCE-NAME>` and
+`<IMAGE-FAMILY>` with your own names.**
 
 
 ### Training code
@@ -155,6 +168,42 @@ retrieve data from Cloud Storage. This is the only capacity in which it uses
 TensorFlow. This is also a very useful module to know about -- it allows you to
 interact with Cloud Storage objects through your Python environment just as you
 would interact with files on your own filesystem.*
+
+
+### Cloud Storage bucket
+
+Before execution, you will have to place the training and evaluation data on
+[Google Cloud Storage](https://cloud.google.com/storage/docs/).
+
+The executor for the Census example expects a Cloud Storage Bucket of your
+choice with the data stored under the path `gs://<BUCKET-NAME>/census/`. You can
+[download the data from the UCI Machine Learning
+Repository](https://archive.ics.uci.edu/ml/machine-learning-databases/adult/) -
+the `adult.data` and `adult.test` files are all you need. Once you have them
+available to you locally, you can copy them over to the desured Cloud Storage
+path by running the following command from the directory containing those files:
+
+```
+gsutil -m cp adult.* gs://<BUCKET-NAME>/census/
+```
+
+You may have to create the bucket first - either using `gsutil mb
+gs://<BUCKET-NAME>` or through the [Cloud Console Storage
+browser](https://console.cloud.google.com/storage/browser).
+
+Alternatively, you can also use the [Storage
+browser](https://console.cloud.google.com/storage/browser) in the Cloud Console.
+
+The executor, which we cover in more detail below, will:
+
+1. Upload the training script to `gs://<BUCKET-NAME>`
+
+2. Run the training script on the data in `gs://<BUCKET-NAME>/census`
+
+3. Save the trained model to `gs://<BUCKET-NAME>/census-<TIMESTAMP>`, with the
+   `<TIMESTAMP>` representing the time at which the job was submitted
+
+**Please replace <BUCKET-NAME> with your own name.**
 
 
 ### Execution
@@ -198,7 +247,15 @@ We use two Compute Engine mechanisms to achieve this behavior:
 
 The [training script](./train.sh) shows this process in action. Once you have
 built your VM image, you can run this script to execute your first burst
-training job.
+training job as follows:
+
+```
+./train.sh <TRAINING-INSTANCE-NAME> <BUCKET-NAME> <IMAGE-FAMILY>
+```
+
+Here, `<BUCKET-NAME>` and `<IMAGE-FAMILY>` should have the same values as above.
+`<TRAINING-INSTANCE-NAME>` should be a fresh name for this new training
+instance.
 
 
 #### Preemptibility
