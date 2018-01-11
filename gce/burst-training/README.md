@@ -283,7 +283,9 @@ have two options:
 
 You can adapt the procedure described here to perform burst training of your own
 models. Moreover, you should be able to do so with only slight modifications to
-the code. Here is a checklist:
+the code:
+
+### Burst training checklist
 
 1. Modify [image.sh](./image.sh) to install whatever software you require.
 
