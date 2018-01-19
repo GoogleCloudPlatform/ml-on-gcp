@@ -188,7 +188,7 @@ choice with the data stored under the path `gs://<BUCKET-NAME>/census/`. You can
 [download the data from the UCI Machine Learning
 Repository](https://archive.ics.uci.edu/ml/machine-learning-databases/adult/) -
 the `adult.data` and `adult.test` files are all you need. Once you have them
-available to you locally, you can copy them over to the desured Cloud Storage
+available to you locally, you can copy them over to the desired Cloud Storage
 path by running the following command from the directory containing those files:
 
 ```
