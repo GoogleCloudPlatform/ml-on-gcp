@@ -211,7 +211,7 @@ The executor, which we cover in more detail below, will:
 3. Save the trained model to `gs://<BUCKET-NAME>/census-<TIMESTAMP>`, with the
    `<TIMESTAMP>` representing the time at which the job was submitted
 
-**Please replace <BUCKET-NAME> with your own name.**
+**Please replace `<BUCKET-NAME>` with your own name.**
 
 
 ### Execution
