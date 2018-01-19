@@ -33,9 +33,8 @@ Platform. We will also see a concrete example of this framework in action. Once
 you are done with this guide, you should be able to modify the scripts that
 accompany it to accomodate your custom training jobs.
 
-If you run into any problems, please create an issue on this repository and
-[I](https://github.com/nkashy1) will gladly help you resolve them. If you would
-like to improve this guide, do not hesitate to make a pull request.
+If you run into any problems, please create an issue on this repository.
+If you would like to improve this guide, do not hesitate to make a pull request.
 
 - - -
 
@@ -92,6 +91,10 @@ The very first step in the burst training process is making sure that Compute
 Engine is set up to execute the code that you either already have or will be
 writing locally. In the case of our Census example, we will be using Python 2.7
 with the packages listed in [requirements.txt](./requirements.txt).
+
+(**Note:** [requirements.txt](./requirements.txt) is intended for local use only.
+The installation of Python packages onto the VM image is handled by
+[image.sh](./image.sh).)
 
 We do this by creating a virtual machine image that we can apply to any Compute
 Engine instances we create. An image is, essentially, the frozen disk state of a
@@ -213,6 +216,8 @@ The executor, which we cover in more detail below, will:
 
 ### Execution
 
+#### Setup
+
 The core of the execution step is a call to `python census-analysis.py`.
 However, this call needs to take place on a Compute Engine instance on which the
 image containing our environment has been loaded. Moreover:
@@ -239,7 +244,7 @@ We use two Compute Engine mechanisms to achieve this behavior:
    This is a script that is executed immediately once a Compute Engine instance
    has started. In burst training, as we are using a Linux image (although you
    can alter this as necessary), we use a
-   [bash](https://www.gnu.org/software/bash/) script which:
+   `bash` script which:
 
    - Loads the appropriate instance metadata
 
@@ -250,9 +255,22 @@ We use two Compute Engine mechanisms to achieve this behavior:
 
    - Shuts down the instance once the training is complete
 
-The [training script](./train.sh) shows this process in action. Once you have
-built your VM image, you can run this script to execute your first burst
-training job as follows:
+The [training script](./train.sh) shows this process in action. It performs the
+following operations:
+
+1. Uploads [census.py](./census.py) to the Cloud Storage bucket specified by
+   its second command line argument.
+
+1. Creates an instance whose name is the first command line argument and which
+   uses the most recent image under the image family specified by the third
+   command line argument. This instance is created with metadata specifying the
+   arguments we wish to run [census.py](./census.py) with when we begin training
+   and with [census-startup.sh](./census-startup.sh) as the startup script,
+   which handles the execution of the training job and shutting down of the VM
+   once the training is either complete or has errored out.
+
+Once you have built your VM image, you can run this script to execute your first
+burst training job as follows:
 
 ```
 ./train.sh <TRAINING-INSTANCE-NAME> <BUCKET-NAME> <IMAGE-FAMILY>
@@ -261,6 +279,27 @@ training job as follows:
 Here, `<BUCKET-NAME>` and `<IMAGE-FAMILY>` should have the same values as above.
 `<TRAINING-INSTANCE-NAME>` should be a fresh name for this new training
 instance.
+
+The checklist below describes the steps you should take to run the trainer for
+the census income classifier.
+
+#### Checklist
+
+1. Make sure you have a base image in your desired image family:
+```
+gcloud compute images create <BASE-IMAGE-NAME> --family <IMAGE-FAMILY>
+--source-image-family ubuntu-1604-lts --source-image-project ubuntu-os-cloud
+```
+
+1. Run [build-image.sh](./build-image.sh) to create a new image in your desired
+   `IMAGE_FAMILY`.
+
+1. Put the Census income data into a Cloud Storage bucket:
+```
+gsutil -m cp adult.* gs://<BUCKET-NAME>/census/
+```
+
+1. Run [train.sh](./train.sh).
 
 
 #### Preemptibility
@@ -284,27 +323,22 @@ have two options:
    so that it can take advantage of preemptible VMs on Compute Engine.
 
 
-## Customization
+## How to use burst training with our own code
 
 You can adapt the procedure described here to perform burst training of your own
 models. Moreover, you should be able to do so with only slight modifications to
-the code:
-
-### Burst training checklist
+the code by following these steps:
 
 1. Modify [image.sh](./image.sh) to install whatever software you require.
 
-2. Run [build-image.sh](./build-image.sh) to create a new image in your desired
+1. Run [build-image.sh](./build-image.sh) to create a new image in your desired
    `IMAGE_FAMILY`.
 
-3. Upload your data and your trainer to Google Cloud Storage. Although, in this
-   example, our trainer consisted of a single Python file, you can also use a
-   full Python package. Note that you may have to modify your trainer to accept
-   parameters from the command line.
+1. Upload your data to Google Cloud Storage.
 
-4. Decide on what instance metadata you will use for your burst training.
+1. Decide on what instance metadata you will use for your burst training.
 
-5. Modify [census-startup.sh](./census-startup.sh) to
+1. Modify [census-startup.sh](./census-startup.sh) to
 
    - Load this metadata
 
@@ -315,7 +349,12 @@ the code:
    Do not remove the final shutdown command unless you want the instance to keep
    running even after training has completed.
 
-6. Modify [train.sh](./train.sh) to
+1. Modify [train.sh](./train.sh) to
+   
+   - Upload your own trainer to Cloud Storage. Although, in this example, our
+     trainer consisted of a single Python file, you can also use a full Python
+     package. Note that you may have to modify your trainer to accept parameters
+     from the command line.
 
    - Create an instance of the appropriate [machine type](https://cloud.google.com/compute/docs/machine-types).
      Note that you can also specify a custom machine type.
@@ -324,4 +363,4 @@ the code:
 
    - Set your desired metadata.
 
-7. Run your trainer!
+1. Run your modified [train.sh](./train.sh).
