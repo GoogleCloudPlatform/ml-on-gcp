@@ -21,9 +21,8 @@ import pandas as pd
 import tensorflow as tf
 import scipy
 import sklearn
-import xgboost as xgb
 
-
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import RandomizedSearchCV
 
 
@@ -78,21 +77,23 @@ def main(mode, census_data_path, model_output_path, cv_iterations=1):
             train_features_df[col] = encoders[col].fit_transform(
                 train_features_df[col])
 
-        classifier_0 = xgb.XGBClassifier(nthread=-1)
+        classifier_0 = GradientBoostingClassifier()
 
         classifier = RandomizedSearchCV(
             classifier_0,
             param_distributions={
-                'max_depth': [3,4,5,6,7],
                 'learning_rate': list(np.arange(0.01, 0.2, 0.01)),
-                'n_estimators': scipy.stats.poisson(100),
-                'gamma': scipy.stats.expon(scale=0.001),
-                'reg_lambda': scipy.stats.expon(scale=0.001)
+                'max_depth': [3,4,5,6,7],
+                'min_samples_split': [2,3,4,5,6],
+                'min_samples_leaf': [1,2,3],
+                'n_estimators': range(80, 201, 10)
             },
-            n_iter=cv_iterations
+            n_iter=cv_iterations,
+            n_jobs=-1,
+            verbose=10
         )
 
-        classifier.fit(train_features_df, train_labels_df, verbose=10)
+        classifier.fit(train_features_df, train_labels_df)
 
         model_export = {
             'preprocessor': encoders,
@@ -114,7 +115,7 @@ def main(mode, census_data_path, model_output_path, cv_iterations=1):
 
     final_score = classifier.score(test_features_df, test_labels_df)
 
-    return (final_score, model_output_path)
+    return (final_score, model_output_path, classifier.best_params_)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Run census training job')
@@ -129,7 +130,7 @@ if __name__ == '__main__':
 
     print('Building income level prediction model...')
 
-    score, output_path = main(
+    score, output_path, best_params = main(
         args.mode,
         args.census_data_path,
         args.model_output_path,
@@ -137,5 +138,6 @@ if __name__ == '__main__':
     )
 
     print('Model accuracy: {}'.format(score))
+    print('Best parameters: {}'.format(best_params))
     print('Model path: {}'.format(output_path))
 

@@ -19,4 +19,3 @@ six==1.11.0
 tensorflow==1.4.1
 tensorflow-tensorboard==0.4.0rc3
 Werkzeug==0.13
-xgboost==0.6a2
