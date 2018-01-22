@@ -365,7 +365,7 @@ class GKEParallel(object):
             print('Not done: {} out of {} workers completed.'.format(n_done, len(self.dones)))
             return None
 
-        if not self.results:
+        if not self.results or download:
             for worker_id, output_uri in self.output_without_estimator_uris.items():
                 print('Getting result from worker {}'.format(worker_id))
                 self.results[worker_id] = download_uri_and_unpickle(output_uri)
@@ -387,7 +387,7 @@ class GKEParallel(object):
 
                 best_id = worker_id
 
-        if download:
+        if download and self.best_estimator_ is None:
             # Download only the best estimator among the workers.
             print('Downloading the best estimator (worker {}).'.format(best_id))
             output_uri = self.output_uris[best_id]
