@@ -20,10 +20,15 @@ from kubernetes_helper import create_job, delete_jobs_pods
 from copy import deepcopy
 from itertools import product
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from skopt import BayesSearchCV
 
 
 class GKEParallel(object):
-    SUPPORTED_SEARCH = [GridSearchCV, RandomizedSearchCV]
+    SUPPORTED_SEARCH = [
+        GridSearchCV,
+        RandomizedSearchCV,
+        BayesSearchCV
+    ]
 
     def __init__(self, search, project_id, zone, cluster_id, bucket_name, image_name, task_name=None):
         if type(search) not in self.SUPPORTED_SEARCH:
@@ -47,6 +52,8 @@ class GKEParallel(object):
         # For RandomizedSearchCV
         self.param_distributions = None
         self.n_iter = None
+        # For BayesSearchCV
+        self.search_spaces = {}
 
         self.job_names = {}
         self.output_uris = {}
@@ -100,51 +107,59 @@ class GKEParallel(object):
         create_job(job_body)
 
 
-    def _expand(self, param_grid_dict, expand_keys):
+    def _partition(self, param_grid_dict, partition_keys):
         _param_grid_dict = deepcopy(param_grid_dict)
 
-        expand_lists = [_param_grid_dict.pop(key) for key in expand_keys]
+        partition_lists = [_param_grid_dict.pop(key) for key in partition_keys]
         
-        expanded = []
-        for prod in product(*expand_lists):
+        partitioned = []
+        for prod in product(*partition_lists):
             lists = [[element] for element in prod]
-            singleton = dict(zip(expand_keys, lists))
+            singleton = dict(zip(partition_keys, lists))
             singleton.update(_param_grid_dict)
 
-            expanded.append(singleton)
+            partitioned.append(singleton)
 
-        return expanded
+        return partitioned
 
 
-    def _expand_param_grid(self, param_grid, target_fold=5):
-        """Returns a list of param_grids.
+    def _partition_param_grid(self, param_grid, target_fold=5):
+        """Returns a list of param_grids whose union is the input
+        param_grid.
 
         If param_grid is a dict:
 
-        The implemented strategy attempts to expand the param_grid
+        The implemented strategy attempts to partition the param_grid
         into at least target_fold smaller param_grids.
+
+        NOTE: The naive strategy implemented here does not distinguish
+        between different types of parameters nor their impact on the
+        running time.  The user of this module is encouraged to
+        implement their own paritioning strategy based on their needs.
         """
         if type(param_grid) == list:
+            # If the input is already a list of param_grids then just
+            # use it as is.
             return param_grid
         else:
-            expand_keys = []
+            partition_keys = []
             n_fold = 1
             for key, lst in param_grid.items():
-                expand_keys.append(key)
+                partition_keys.append(key)
                 n_fold *= len(lst)
 
                 if n_fold >= target_fold:
                     break
 
-            expanded = self._expand(param_grid, expand_keys)
+            partitioned = self._partition(param_grid, partition_keys)
 
-            assert len(expanded) == n_fold
+            assert len(partitioned) == n_fold
 
-            return expanded
+            return partitioned
 
 
     def _handle_grid_search(self, X_uri, y_uri, per_node):
-        param_grids = self._expand_param_grid(self.search.param_grid, per_node * self.n_nodes)
+        param_grids = self._partition_param_grid(self.search.param_grid, per_node * self.n_nodes)
 
         for i, param_grid in enumerate(param_grids):
             worker_id = str(i)
@@ -179,6 +194,64 @@ class GKEParallel(object):
             self._deploy_job(worker_id, X_uri, y_uri)
 
 
+    def _partition_search_spaces(self, search_spaces, target_fold=5):
+        """Returns a list of search_spaces whose union is the input
+        search_spaces.
+
+        If search_spaces is a dict:
+
+        The implemented strategy attempts to partition the search_spaces
+        into at least target_fold smaller search_spaces.
+
+        NOTE: The search_spaces format list(dict, int>0) is not supported
+        by this implementation.
+
+        NOTE: The naive strategy implemented here does not distinguish
+        between different types of parameters nor their impact on the
+        running time.  The user of this module is encouraged to
+        implement their own paritioning strategy based on their needs.
+        """
+        if type(search_spaces) == list:
+            # If the input is already a list of search_spaces then just
+            # use it as is.
+            return search_spaces
+        else:
+
+            # TODO: implement this
+            
+            partition_keys = []
+            n_fold = 1
+            for key, lst in param_grid.items():
+                partition_keys.append(key)
+                n_fold *= len(lst)
+
+                if n_fold >= target_fold:
+                    break
+
+            partitioned = self._partition(param_grid, partition_keys)
+
+            assert len(partitioned) == n_fold
+
+            return partitioned
+
+
+    def _handle_bayes_search(self, X_uri, y_uri, per_node):
+        partitioned_search_spaces = self._partition_search_spaces(self.search.search_spaces, per_node * self.n_nodes)
+
+        for i, search_spaces in enumerate(partitioned_search_spaces):
+            worker_id = str(i)
+
+            self.search_spaces[worker_id] = search_spaces
+            self.job_names[worker_id] = self._make_job_name(worker_id)
+            self.output_uris[worker_id] = 'gs://{}/{}/{}/fitted_search.pkl'.format(self.bucket_name, self.task_name, worker_id)
+            self.output_without_estimator_uris[worker_id] = 'gs://{}/{}/{}/fitted_search_without_estimator.pkl'.format(self.bucket_name, self.task_name, worker_id)
+            self.dones[worker_id] = False
+
+            pickle_and_upload(search_spaces, self.bucket_name, '{}/{}/search_spaces.pkl'.format(self.task_name, worker_id))
+
+            self._deploy_job(worker_id, X_uri, y_uri)
+
+
     def _upload_data(self, X, y):
         if type(X) == str and X.startswith('gs://'):
             X_uri = X
@@ -209,6 +282,8 @@ class GKEParallel(object):
             handler = self._handle_grid_search
         elif type(self.search) == RandomizedSearchCV:
             handler = self._handle_randomized_search
+        elif type(self.search) == BayesSearchCV:
+            handler = self._handle_bayes_search
 
         print('Fitting {}'.format(type(self.search)))
         handler(X_uri, y_uri, per_node)

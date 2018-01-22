@@ -20,6 +20,7 @@ import re
 from google.cloud import storage
 from gcs_helper import pickle_and_upload, download_and_unpickle, download_uri_and_unpickle
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from skopt import BayesSearchCV
 
 
 def execute(bucket_name, task_name, worker_id, X_uri, y_uri):
@@ -37,6 +38,10 @@ def execute(bucket_name, task_name, worker_id, X_uri, y_uri):
         n_iter = download_and_unpickle(bucket_name, '{}/{}/n_iter.pkl'.format(task_name, worker_id))
         search.param_distributions = param_distributions
         search.n_iter = n_iter
+
+    elif type(search) == BayesSearchCV:
+        search_spaces = download_and_unpickle(bucket_name, '{}/{}/search_spaces.pkl'.format(task_name, worker_id))
+        search.search_spaces = search_spaces
 
     search.fit(X, y)
 
