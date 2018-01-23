@@ -15,10 +15,6 @@
 import yaml
 from kubernetes import client, config
 
-# brew install python to get 2.7.13 which has updated openssl
-# check openssl version with python -c "import ssl; print ssl.OPENSSL_VERSION"
-# mkvirtualenv -p /usr/local/Cellar/python/2.7.13_1/bin/python2 hpsearch 
-
 
 def get_nodes():
     config.load_kube_config()
