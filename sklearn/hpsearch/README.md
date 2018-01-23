@@ -13,7 +13,7 @@ This sample package helps you run [`scikit-learn`]'s [`GridSearchCV`] and [`Rand
 
 ## Requirements
 
-You will need a Google Cloud Platform project which has the following products enabled:
+You will need a Google Cloud Platform project which has the following products [enabled](https://support.google.com/cloud/answer/6158841?hl=en):
 
 - [Google Container Registry](https://cloud.google.com/container-registry/)
 
