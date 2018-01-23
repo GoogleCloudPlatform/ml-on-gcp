@@ -31,10 +31,10 @@ In addition, to follow the steps of the sample we recommend you work in a [Jupyt
 
 1. Install [kubectl](https://cloud.google.com/container-engine/docs/quickstart).
 
-1. `git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git`
+1. Run `git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git`
 
-1. `cd ml-on-gcp/sklearn/hpsearch`
+1. Run `cd ml-on-gcp/sklearn/hpsearch`
 
-1. `pip install -r requirements.txt`
+1. Run `pip install -r requirements.txt`
 
 1. Follow the steps in [GridSearchCV Notebook](gke_grid_search.ipynb), [RandomizedSearchCV Notebook](gke_randomized_search.ipynb) or [BayesSearchCV Notebook](gke_bayes_search.ipynb).
