@@ -291,7 +291,6 @@ class GKEParallel(object):
             # use it as is.
             return search_spaces.values()
         else:
-            # TODO: implement this
             result = search_spaces.values()
             while len(result) < target_n_partition:
                 space = result.pop()
