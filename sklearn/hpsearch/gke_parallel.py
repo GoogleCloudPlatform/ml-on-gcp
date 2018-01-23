@@ -15,9 +15,9 @@
 
 import time
 import numpy as np
-from gke_helper import get_cluster
-from gcs_helper import pickle_and_upload, get_uri_blob, download_uri_and_unpickle
-from kubernetes_helper import create_job, delete_jobs_pods
+from helpers.gke_helper import get_cluster
+from helpers.gcs_helper import pickle_and_upload, get_uri_blob, download_uri_and_unpickle
+from helpers.kubernetes_helper import create_job, delete_jobs_pods
 from copy import deepcopy
 from itertools import product
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -33,6 +33,9 @@ class GKEParallel(object):
     ]
 
     def __init__(self, search, project_id, zone, cluster_id, bucket_name, image_name, task_name=None):
+        """Wraps around a SearchCV object and handles deploying `fit`
+        jobs to a GKE cluster.
+        """
         if type(search) not in self.SUPPORTED_SEARCH:
             raise TypeError('Search type {} not supported.  Only supporting {}.'.format(type(search), [s.__name__ for s in self.SUPPORTED_SEARCH]))
 
@@ -375,7 +378,8 @@ class GKEParallel(object):
 
 
     def cancel(self):
-        """Deletes the kubernetes jobs, but completed data remains."""
+        """Deletes the kubernetes jobs.
+        Persisted data and the cluster will not be deleted."""
         if not self._cancelled:
             delete_jobs_pods(self.job_names.values())
             self._cancelled = True
