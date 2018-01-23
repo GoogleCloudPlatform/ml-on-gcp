@@ -2,7 +2,13 @@
 
 ## Introduction
 
-This sample package helps you run `scikit-learn`'s `GridSearchCV` and `RandomizedSearchCV` on [Google Container Engine](https://cloud.google.com/container-engine/).
+This sample package helps you run [`scikit-learn`]'s [`GridSearchCV`] and [`RandomizedSearchCV`], and [`scikit-optimize`]'s [`BayesSearchCV`] on [Google Container Engine](https://cloud.google.com/container-engine/).
+
+[`scikit-learn`]: http://scikit-learn.org/
+[`GridSearchCV`]: http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
+[`RandomizedSearchCV`]: http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html
+[`scikit-optimize`]: https://scikit-optimize.github.io/
+[`BayesSearchCV`]: https://scikit-optimize.github.io/#skopt.BayesSearchCV
 
 
 ## Requirements
