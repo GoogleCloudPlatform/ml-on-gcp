@@ -14,6 +14,7 @@
 
 
 import time
+import numpy as np
 from gke_helper import get_cluster
 from gcs_helper import pickle_and_upload, get_uri_blob, download_uri_and_unpickle
 from kubernetes_helper import create_job, delete_jobs_pods
@@ -198,49 +199,77 @@ class GKEParallel(object):
             self._deploy_job(worker_id, X_uri, y_uri)
 
 
-    def _partition_space(space):
+    def _partition_space(self, space):
         """Partitions the space into two subspaces.  In the case of
         Real and Integer, the subspaces are not disjoint, but
         overlapping at an endpoint.
+
+        The argument `space` should be a dict whose values are
+        skopt.space's Categorical, Integer, or Real.
         """
+        partition_key = np.random.choice(space.keys())
+        dimension = space[partition_key]
 
-        partitioned = [space]
-        if type(space) == Categorical:
-            if len(space.categories) >= 2:
-                mid_index = len(space.categories) / 2
-                left_categories = space.categories[:mid_index]
-                right_categories = space.categories[mid_index:]
+        if type(dimension) == Categorical:
+            categories = dimension.categories
+            prior = dimension.prior
+            transform = dimension.transform_
 
-                if space.prior is not None:
-                    left_prior = space.prior[:mid_index]
+            if len(categories) >= 2:
+                mid_index = len(categories) / 2
+                left_categories = categories[:mid_index]
+                right_categories = categories[mid_index:]
+
+                if prior is not None:
+                    left_prior = prior[:mid_index]
                     left_weight = sum(left_prior)
                     left_prior = [p/left_weight for p in left_prior]
 
-                    right_prior = space.prior[mid_index:]
+                    right_prior = prior[mid_index:]
                     right_weight = sum(right_prior)
                     right_prior = [p/right_weight for p in right_prior]
                 else:
                     left_prior = None
                     right_prior = None
 
-                left = Categorical(left_categories, prior=left_prior, transform=space.transform, name=space.name)
-                right = Categorical(right_categories, prior=right_prior, transform=space.transform, name=space.name)
+                left = Categorical(left_categories, prior=left_prior, transform=transform)
+                right = Categorical(right_categories, prior=right_prior, transform=transform)
+            else:
+                return [space]
 
-        elif type(space) == Integer:
-            mid = int((high - low) / 2)
-            left = Integer(low, mid, transform=space.transform, name=space.name)
-            right = Integer(mid, high, transform=space.transform, name=space.name)
+        elif type(dimension) == Integer:
+            low = dimension.low
+            high = dimension.high
+            transform = dimension.transform_
 
-            partitioned = [left, right]
+            if low < high:
+                mid = int((high - low) / 2)
+                left = Integer(low, mid, transform=transform)
+                right = Integer(mid, high, transform=transform)
 
-        elif type(space) == Real:
-            mid = (high - low) / 2
-            left = Real(low, mid, prior=space.prior, transform=space.transform, name=space.name)
-            right = Real(mid, high, prior=space.prior, transform=space.transform, name=space.name)
+            else:
+                return [space]
 
-            partitioned = [left, right]
+        elif type(dimension) == Real:
+            low = dimension.low
+            high = dimension.high
+            prior = dimension.prior
+            transform = dimension.transform_
 
-        return partitioned
+            if low < high:
+                mid = (high - low) / 2
+                left = Real(low, mid, prior=prior, transform=transform)
+                right = Real(mid, high, prior=prior, transform=transform)
+
+            else:
+                return [space]
+
+        left_space = deepcopy(space)
+        left_space[partition_key] = left
+        right_space = deepcopy(space)
+        right_space[partition_key] = right
+
+        return [left_space, right_space]
 
 
     def _partition_search_spaces(self, search_spaces, target_n_partition=5):
@@ -252,25 +281,24 @@ class GKEParallel(object):
         The implemented strategy attempts to partition the search_spaces
         into at least target_n_partition smaller search_spaces.
 
-        NOTE: The search_spaces format list(dict, int>0) is not supported
-        by this implementation.
-
         NOTE: The naive strategy implemented here does not distinguish
         between different types of parameters nor their impact on the
         running time.  The user of this module is encouraged to
         implement their own paritioning strategy based on their needs.
         """
-        if type(search_spaces) == list:
+        if type(search_spaces[0]) == tuple:
             # If the input is already a list of search_spaces then just
             # use it as is.
-            return search_spaces
+            return search_spaces.values()
         else:
             # TODO: implement this
-            partitioned = [search_spaces]
-            while len(partitioned) < target_n_partition:
-                break
+            result = search_spaces.values()
+            while len(result) < target_n_partition:
+                space = result.pop()
+                partitioned = self._partition_space(space)
+                result.extend(partitioned)
 
-            return partitioned
+            return result
 
 
     def _handle_bayes_search(self, X_uri, y_uri):
@@ -380,7 +408,7 @@ class GKEParallel(object):
     def _aggregate_results(self, download):
         best_id = None
         for worker_id, result in self.results.items():
-            if self.best_score_ is None or result.best_score_ > self.best_score_:
+            if self.best_score_ is None or result.best_score_ > self.best_score_ or download:
 
                 self.best_score_ = result.best_score_
                 self.best_params_ = result.best_params_
