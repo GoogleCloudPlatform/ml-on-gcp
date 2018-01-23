@@ -31,4 +31,4 @@ In addition, to follow the steps of the sample we recommend you work in a [Jupyt
 
 1. `pip install -r requirements.txt`
 
-1. Follow the steps in [GridSearchCV Notebook](gke_grid_search.ipynb), [RandomizedSearchCV Notebook](gke_randomized_search.ipynb) or (BayesSearchCV Notebook)[gke_bayes_search.ipynb].
+1. Follow the steps in [GridSearchCV Notebook](gke_grid_search.ipynb), [RandomizedSearchCV Notebook](gke_randomized_search.ipynb) or [BayesSearchCV Notebook](gke_bayes_search.ipynb).
