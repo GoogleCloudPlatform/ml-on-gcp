@@ -10,3 +10,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY worker.py ./
 
 COPY gcs_helper.py ./
+
+# The Command is specified in `../gke_parallel.py` at job deployment time in
+# order to inject data location and other metadata.

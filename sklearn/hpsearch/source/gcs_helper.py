@@ -12,6 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Helpers for accessing Google Cloud Storage in Python code.
+
+`pickle_and_upload`: Upload a Python object after pickling to
+user-specified `bucket_name` and `object_name`.
+
+`download_and_unpickle`: The opposite of `pickle_and_upload`.
+
+For more information:
+https://cloud.google.com/storage/
+"""
 
 import os
 import re
@@ -68,11 +78,13 @@ def archive_and_upload(bucket_name, directory, extension='zip', object_name=None
 
 def pickle_and_upload(obj, bucket_name, object_name):
     """Returns the object's GCS uri."""
+    print('pickling data')
     pickle_str = pickle.dumps(obj)
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(object_name)
+    print('uploading object {} to bucket {}'.format(object_name, bucket_name))
     blob.upload_from_string(pickle_str)
 
     return _make_gcs_uri(bucket_name, object_name)

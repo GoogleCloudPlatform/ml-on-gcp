@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Helpers for accessing Google Kubernetes Engine in Python code.
+
+`create_cluster`: Creates a Kubernetes cluster with suitable access scopes
+needed for the hpsearch notebooks.
+
+For more information:
+https://cloud.google.com/kubernetes-engine/
+"""
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials

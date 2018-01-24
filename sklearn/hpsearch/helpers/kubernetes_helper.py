@@ -12,6 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Helpers for Kubernetes clusters in Python code.  The helper codes are
+wrappers around the python client library:
+
+https://github.com/kubernetes-client/python
+
+`create_job`: Creates a Kubernetes job and deploy it to a cluster.  For a
+sample of `job_body`, see `../gke_parallel.py`'s `_make_job_body` method.
+
+For more information:
+https://kubernetes.io/
+https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+"""
+
 import yaml
 from kubernetes import client, config
 

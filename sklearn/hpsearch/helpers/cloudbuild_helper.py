@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Helpers for accessing Google Cloud Container Builder in Python code.
+
+`build`: Builds a Docker image with the content and Dockerfile in
+`source_dir`, and pushes the image to Google Cloud Container Registry.
+
+For more information:
+https://cloud.google.com/container-builder/
+https://cloud.google.com/container-registry/
+"""
 
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials

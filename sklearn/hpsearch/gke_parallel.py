@@ -337,7 +337,7 @@ class GKEParallel(object):
 
 
     def fit(self, X, y):
-        """Returns an `operation` object that implements `done()` and `result()`.
+        """Deploys `fit` jobs to each worker in the cluster.
         """
         timestamp = str(int(time.time()))
         self.task_name = self.task_name or '{}.{}.{}'.format(self.cluster_id, self.image_name, timestamp)
@@ -360,6 +360,9 @@ class GKEParallel(object):
 
 
     def persist(self):
+        """Pickle and upload self to GCS, allowing recovering of parallel
+        search objects across experiments.
+        """
         self.gcs_uri = pickle_and_upload(self, self.bucket_name, '{}/gke_search.pkl'.format(self.task_name))
         print('Persisted the GKEParallel instance: {}'.format(self.gcs_uri))
 
