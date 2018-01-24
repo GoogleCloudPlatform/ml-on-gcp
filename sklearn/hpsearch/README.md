@@ -4,7 +4,7 @@
 
 This sample package helps you run [`scikit-learn`]'s [`GridSearchCV`] and [`RandomizedSearchCV`], and [`scikit-optimize`]'s [`BayesSearchCV`] on [Google Container Engine](https://cloud.google.com/container-engine/).
 
-The design of the workflow is to entirely stay in a [Jupyter notebook], with necessary boilerplate codes abstracted away in the [helpers](helpers/).  Below we highlight some key steps of the workflow.  If you are ready to get started, skip over to [Requirements](## Requirements).
+The design of the workflow is to entirely stay in a [Jupyter notebook], with necessary boilerplate codes abstracted away in the [helpers](helpers/).  Below we highlight some key steps of the workflow.  If you are ready to get started, skip over to [Requirements](##Requirements).
 
 For instance, to build the Docker image with Google Cloud Container Builder that will call `fit` on a cluster:
 
