@@ -179,7 +179,6 @@ class GKEParallel(object):
 
             pickle_and_upload(param_grid, self.bucket_name, '{}/{}/param_grid.pkl'.format(self.task_name, worker_id))
 
-            # TODO: Make sure that each job is deployed to a different node.
             self._deploy_job(worker_id, X_uri, y_uri)
 
 
@@ -369,7 +368,6 @@ class GKEParallel(object):
 
     # Implement part of the concurrent.future.Future interface.
     def done(self):
-        # TODO: consider using kubernetes API to check if pod completed
         if not self._done:
             for worker_id, output_uri in self.output_uris.items():
                 print('Checking if worker {} is done'.format(worker_id))
@@ -392,7 +390,6 @@ class GKEParallel(object):
         return self._cancelled
 
 
-    # TODO: allow getting only the best result to save time
     def result(self, download=False):
         if not self.done():
             n_done = len(d for d in self.dones.values() if d)
