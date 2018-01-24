@@ -29,6 +29,8 @@ really care about.
 1. [Model serve](sklearn/gae_serve) - Serve model with Google App
 	Engine and Cloud Endpoints.
 
+2. [Hyperparameter search](sklearn/hpsearch) - Hyperparameter search on a Google Kubernetes Engine cluster from a Jupyter notebook.
+
 - - -
 
 ## Google Compute Engine
