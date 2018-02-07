@@ -4,24 +4,24 @@ This sample code illustrates how to start a GCE instance and train a model using
 
 ## Prerequisites
 
-You need to download [train.csv](https://www.kaggle.com/c/titanic/download/train.csv) after you login to [Kaggle](https://www.kaggle.com/).
+You need to download [train.csv](https://www.kaggle.com/c/titanic/download/train.csv) from [Kaggle](https://www.kaggle.com/).
 
-The sample assumes that you already have a [GCP](https://cloud.google.com/) account and you have [downloaded](https://cloud.google.com/sdk/), installed, and [configured](https://cloud.google.com/sdk/gcloud/reference/config/) on your computer.
+The sample assumes that you already have a [GCP](https://cloud.google.com/) account and you have [downloaded](https://cloud.google.com/sdk/), installed, and [configured](https://cloud.google.com/sdk/gcloud/reference/config/) it on your computer.
 
-Finally, you need to have a project created on GCP. For further instruction, please check [here](https://cloud.google.com/sdk/gcloud/reference/projects/create).
+Finally, you need to have a project created on GCP. For further instructions, please check [here](https://cloud.google.com/sdk/gcloud/reference/projects/create).
 
 
 ## Steps:
-We will be creating a Google Compute Engine instance, configure it, and use it to train a model. While some of the steps can be done using the web portal [here](https://pantheon.corp.google.com), we will try to accomplish this using the SDK and mainly the [gcloud](https://cloud.google.com/sdk/gcloud/) command.
+We will create a Google Compute Engine instance, configure it, and use it to train a model. While some of the steps can be done using the web portal [here](https://pantheon.corp.google.com), we will try to accomplish this using the SDK and mainly the [gcloud](https://cloud.google.com/sdk/gcloud/) command.
 
 ##### 1. Create a Google Compute Engine Instance
-First, we should create a GCE instance that we can use to train our model on. In this case, we can simply use many of the default arguments and simply create the instance:
+First, we should create a GCE instance that we can use to train our model on. In this case, we can use many of the default arguments and simply create the instance:
 
 ```
 gcloud compute instances create MYINSTANCE
 ```
 
-where MYINSTANCE is our given name to this instance. By default, it will be of type *n1-standard-1* with 1 CPU and 3.75GB of RAM. To see a list of available machine types, you can use:
+where MYINSTANCE is our given name to this instance. By default, this instance will be of type *n1-standard-1* with 1 CPU and 3.75GB of RAM. To see a list of available machine types, you can use:
 
 ```
 gcloud compute machine-types list
@@ -41,13 +41,15 @@ gcloud compute ssh MYINSTANCE
 
 Once we ssh to the instance, we will need to use *pip* to install scikit-learn and some other packages:
 ```
+# Run on the new instance
 sudo apt-get install python-pip
 pip install numpy pandas sklearn scipy tensorflow
 ```
-We are not using tensorflow to train the model in this sample. However we will be using GFile, a python class implemented in tensorflow which we will be using to access local and remote files.
+We are not using tensorflow to train the model in this sample. However we will be using GFile, a python class implemented in tensorflow which unifies how we access the local and remote files.
 
 The new instance also requires to obtain user access credentials:
 ```
+# Run on the new instance
 gcloud auth application-default login
 ```
 
@@ -64,6 +66,7 @@ Note that the same method can be used to copy any other file (e.g. the python co
 
 We can then run our python code in the instance to create a model:
 ```
+# Run on the new instance
 python titanic.py --titanic-data-path ./train.csv --model-output-path ./model.pkl
 ```
 
@@ -78,10 +81,11 @@ The two commands above will create a Bucket in GCS, and then copy the dataset in
 
 The advantage of using GFile in our python code is that we can use the exact same code and read the dataset from GCS:
 ```
+# Run on the new instance
 python titanic.py --titanic-data-path gs://MYBUCKET/MYFOLDER/train.csv --model-output-path gs://MYBUCKET/MYFOLDER/model.pkl
 ```
 
-That is it !! We have successfully trained a classifier using scikit-learn on a GCE instance.
+That is it!! We have successfully trained a classifier using scikit-learn on a GCE instance.
 
 ## What is Next
 Some of the things you may need to consider, depending on your needs:
