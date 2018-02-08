@@ -45,7 +45,7 @@ Once we ssh to the instance, we will need to use *pip* to install scikit-learn a
 sudo apt-get install python-pip
 pip install numpy pandas sklearn scipy tensorflow
 ```
-We are not using tensorflow to train the model in this sample. However we will be using GFile, a python class implemented in tensorflow which unifies how we access the local and remote files.
+We are not using tensorflow to train the model in this sample. However we will be using *gfile*, a python class implemented in tensorflow which unifies how we access the local and remote files.
 
 The new instance also requires to obtain user access credentials. The following command will guide you through the process:
 ```
@@ -79,7 +79,7 @@ gsutil cp ./train.csv  gs://MYBUCKET/MYFOLDER/train.csv
 
 The two commands above will create a Bucket in GCS, and then copy the dataset into it.
 
-The advantage of using GFile in our python code is that we can use the exact same code and read the dataset from GCS:
+The advantage of using *gfile* in our python code is that we can use the exact same code and read the dataset from GCS:
 ```
 # Run on the new instance
 python titanic.py --titanic-data-path gs://MYBUCKET/MYFOLDER/train.csv --model-output-path gs://MYBUCKET/MYFOLDER/model.pkl

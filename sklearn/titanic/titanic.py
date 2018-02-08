@@ -58,7 +58,6 @@ if __name__ == '__main__':
     parser.add_argument('--model-output-path', required=True)
 
     args = parser.parse_args()
-    print(args)
     data_path = args.titanic_data_path
     output_path = args.model_output_path
     train_model(data_path, output_path)
