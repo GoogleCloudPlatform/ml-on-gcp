@@ -103,10 +103,10 @@ In addition, to follow the steps of the sample we recommend you work in a [Jupyt
 
 Now you are ready to ollow the steps in one of the notebooks to go through the workflow:
 
-	- [GridSearchCV Notebook](gke_grid_search.ipynb)
+- [GridSearchCV Notebook](gke_grid_search.ipynb)
 
-	- [RandomizedSearchCV Notebook](gke_randomized_search.ipynb)
+- [RandomizedSearchCV Notebook](gke_randomized_search.ipynb)
 
-	- [BayesSearchCV Notebook](gke_bayes_search.ipynb).
+- [BayesSearchCV Notebook](gke_bayes_search.ipynb).
 
 
