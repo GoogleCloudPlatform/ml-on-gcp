@@ -47,7 +47,7 @@ pip install numpy pandas sklearn scipy tensorflow
 ```
 We are not using tensorflow to train the model in this sample. However we will be using *gfile*, a python class implemented in tensorflow which unifies how we access the local and remote files.
 
-The new instance also requires to obtain user access credentials. The following command will guide you through the process:
+If you want to use GCS to store the dataset, the new instance will also require to obtain user access credentials. The following command will guide you through the process:
 ```
 # Run on the new instance
 gcloud auth application-default login
@@ -57,7 +57,7 @@ gcloud auth application-default login
 We need to make the dataset available to the training code. We will show two ways for the code to access the dataset.
 
 ###### Copying it to the instance
-We can copy the dataset and use it directly inside the instance and read it as a local file. Fortunately, *gcloud* make this an easy step:
+We can copy the dataset and use it directly inside the instance and read it as a local file. Fortunately, *gcloud* makes this an easy step:
 ```
 gcloud compute scp ./train.csv  MYINSTANCE:~/
 ```
