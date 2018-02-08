@@ -47,17 +47,17 @@ pip install numpy pandas sklearn scipy tensorflow
 ```
 We are not using tensorflow to train the model in this sample. However we will be using GFile, a python class implemented in tensorflow which unifies how we access the local and remote files.
 
-The new instance also requires to obtain user access credentials:
+The new instance also requires to obtain user access credentials. The following command will guide you through the process:
 ```
 # Run on the new instance
 gcloud auth application-default login
 ```
 
 ##### 3. Accessing the dataset
-In this sample, we demonstrate two ways for our code to access the dataset.
+In this sample, we will show two ways for our code to access the dataset.
 
 ###### Copying it to the instance
-We can copy the dataset and use it directly inside the instance as a local file. Fortunately, gcloud make this an easy step:
+We can copy the dataset and use it directly inside the instance as a local file. Fortunately, *gcloud* make this an easy step:
 ```
 gcloud compute scp ./train.csv  MYINSTANCE:~/
 ```
@@ -84,6 +84,8 @@ The advantage of using GFile in our python code is that we can use the exact sam
 # Run on the new instance
 python titanic.py --titanic-data-path gs://MYBUCKET/MYFOLDER/train.csv --model-output-path gs://MYBUCKET/MYFOLDER/model.pkl
 ```
+
+which will create the model and stores it in the same location as our dataset in GCS.
 
 That is it!! We have successfully trained a classifier using scikit-learn on a GCE instance.
 
