@@ -90,7 +90,7 @@ which will create the model and stores it in the same location as our dataset in
 That is it!! We have successfully trained a classifier using scikit-learn on a GCE instance.
 
 ## What is Next
-Some of the things you may need to consider, depending on your needs:
+Depending on your needs, here are a few things you may consider:
 * You may need more resources (more CPU's, more RAM) to train your model, in which case, your instance should have a different type.
 * You may also need a different OS for your instance, which requires you to create it using a different image.
 * It may be a good idea to stop or even delete your instance after your model is trained.
