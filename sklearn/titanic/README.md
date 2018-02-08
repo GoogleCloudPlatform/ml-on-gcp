@@ -1,6 +1,6 @@
 ## Introduction
 
-This sample code illustrates how to start a GCE instance and train a model using scikit-learn on the instance. We will be using the [Titanic dataset](https://www.kaggle.com/c/titanic). The goal is to train a classifier to predict whether a given passenger on Titanic survived or not.
+This sample code illustrates how to start a GCE instance and train a model using scikit-learn on the instance. We will be using the [Titanic dataset](https://www.kaggle.com/c/titanic) from [Kaggle](https://www.kaggle.com/). The goal is to train a classifier to predict whether a given passenger on Titanic survived or not.
 
 ## Prerequisites
 
@@ -53,11 +53,11 @@ The new instance also requires to obtain user access credentials. The following 
 gcloud auth application-default login
 ```
 
-##### 3. Accessing the dataset
-In this sample, we will show two ways for our code to access the dataset.
+##### 3. Running the code
+We need to make the dataset available to the training code. We will show two ways for the code to access the dataset.
 
 ###### Copying it to the instance
-We can copy the dataset and use it directly inside the instance as a local file. Fortunately, *gcloud* make this an easy step:
+We can copy the dataset and use it directly inside the instance and read it as a local file. Fortunately, *gcloud* make this an easy step:
 ```
 gcloud compute scp ./train.csv  MYINSTANCE:~/
 ```
@@ -69,6 +69,8 @@ We can then run our python code in the instance to create a model:
 # Run on the new instance
 python titanic.py --titanic-data-path ./train.csv --model-output-path ./model.pkl
 ```
+
+which will generate the model and saves it on the instance.
 
 ###### Reading it from Google Cloud Storage
 Another solution is to read the dataset directly from a Bucket in GCS. First, we need to create a Bucket. We will use *gsutil* to do it:
