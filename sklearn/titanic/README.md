@@ -40,10 +40,11 @@ gcloud compute images list
 
 ##### 2. Accessing and Configuring the Instance
 
-Accessing the newly created image is quite simple:
+Now that we have created a new [VM instance](https://cloud.google.com/compute/docs/instances/), we need to access it. Accessing the newly created instance is quite simple:
 ```bash
 gcloud compute ssh $MY_INSTANCE
 ```
+This command may prompt us to create a ssh key, if we have not done it before on our local machine.
 
 Once we ssh to the instance, we will need to use *pip* to install *scikit-learn* and some other packages:
 ```bash
@@ -51,6 +52,7 @@ Once we ssh to the instance, we will need to use *pip* to install *scikit-learn*
 sudo apt-get install -y python-pip
 pip install numpy pandas sklearn scipy tensorflow
 ```
+Note: If you choose a different image for the instance, you may need to do something different to install pip and the required python packages.
 
 Please note that we are not using *tensorflow* to train the model in this sample. We will however use *gfile*, a python class implemented in *tensorflow* which unifies how we access the local and remote files. An alternative to using *gfile*  for accessing the files stored in *Google Cloud Storage (GCS)* is [Cloud Storage Client Libraries](https://cloud.google.com/storage/docs/reference/libraries#client-libraries-install-python).
 
@@ -63,7 +65,7 @@ gcloud auth application-default login
 ##### 3. Running the Code
 We need to make the dataset available to the training code. Here are two ways for the code to access the dataset.
 
-###### Copying it to the instance
+###### Option 1: Copying it to the instance
 We can copy the dataset into the new instance and use it directly inside the instance and read it as a local file. Fortunately, *gcloud* makes this an easy step:
 ```bash
 gcloud compute scp ./train.csv $MY_INSTANCE:~/
@@ -83,7 +85,7 @@ python titanic.py --titanic-data-path ~/train.csv --model-output-path ~/model.pk
 
 which will generate the model and save it on the instance.
 
-###### Reading it from GCS
+###### Option 2: Reading it from GCS
 Another solution is to read the dataset directly from a bucket in GCS. We use *gsutil* to create the bucket in GCS, and then copy the dataset into it:
 ```bash
 gsutil mb $MY_BUCKET
@@ -113,10 +115,11 @@ gcloud compute instances delete $MY_INSTANCE
 ```
 
 ## What is Next
+
 ##### Automating the Entire Process
 It is possible to automate the entire process described in this tutorial by writing some scripts to be run periodically. The [burst training sample](https://github.com/GoogleCloudPlatform/ml-on-gcp/tree/master/gce/burst-training) has a detailed description of how to do this.
 
 ##### Lowering the Cost
-For some machine learning cases, you may require an instance with a high number of CPU's or a large amount of RAM. These instances are typically more expensive. [Preemptible Instances](https://cloud.google.com/compute/docs/instances/preemptible) can be a great option to train models on at a much lower cost, and they are definitely worth considering if we are going to train certain models periodically.
+You may sometimes require an instance with a high number of CPU's or a large amount of RAM. These instances are typically more expensive. [Preemptible Instances](https://cloud.google.com/compute/docs/instances/preemptible) can be a great option to train models on at a much lower cost, and they are definitely worth considering if you are going to train certain models periodically.
 
 
