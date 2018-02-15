@@ -10,7 +10,7 @@ Before we start, we need to:
 
 * have a [*GCP*](https://cloud.google.com/) account, and [download](https://cloud.google.com/sdk/), install, and [configure](https://cloud.google.com/sdk/gcloud/reference/config/) the *Google Cloud SDK* on our local computer.
 
-* [create a project](https://cloud.google.com/sdk/gcloud/reference/projects/create) on *GCP* and set the peoject and zone properties as instructed [here](https://cloud.google.com/sdk/gcloud/reference/config/set).
+* [create a project](https://cloud.google.com/sdk/gcloud/reference/projects/create) on *GCP* and set the project, region, and zone properties as instructed [here](https://cloud.google.com/sdk/gcloud/reference/config/set).
 
 * set these environment variables on the local computer:
 	* $MY_INSTANCE: the name of the new instance (e.g. titanic_trainer).
@@ -18,15 +18,15 @@ Before we start, we need to:
 	* $MY_FOLDER: the folder name to be used in the bucket (e.g. titanic_folder).
 
 ## Steps:
-We will create a [VM instance](https://cloud.google.com/compute/docs/instances/), configure it, and use it to train a model. While some of the steps can be done using the web portal [here](https://pantheon.corp.google.com/compute/instances), we will try to accomplish this using the SDK and mainly the [gcloud](https://cloud.google.com/sdk/gcloud/) command. Unless otherwise specified as a comment, all the commands are to be run locally.
+We will create a [VM instance](https://cloud.google.com/compute/docs/instances/), configure it, and use it to train a model. While some of the steps can be done using the web portal [here](https://pantheon.corp.google.com/compute/instances), we will try to accomplish this using the *SDK* and mainly the [*gcloud*](https://cloud.google.com/sdk/gcloud/) command. Unless otherwise specified as a comment, all the commands are to be run locally.
 
 ##### 1. Create a Google Compute Engine Instance
-First, we should create a *GCE* instance that we can use to train our model on. In this case, we can rely on many of the default arguments and simply create the instance:
+First, we should create a *GCE* instance that we can use to train our model on. In this case, we can rely on many of the default arguments:
 
 ```bash
 gcloud compute instances create $MY_INSTANCE
 ```
-which creates an instance of type *n1-standard-1* (1 CPU, 3.75GB of RAM), a *Debian* disk image, and with no scopes. This is fine as long as we need not the instance access *GCS*. Otherwise, we will have to provide the right scope:
+which creates an instance of type *n1-standard-1* (1 CPU, 3.75GB of RAM), with a *Debian* disk image and no scopes. This is fine as long as we need not the instance access *GCS*. Otherwise, we will have to provide the right scope:
 
 ```bash
 gcloud compute instances create $MY_INSTANCE --scopes storage-rw
@@ -54,7 +54,7 @@ Accessing the newly created instance is quite simple:
 ```bash
 gcloud compute ssh $MY_INSTANCE
 ```
-This command may prompt us to create a ssh key, if we have not done it before on our local machine.
+This command may prompt us to create a *ssh* key, if we have not done it before on our local machine.
 
 Once we *ssh* to the instance, we will need to use *pip* to install *scikit-learn* and some other packages:
 ```bash
