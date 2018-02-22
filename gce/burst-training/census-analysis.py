@@ -14,7 +14,6 @@
 
 
 import argparse
-import joblib
 import numpy as np
 import os
 import pandas as pd
@@ -23,6 +22,7 @@ import scipy
 import sklearn
 
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.externals import joblib
 from sklearn.model_selection import RandomizedSearchCV
 
 

@@ -3,7 +3,7 @@
 
 This is a simple sample that shows how to:
 
-- Create a Google App Engine service on Google Cloud Platform that loads a pickled scikit-learn model from Google Cloud Storage, and use it to serve prediction requests through Google Cloud Endpoints.
+- Create a Google App Engine service on Google Cloud Platform that loads a pickled scikit-learn model from Google Cloud Storage, and use it to serve prediction requests through Google Cloud Endpoints.  See the accompanying [blog post](https://cloud.google.com/community/tutorials/appengine-serve-machine-learning-model).
 
 The benefits of this configuration include:
 
