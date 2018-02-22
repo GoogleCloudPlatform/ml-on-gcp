@@ -1,6 +1,6 @@
 ## Introduction
 
-This sample code illustrates how to start a *GCE* instance and train a model using scikit-learn on the instance. We will be using the [Titanic dataset](https://www.kaggle.com/c/titanic) from [Kaggle](https://www.kaggle.com/). The goal is to train a classifier to predict whether a given passenger on Titanic survived or not.
+This sample code illustrates how to start a *Google Cloud Engine (GCE)* instance and train a model using scikit-learn on the instance. We will be using the [Titanic dataset](https://www.kaggle.com/c/titanic) from [Kaggle](https://www.kaggle.com/). The goal is to train a classifier to predict whether a given passenger on Titanic survived or not.
 
 ## Prerequisites
 
@@ -13,9 +13,9 @@ Before we start, we need to:
 * [create a project](https://cloud.google.com/sdk/gcloud/reference/projects/create) on *GCP* and set the project, region, and zone properties as instructed [here](https://cloud.google.com/sdk/gcloud/reference/config/set).
 
 * set these environment variables on the local computer:
-	* $MY_INSTANCE: the name of the new instance (e.g. titanic_trainer).
-	* $MY_BUCKET: the bucket name to be created on *Google Cloud Storage (GCS)* (e.g. titanic_bucket).
-	* $MY_FOLDER: the folder name to be used in the bucket (e.g. titanic_folder).
+	* $MY_INSTANCE: the name of the new instance (e.g. ```export $MY_INSTANCE=titanic_trainer```).
+	* $MY_BUCKET: the bucket name to be created on *Google Cloud Storage (GCS)* (e.g. ```export MY_BUCKET=titanic_bucket```).
+	* $MY_FOLDER: the folder name to be used in the bucket (e.g. ``` export MY_FOLDER=titanic_folder```).
 
 ## Steps:
 We will create a [VM instance](https://cloud.google.com/compute/docs/instances/), configure it, and use it to train a model. While some of the steps can be done using the web portal [here](https://pantheon.corp.google.com/compute/instances), we will try to accomplish this using the *SDK* and mainly the [*gcloud*](https://cloud.google.com/sdk/gcloud/) command. Unless otherwise specified as a comment, all the commands are to be run locally.
@@ -88,7 +88,7 @@ python titanic.py --titanic-data-path ~/train.csv --model-output-path ~/model.pk
 
 which will generate the model and save it on the instance.
 
-###### Option 2: Reading it from GCS
+###### Option 2: Reading it from *Google Cloud Storage*
 Another solution is to read the dataset directly from a bucket in *GCS* (assuming we created the instance with the right scope). We use *gsutil* to create the bucket in *GCS*, and then copy the dataset into it:
 ```bash
 gsutil mb gs://$MY_BUCKET
