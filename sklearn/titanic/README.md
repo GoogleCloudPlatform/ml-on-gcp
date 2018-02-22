@@ -13,7 +13,7 @@ Before we start, we need to:
 * [create a project](https://cloud.google.com/sdk/gcloud/reference/projects/create) on *GCP* and set the project, region, and zone properties as instructed [here](https://cloud.google.com/sdk/gcloud/reference/config/set).
 
 * set these environment variables on the local computer:
-	* $MY_INSTANCE: the name of the new instance (e.g. ```export $MY_INSTANCE=titanic_trainer```).
+	* $MY_INSTANCE: the name of the new instance (e.g. ```export MY_INSTANCE=titanic_trainer```).
 	* $MY_BUCKET: the bucket name to be created on *Google Cloud Storage (GCS)* (e.g. ```export MY_BUCKET=titanic_bucket```).
 	* $MY_FOLDER: the folder name to be used in the bucket (e.g. ``` export MY_FOLDER=titanic_folder```).
 
@@ -26,7 +26,7 @@ First, we should create a *GCE* instance that we can use to train our model on. 
 ```bash
 gcloud compute instances create $MY_INSTANCE
 ```
-which creates an instance of type *n1-standard-1* (1 CPU, 3.75GB of RAM), with a *Debian* disk image and no scopes. This is fine as long as we need not the instance access *GCS*. Otherwise, we will have to provide the right scope:
+which creates an instance of type *n1-standard-1* (1 CPU, 3.75GB of RAM), with a *Debian* disk image and no scopes. This is fine as long as we access the dataset locally and not through *GCS*. Otherwise, we will have to provide the right scope:
 
 ```bash
 gcloud compute instances create $MY_INSTANCE --scopes storage-rw
