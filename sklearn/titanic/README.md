@@ -135,4 +135,3 @@ You may sometimes require an instance with a high number of CPU's or a large amo
 An alternative to keep the cost down is to use [Preemptible Instances](https://cloud.google.com/preemptible-vms/) which are short-lived instances suitable for fault-tolerant tasks. These instances [cost](https://cloud.google.com/compute/pricing#machinetype) a lot less than a normal instance, but they also have some limitations. For example, their availability is not guaranteed, and they may be terminated by Compute Engine.
 
 To learn more about Preemptible Instances, click [here](https://cloud.google.com/compute/docs/instances/preemptible).
-
