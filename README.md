@@ -26,10 +26,11 @@ really care about.
 
 ## scikit-learn
 
-1. [Model serve](sklearn/gae_serve) - Serve model with Google App
-	Engine and Cloud Endpoints.
+1. [scikit-learn on GCE](sklearn/titanic) - Train a simple model with scikit-learn on a Google Compute Engine
 
-2. [Hyperparameter search](sklearn/hpsearch) - Hyperparameter search on a Google Kubernetes Engine cluster from a Jupyter notebook.
+2. [Model serve](sklearn/gae_serve) - Serve model with Google App Engine and Cloud Endpoints.
+
+3. [Hyperparameter search](sklearn/hpsearch) - Hyperparameter search on a Google Kubernetes Engine cluster from a Jupyter notebook.
 
 - - -
 
