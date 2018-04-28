@@ -273,7 +273,7 @@ Once you have built your VM image, you can run this script to execute your first
 burst training job as follows:
 
 ```
-./train.sh <TRAINING-INSTANCE-NAME> <BUCKET-NAME> <IMAGE-FAMILY>
+./train.sh <TRAINING-INSTANCE-NAME> gs://<BUCKET-NAME> <IMAGE-FAMILY>
 ```
 
 Here, `<BUCKET-NAME>` and `<IMAGE-FAMILY>` should have the same values as above.
