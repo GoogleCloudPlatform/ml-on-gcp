@@ -8,7 +8,7 @@ Before we start, we need to:
 
 * login to [Kaggle](https://www.kaggle.com) and download the Titanic dataset, mainly [train.csv](https://www.kaggle.com/c/titanic/download/train.csv).
 
-* have a [*GCP*](https://cloud.google.com/) account, and [download](https://cloud.google.com/sdk/), install, and [configure](https://cloud.google.com/sdk/gcloud/reference/config/) the *Google Cloud SDK* on our local computer.
+* have a [*GCP*](https://cloud.google.com/) account, and [download](https://cloud.google.com/sdk/), install, and [configure](https://cloud.google.com/sdk/gcloud/reference/config/) the *Google Cloud SDK* on your local computer.
 
 * [create a project](https://cloud.google.com/sdk/gcloud/reference/projects/create) on *GCP* and set the project, region, and zone properties as instructed [here](https://cloud.google.com/sdk/gcloud/reference/config/set).
 
