@@ -27,7 +27,7 @@ gcloud compute instances create \
   --machine-type=n1-standard-64 \
   --image-family=$IMAGE_FAMILY \
   --metadata-from-file startup-script=census-startup.sh \
-  --metadata BUCKET_NAME=$BUCKET_NAME,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$BUCKET_NAME/census,MODEL_OUTPUT_PATH=$BUCKET_NAME/census-$TIMESTAMP.model,CV_ITERATIONS=300 \
+  --metadata TRAINING_SCRIPT_DIR=$BUCKET_NAME,TRAINING_SCRIPT_FILE=census-analysis.py,CENSUS_DATA_PATH=$BUCKET_NAME/census,MODEL_OUTPUT_PATH=$BUCKET_NAME/census-$TIMESTAMP.model,CV_ITERATIONS=300 \
   --scopes=cloud-platform \
   --preemptible \
   $INSTANCE_NAME
