@@ -145,15 +145,24 @@ flags.DEFINE_string(
     'precision', 'bfloat16',
     help=('Precision to use; one of: {bfloat16, float32}'))
 
+flags.DEFINE_float(
+    'base_learning_rate', default=0.1)
+
+flags.DEFINE_float(
+    'momentum', default=0.9)
+
+flags.DEFINE_float(
+    'weight_decay', default=1e-4)
+
 # Dataset constants
 LABEL_CLASSES = 1000
 NUM_TRAIN_IMAGES = 1281167
 NUM_EVAL_IMAGES = 50000
 
 # Learning hyperparameters
-BASE_LEARNING_RATE = 0.1     # base LR when batch size = 256
-MOMENTUM = 0.9
-WEIGHT_DECAY = 1e-4
+# BASE_LEARNING_RATE = 0.1     # base LR when batch size = 256
+# MOMENTUM = 0.9
+# WEIGHT_DECAY = 1e-4
 LR_SCHEDULE = [    # (multiplier, epoch to start) tuples
     (1.0, 5), (0.1, 30), (0.01, 60), (0.001, 80)
 ]
@@ -175,7 +184,7 @@ def learning_rate_schedule(current_epoch):
   Returns:
     A scaled `Tensor` for current learning rate.
   """
-  scaled_lr = BASE_LEARNING_RATE * (FLAGS.train_batch_size / 256.0)
+  scaled_lr = FLAGS.base_learning_rate * (FLAGS.train_batch_size / 256.0)
 
   decay_rate = (scaled_lr * LR_SCHEDULE[0][0] *
                 current_epoch / LR_SCHEDULE[0][1])
@@ -248,7 +257,7 @@ def resnet_model_fn(features, labels, mode, params):
       logits=logits, onehot_labels=one_hot_labels)
 
   # Add weight decay to the loss for non-batch-normalization variables.
-  loss = cross_entropy + WEIGHT_DECAY * tf.add_n(
+  loss = cross_entropy + FLAGS.weight_decay * tf.add_n(
       [tf.nn.l2_loss(v) for v in tf.trainable_variables()
        if 'batch_normalization' not in v.name])
 
@@ -262,7 +271,7 @@ def resnet_model_fn(features, labels, mode, params):
     learning_rate = learning_rate_schedule(current_epoch)
 
     optimizer = tf.train.MomentumOptimizer(
-        learning_rate=learning_rate, momentum=MOMENTUM, use_nesterov=True)
+        learning_rate=learning_rate, momentum=FLAGS.momentum, use_nesterov=True)
     if FLAGS.use_tpu:
       # When using TPU, wrap the optimizer with CrossShardOptimizer which
       # handles synchronization details between different TPU cores. To the
