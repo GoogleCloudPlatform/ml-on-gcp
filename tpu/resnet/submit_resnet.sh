@@ -20,5 +20,5 @@ gcloud ml-engine jobs submit training $JOB_NAME \
     -- \
     --data_dir=$DATA_DIR \
     --model_dir=$OUTPUT_PATH \
-    --export_dir=$OUTPUT_PATH \
-    --resnet_depth=101
+    --resnet_depth=101 \
+    --train_steps=1024

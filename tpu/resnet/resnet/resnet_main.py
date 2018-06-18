@@ -146,13 +146,16 @@ flags.DEFINE_string(
     help=('Precision to use; one of: {bfloat16, float32}'))
 
 flags.DEFINE_float(
-    'base_learning_rate', default=0.1)
+    'base_learning_rate', default=0.1,
+    help=('Base learning rate when train batch size is 256.'))
 
 flags.DEFINE_float(
-    'momentum', default=0.9)
+    'momentum', default=0.9,
+    help=('Momentum parameter used in the MomentumOptimizer.'))
 
 flags.DEFINE_float(
-    'weight_decay', default=1e-4)
+    'weight_decay', default=1e-4,
+    help=('Weight decay coefficiant for l2 regularization.'))
 
 # Dataset constants
 LABEL_CLASSES = 1000
@@ -375,8 +378,8 @@ def main(unused_argv):
   trial_id = None
   if 'CLOUD_ML_TRIAL_ID' in os.environ:
     trial_id = os.environ['CLOUD_ML_TRIAL_ID']
-    FLAGS.export_dir = os.path.join(
-      FLAGS.export_dir, 'trial_{}'.format(trial_id))
+    # FLAGS.export_dir = os.path.join(
+    #   FLAGS.export_dir, 'trial_{}'.format(trial_id))
     FLAGS.model_dir = os.path.join(
       FLAGS.model_dir, 'trial_{}'.format(trial_id))
 
