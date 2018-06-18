@@ -48,6 +48,6 @@ really care about.
 
 ## Cloud TPU
 
-1. [Hyperparameter Tuning with tf.metrics](tpu/hptuning/resnet/README.md) - Run hyperparameter tuning jobs on Cloud Machine Learning Engine using `tf.metrics` for a ResNet model.
+1. [Hyperparameter Tuning with tf.metrics](tpu/hptuning/resnet) - Run hyperparameter tuning jobs on Cloud Machine Learning Engine using `tf.metrics` for a ResNet model.
 
-1. [Hyperparameter Tuning with cloudml-hypertune](tpu/hptuning/resnet-hypertune/README.md) - Run hyperparameter tuning jobs on Cloud Machine Learning Engine using `cloudml-hypertune` for a ResNet model.
+1. [Hyperparameter Tuning with cloudml-hypertune](tpu/hptuning/resnet-hypertune) - Run hyperparameter tuning jobs on Cloud Machine Learning Engine using `cloudml-hypertune` for a ResNet model.
