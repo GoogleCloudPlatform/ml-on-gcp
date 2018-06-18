@@ -43,3 +43,11 @@ really care about.
    training jobs. (The example training job in this guide uses
    [xgboost](https://github.com/dmlc/xgboost) as well as
    [scikit-learn](http://scikit-learn.org/stable/).)
+
+- - -
+
+## Cloud TPU
+
+1. [Hyperparameter Tuning with tf.metrics](tpu/hptuning/resnet/README.md) - Run hyperparameter tuning jobs on Cloud Machine Learning Engine using `tf.metrics` for a ResNet model.
+
+1. [Hyperparameter Tuning with cloudml-hypertune](tpu/hptuning/resnet-hypertune/README.md) - Run hyperparameter tuning jobs on Cloud Machine Learning Engine using `cloudml-hypertune` for a ResNet model.
