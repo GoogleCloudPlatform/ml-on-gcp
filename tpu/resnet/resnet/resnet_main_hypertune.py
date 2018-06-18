@@ -27,6 +27,7 @@ import tensorflow as tf
 
 from . import imagenet_input
 from . import resnet_model
+from . import hypertune_hook
 from tensorflow.contrib import summary
 from tensorflow.contrib.tpu.python.tpu import bfloat16
 from tensorflow.contrib.tpu.python.tpu import tpu_config
@@ -357,7 +358,9 @@ def resnet_model_fn(features, labels, mode, params):
       predictions = tf.argmax(logits, axis=1)
       top_1_accuracy = tf.metrics.accuracy(labels, predictions)
       in_top_5 = tf.cast(tf.nn.in_top_k(logits, labels, 5), tf.float32)
-      top_5_accuracy = tf.metrics.mean(in_top_5)
+
+      # Give the metric a name to make it eaiser to retrieve in SessionRunHook.
+      top_5_accuracy = tf.metrics.mean(in_top_5, name='top_5_accuracy')
 
       return {
           'top_1_accuracy': top_1_accuracy,
@@ -481,9 +484,11 @@ def main(unused_argv):
 
         tf.logging.info('Evaluating for trial_{}'.format(trial_id))
 
+        evaluation_hooks = [hypertune_hook.HypertuneHook()]
         eval_results = resnet_classifier.evaluate(
             input_fn=imagenet_eval.input_fn,
-            steps=NUM_EVAL_IMAGES // FLAGS.eval_batch_size)
+            steps=NUM_EVAL_IMAGES // FLAGS.eval_batch_size,
+            hooks=evaluation_hooks)
         tf.logging.info('Eval results: %s' % eval_results)
 
     elapsed_time = int(time.time() - start_timestamp)
