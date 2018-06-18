@@ -469,7 +469,7 @@ def main(unused_argv):
         next_checkpoint = min(current_step + FLAGS.steps_per_eval,
                               FLAGS.train_steps)
 
-        tf.logging.info('DEBUG: Training for trial_{}'.format(trial_id))
+        tf.logging.info('Training for trial_{}'.format(trial_id))
 
         resnet_classifier.train(
             input_fn=imagenet_train.input_fn, max_steps=next_checkpoint)
@@ -480,7 +480,7 @@ def main(unused_argv):
         # may be consistently excluded modulo the batch size.
         tf.logging.info('Starting to evaluate.')
 
-        tf.logging.info('DEBUG: Evaluating for trial_{}'.format(trial_id))
+        tf.logging.info('Evaluating for trial_{}'.format(trial_id))
 
         eval_results = resnet_classifier.evaluate(
             input_fn=imagenet_eval.input_fn,
