@@ -39,7 +39,7 @@ from tensorflow.python.estimator import estimator
 FLAGS = flags.FLAGS
 
 flags.DEFINE_bool(
-    'use_tpu', True,
+    'use_tpu', default=True,
     help=('Use TPU to execute the model for training and evaluation. If'
           ' --use_tpu=false, will use whatever devices are available to'
           ' TensorFlow by default (e.g. CPU and GPU)'))
@@ -103,6 +103,12 @@ flags.DEFINE_integer(
           ' possible (i.e. up to --train_steps, which evaluates the model only'
           ' after finishing the entire training regime).'))
 
+flags.DEFINE_integer(
+    'eval_timeout',
+    default=None,
+    help=(
+        'Maximum seconds between checkpoints before evaluation terminates.'))
+
 flags.DEFINE_bool(
     'skip_host_call', default=False,
     help=('Skip the host_call which is executed every training step. This is'
@@ -143,7 +149,7 @@ flags.DEFINE_string(
     help=('The directory where the exported SavedModel will be stored.'))
 
 flags.DEFINE_string(
-    'precision', 'bfloat16',
+    'precision', default='bfloat16',
     help=('Precision to use; one of: {bfloat16, float32}'))
 
 flags.DEFINE_float(
@@ -163,13 +169,13 @@ LABEL_CLASSES = 1000
 NUM_TRAIN_IMAGES = 1281167
 NUM_EVAL_IMAGES = 50000
 
-# Learning hyperparameters
-# BASE_LEARNING_RATE = 0.1     # base LR when batch size = 256
-# MOMENTUM = 0.9
-# WEIGHT_DECAY = 1e-4
+# Learning rate schedule
 LR_SCHEDULE = [    # (multiplier, epoch to start) tuples
     (1.0, 5), (0.1, 30), (0.01, 60), (0.001, 80)
 ]
+
+MEAN_RGB = [0.485, 0.456, 0.406]
+STDDEV_RGB = [0.229, 0.224, 0.225]
 
 
 def learning_rate_schedule(current_epoch):
@@ -204,7 +210,7 @@ def resnet_model_fn(features, labels, mode, params):
   Args:
     features: `Tensor` of batched images.
     labels: `Tensor` of labels for the data samples
-    mode: one of `tf.estimator.ModeKeys.{TRAIN,EVAL}`
+    mode: one of `tf.estimator.ModeKeys.{TRAIN,EVAL,PREDICT}`
     params: `dict` of parameters passed to the model from the TPUEstimator,
         `params['batch_size']` is always provided and should be used as the
         effective batch size.
@@ -219,8 +225,12 @@ def resnet_model_fn(features, labels, mode, params):
     assert not FLAGS.transpose_input    # channels_first only for GPU
     features = tf.transpose(features, [0, 3, 1, 2])
 
-  if FLAGS.transpose_input:
+  if FLAGS.transpose_input and mode != tf.estimator.ModeKeys.PREDICT:
     features = tf.transpose(features, [3, 0, 1, 2])  # HWCN to NHWC
+
+  # Normalize the image to zero mean and unit variance.
+  features -= tf.constant(MEAN_RGB, shape=[1, 1, 3], dtype=features.dtype)
+  features /= tf.constant(STDDEV_RGB, shape=[1, 1, 3], dtype=features.dtype)
 
   # This nested function allows us to avoid duplicating the logic which
   # builds the network, for different values of --precision.
@@ -358,7 +368,6 @@ def resnet_model_fn(features, labels, mode, params):
       predictions = tf.argmax(logits, axis=1)
       top_1_accuracy = tf.metrics.accuracy(labels, predictions)
       in_top_5 = tf.cast(tf.nn.in_top_k(logits, labels, 5), tf.float32)
-
       # Give the metric a name to make it eaiser to retrieve in SessionRunHook.
       top_5_accuracy = tf.metrics.mean(in_top_5, name='top_5_accuracy')
 
@@ -380,8 +389,9 @@ def resnet_model_fn(features, labels, mode, params):
 def main(unused_argv):
   trial_id = os.environ.get('CLOUD_ML_TRIAL_ID', 0)
   if trial_id:
-    # FLAGS.export_dir = os.path.join(
-    #   FLAGS.export_dir, 'trial_{}'.format(trial_id))
+    if FLAGS.export_dir:
+      FLAGS.export_dir = os.path.join(
+        FLAGS.export_dir, 'trial_{}'.format(trial_id))
     FLAGS.model_dir = os.path.join(
       FLAGS.model_dir, 'trial_{}'.format(trial_id))
 
@@ -423,7 +433,8 @@ def main(unused_argv):
     eval_steps = NUM_EVAL_IMAGES // FLAGS.eval_batch_size
 
     # Run evaluation when there's a new checkpoint
-    for ckpt in evaluation.checkpoints_iterator(FLAGS.model_dir):
+    for ckpt in evaluation.checkpoints_iterator(
+        FLAGS.model_dir, timeout=FLAGS.eval_timeout):
       tf.logging.info('Starting to evaluate.')
       try:
         start_timestamp = time.time()  # This time will include compilation time
@@ -460,6 +471,7 @@ def main(unused_argv):
 
     start_timestamp = time.time()  # This time will include compilation time
     if FLAGS.mode == 'train':
+      tf.logging.info('Training for trial_{}'.format(trial_id))
       resnet_classifier.train(
           input_fn=imagenet_train.input_fn, max_steps=FLAGS.train_steps)
 
@@ -470,9 +482,7 @@ def main(unused_argv):
         # At the end of training, a checkpoint will be written to --model_dir.
         next_checkpoint = min(current_step + FLAGS.steps_per_eval,
                               FLAGS.train_steps)
-
         tf.logging.info('Training for trial_{}'.format(trial_id))
-
         resnet_classifier.train(
             input_fn=imagenet_train.input_fn, max_steps=next_checkpoint)
         current_step = next_checkpoint
@@ -481,7 +491,6 @@ def main(unused_argv):
         # Since evaluation happens in batches of --eval_batch_size, some images
         # may be consistently excluded modulo the batch size.
         tf.logging.info('Starting to evaluate.')
-
         tf.logging.info('Evaluating for trial_{}'.format(trial_id))
 
         evaluation_hooks = [hypertune_hook.HypertuneHook()]

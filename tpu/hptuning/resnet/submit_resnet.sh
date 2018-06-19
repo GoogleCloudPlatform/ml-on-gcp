@@ -1,6 +1,7 @@
 
 now=$(date +"%Y%m%d_%H%M%S")
-BUCKET="gs://sandbox-tpu"
+# GCS_BUCKET="gs://my-gcs-bucket"
+BUCKET=$GCS_BUCKET
 
 JOB_NAME="tpu_$now"
 JOB_DIR=$BUCKET"/"$JOB_NAME
