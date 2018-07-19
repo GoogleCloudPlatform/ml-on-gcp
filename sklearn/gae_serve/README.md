@@ -13,9 +13,9 @@ The benefits of this configuration include:
 
 ## Requirements
 
-- Install [Python](https://www.python.org/).  The version (2.7 or 3) used for local developement of the model should match the version used in the service, which is specified in the file `app.yaml`.
+- Install [Python](https://www.python.org/).  The version (2.7 or 3) used for local development of the model should match the version used in the service, which is specified in the file `app.yaml`.
 
-- Install [Google Cloud Platform SDK](https://cloud.google.com/sdk/).  The SDK includes the commandline tools `gcloud` for deploying the service and [`gsutil`](https://cloud.google.com/storage/docs/gsutil) for managing files on Cloud Storage.
+- Install [Google Cloud Platform SDK](https://cloud.google.com/sdk/).  The SDK includes the command-line tools `gcloud` for deploying the service and [`gsutil`](https://cloud.google.com/storage/docs/gsutil) for managing files on Cloud Storage.
 
 - Create a Google Cloud Platform project which as the following products enabled:
 
@@ -30,9 +30,9 @@ The benefits of this configuration include:
 
 1. `git clone https://github.com/GoogleCloudPlatform/ml-on-gcp`
 
-1. `cd ml-on-gcp/gae_serve`
+1. `cd ml-on-gcp/sklearn/gae_serve`
 
-1. This samples demostrates how to deploy an App Engine service named `modelserve`.  If you prefer to deploy to the `default` service (for example, if this is the first App Engine service in your project, it must be named `default`), use the yaml files in the `default/` subdirectory by copying them over the yaml files in the root directory of this sample.
+1. This sample demonstrates how to deploy an App Engine service named `modelserve`.  If you prefer to deploy to the `default` service (for example, if this is the first App Engine service in your project, it must be named `default`), use the yaml files in the `default/` subdirectory by copying them over the yaml files in the root directory of this sample.
 
     - **Note that App Engine does not allow deleting the `default` service from your project.**
 
@@ -44,13 +44,13 @@ The benefits of this configuration include:
 
 1. Deploy the service endpoint:
 
-    `gcloud service-management deploy modelserve.yaml`
+    `gcloud endpoints services deploy modelserve.yaml`
 
     This step deploys a [Cloud Endpoint](https://cloud.google.com/endpoints/) service, which allows us to monitor the API usage on the [Endpoints](https://console.cloud.google.com/endpoints) console page.
 
 1. If the deployment is successful, get the deployment's config id either from the [Endpoints](https://console.cloud.google.com/endpoints) console page under the service's Deployment history tab, or you can find all the configuration IDs by running the following:
 
-    `gcloud service-management configs list --service="modelserve-dot-PROJECT_ID.appspot.com"`
+    `gcloud endpoints configs list --service="modelserve-dot-PROJECT_ID.appspot.com"`
 
     The configuration ID should look like `2017-08-03r0`.  The `r0, r1, ...` part in the configuration IDs indicate the revision numbers, and you should use the highest (most recent) revision number.
 
@@ -140,14 +140,14 @@ gcloud service-management delete modelserve-dot-PROJECT_ID.appspot.com
 
 ## Advanced usage
 
-### Healthcheck
+### Health check
 
-For information about configuring the service's healthcheck, see the [documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml#health_checks).
+For information about configuring the service's health check, see the [documentation](https://cloud.google.com/appengine/docs/flexible/python/how-instances-are-managed#health_checking).
 
 
 ### Autoscaling
 
-For information about configuring the service's autoscaling, see the [documentation](https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml#services).
+For information about configuring the service's autoscaling, see the [documentation](https://cloud.google.com/appengine/docs/flexible/python/reference/app-yaml#services).
 
 
 ### Quota
