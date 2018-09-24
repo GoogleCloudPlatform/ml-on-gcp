@@ -1,6 +1,23 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import tensorflow as tf
 from subprocess import call
+import inspect
 import os
+import re
 import tempfile
 
 from oauth2client.client import GoogleCredentials
@@ -39,7 +56,7 @@ def get_model_versions(project, model):
     return versions
 
 
-def package_and_upload_module(gcs_directory):
+def build_and_upload_package(gcs_directory):
     dtemp = tempfile.mkdtemp()
     call(['python', 'setup.py', 'egg_info', '--egg-base={}'.format(dtemp), 'sdist', '--dist-dir={}'.format(dtemp)])
     package_fn = [fn for fn in tf.gfile.ListDirectory(dtemp) if fn.endswith('tar.gz')][0]
@@ -49,6 +66,28 @@ def package_and_upload_module(gcs_directory):
     tf.gfile.Copy(package_local, package_gcs, overwrite=True)
 
     return package_gcs
+
+
+def create_package(model_fn, input_fn, parse_args, train):
+    template_fn = 'trainer/task_template.py'
+    output_fn = 'trainer/task.py'
+
+    sub_dict = {
+        '# <MODEL_FN>': model_fn,
+        '# <INPUT_FN>': input_fn,
+        '# <PARSE_ARGS>': parse_args,
+        '# <TRAIN>': train
+    }
+
+    with open(template_fn, 'r') as f:
+        code_content = f.read()
+
+    for placeholder, function in sub_dict.iteritems():
+        function_code = inspect.getsource(function)
+        code_content = re.sub(placeholder, function_code, code_content)
+
+    with open(output_fn, 'w') as f:
+        f.write(code_content)
 
 
 def train_model(project, job_spec):
