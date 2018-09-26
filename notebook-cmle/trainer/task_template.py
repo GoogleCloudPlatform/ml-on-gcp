@@ -19,15 +19,11 @@ import tensorflow as tf
 
 # <MODEL_FN>
 
-
 # <INPUT_FN>
-
 
 # <PARSE_ARGS>
 
-
 # <TRAIN>
-
 
 if __name__ == '__main__':
     args = parse_args()
