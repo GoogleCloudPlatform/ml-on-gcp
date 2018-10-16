@@ -40,7 +40,6 @@ def model_fn(features, labels, mode):
     )
 
 
-
 def train_input_fn():
     fake_features = tf.constant([[1], [2]], dtype=tf.float32)
     fake_labels = tf.constant([[3], [4]], dtype=tf.float32)
@@ -48,7 +47,6 @@ def train_input_fn():
         (fake_features, fake_labels)
     )
     return ds.repeat().batch(10)
-
 
 
 def parse_args():
@@ -59,20 +57,19 @@ def parse_args():
     )
     parser.add_argument(
         '--steps',
+        type=int,
         default=300)
 
     args, unused_args = parser.parse_known_args()
-    
-    return args
 
+    return args
 
 
 def train(args):
     estimator = tf.estimator.Estimator(model_fn, model_dir=args.job_dir)
     estimator.train(train_input_fn, steps=args.steps)
-    
-    return estimator
 
+    return estimator
 
 
 if __name__ == '__main__':

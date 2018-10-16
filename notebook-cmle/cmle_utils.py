@@ -19,6 +19,7 @@ import inspect
 import os
 import re
 import tempfile
+from textwrap import dedent
 
 from oauth2client.client import GoogleCredentials
 from googleapiclient import discovery
@@ -84,6 +85,7 @@ def create_package(model_fn, input_fn, parse_args, train):
 
     for placeholder, function in sub_dict.iteritems():
         function_code = inspect.getsource(function)
+        function_code = dedent(function_code)
         code_content = re.sub(placeholder, function_code, code_content)
 
     with open(output_fn, 'w') as f:
