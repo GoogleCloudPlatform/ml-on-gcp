@@ -1,0 +1,3 @@
+tensorflow==1.11.0
+oauth2client==4.1.2
+google-api-python-client==1.7.4
