@@ -17,6 +17,7 @@ import tensorflow as tf
 from subprocess import call
 import inspect
 import os
+import nbformat
 import re
 import tempfile
 from textwrap import dedent
@@ -29,6 +30,49 @@ credentials = GoogleCredentials.get_application_default()
 # Source:
 # https://cloud.google.com/ml-engine/docs/how-tos/online-predict
 # https://cloud.google.com/ml-engine/docs/how-tos/deploying-models
+
+
+def ipynb_to_py(source, export_base):
+    notebook = nbformat.read('ipynb_to_py.ipynb', as_version=4)
+
+    files = {} # filename: file object
+    for cell in notebook['cells']:
+        if cell['cell_type'] != 'code':
+            continue
+            
+        lines = cell['source'].split('\n')
+        
+        # the first line should contain a file name followed by "##"
+        if lines[0].startswith('##'):
+            filename = lines[0].replace('#', '').strip()
+            
+            # open a new file object for the filename if it hasn't been created yet
+            file_obj = files.setdefault(filename, open(os.path.join(export_base, filename), 'w'))
+        else:
+            # notebook only cells, ignore
+            continue
+            
+        # handle lines that should be added only when exported to .py
+        # only lines that immediate follow the "##" line that starts with "#" will have that "#" removed
+        iter_lines = enumerate(lines)
+        # skip the first line
+        next(iter_lines)
+        for i, line in iter_lines:
+            if line.startswith('#'):
+                code_line = line.replace('#', '', 1).strip()
+                file_obj.write(code_line + '\n')
+                
+            else:
+                # no more "#" lines
+                break
+        
+        # other lines will just be copied over as is
+        for line in lines[i:]:
+            file_obj.write(line + '\n')
+
+    for filename, file_obj in files.items():
+        print('File written: {}'.format(os.path.join(export_base, filename)))
+        file_obj.close()
 
 
 def get_models(project):
