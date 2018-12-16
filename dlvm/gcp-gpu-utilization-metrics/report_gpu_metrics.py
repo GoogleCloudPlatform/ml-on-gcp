@@ -45,7 +45,7 @@ def report_metric(value, metric_type, instance_id, zone, project_id):
     project_id: (str) Project Identifier from GCP.
   """
   series = monitoring_v3.types.TimeSeries()
-  series.metric.type = 'custom.googleapis.com/{type}'.format(type=type)
+  series.metric.type = 'custom.googleapis.com/{type}'.format(type=metric_type)
   series.resource.type = 'gce_instance'
   series.resource.labels['instance_id'] = instance_id
   series.resource.labels['zone'] = zone
