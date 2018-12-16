@@ -22,16 +22,9 @@ from google.cloud import monitoring_v3
 
 GPU_UTILIZATION_METRIC_NAME = 'gpu_utilization'
 GPU_MEMORY_UTILIZATION_METRIC_NAME = 'gpu_memory_utilization'
-
-metadata_server = 'http://metadata/computeMetadata/v1/instance/'
-metadata_flavor = {'Metadata-Flavor': 'Google'}
-data = requests.get(metadata_server + 'zone', headers=metadata_flavor).text
-zone = data.split('/')[3]
-project_id = data.split('/')[1]
-
-client = monitoring_v3.MetricServiceClient()
-project_name = client.project_path(project_id)
-instance_id = requests.get(metadata_server + 'id', headers=metadata_flavor).text
+METADATA_SERVER = 'http://metadata/computeMetadata/v1/instance/'
+METADATA_FLAVOR = {'Metadata-Flavor': 'Google'}
+SLEEP_TIME = 5
 
 
 def report_metric(value, metric_type, instance_id, zone, project_id):
@@ -44,6 +37,8 @@ def report_metric(value, metric_type, instance_id, zone, project_id):
     zone: (str) Compute Zone.
     project_id: (str) Project Identifier from GCP.
   """
+  client = monitoring_v3.MetricServiceClient()
+  project_name = client.project_path(project_id)
   series = monitoring_v3.types.TimeSeries()
   series.metric.type = 'custom.googleapis.com/{type}'.format(type=metric_type)
   series.resource.type = 'gce_instance'
@@ -93,10 +88,24 @@ def get_gpu_memory_utilization():
   return get_nvidia_smi_utilization('utilization.memory')
 
 
-while True:
-  report_metric(get_gpu_utilization(), GPU_UTILIZATION_METRIC_NAME, instance_id,
-                zone, project_id)
-  report_metric(get_gpu_memory_utilization(),
-                GPU_MEMORY_UTILIZATION_METRIC_NAME, instance_id, zone,
-                project_id)
-  time.sleep(5)
+def main():
+  # Get instance information
+  data = requests.get(METADATA_SERVER + 'zone', headers=METADATA_FLAVOR).text
+  instance_id = requests.get(
+      METADATA_SERVER + 'id', headers=METADATA_FLAVOR).text
+  # Collect zone
+  zone = data.split('/')[3]
+  # Collect project id
+  project_id = data.split('/')[1]
+  # Report metrics loop.
+  while True:
+    report_metric(get_gpu_utilization(), GPU_UTILIZATION_METRIC_NAME,
+                  instance_id, zone, project_id)
+    report_metric(get_gpu_memory_utilization(),
+                  GPU_MEMORY_UTILIZATION_METRIC_NAME, instance_id, zone,
+                  project_id)
+    time.sleep(SLEEP_TIME)
+
+
+if __name__ == '__main__':
+  main()
