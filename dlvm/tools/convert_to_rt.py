@@ -16,20 +16,14 @@
 import argparse
 import tensorflow.contrib.tensorrt as trt
 
-
 parser = argparse.ArgumentParser(
 	description="Converts SavedModel to the TensorRT enabled graph.")
 
-parser.add_argument("--input_model_dir",
-										required=True)
-parser.add_argument("--output_model_dir",
-										required=True)
-parser.add_argument("--batch_size",
-										type=int,
-										required=True)
-parser.add_argument("--precision_mode",
-										choices=["FP32", "FP16", "INT8", "INT4"],
-										required=True)
+parser.add_argument("--input_model_dir", required=True)
+parser.add_argument("--output_model_dir", required=True)
+parser.add_argument("--batch_size", required=True, type=int)
+parser.add_argument("--precision_mode", required=True,
+										choices=["FP32", "FP16", "INT8", "INT4"])
 args = parser.parse_args()
 
 trt.create_inference_graph(
