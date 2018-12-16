@@ -48,6 +48,7 @@ def add_new_metrics(metric_type, desc):
       monitoring_v3.enums.MetricDescriptor.MetricKind.GAUGE)
   descriptor.value_type = (monitoring_v3.enums.MetricDescriptor.ValueType.INT64)
   descriptor.description = desc
+	# Create Metric Descriptor.
   descriptor = client.create_metric_descriptor(project_name, descriptor)
   print('Created {}.'.format(descriptor.name))
 
