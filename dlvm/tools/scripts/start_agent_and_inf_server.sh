@@ -41,7 +41,7 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 EOH
-gsutil cp gs://dl-platform-public-content/blog-posts/t4-release/model.tar.gz /root/model.tar.gz
+gsutil cp gs://cloud-samples-data/dlvm/t4/model.tar.gz /root/model.tar.gz
 tar -xzvf /root/model.tar.gz -C /root
 # Reload systemd manager configuration
 systemctl daemon-reload

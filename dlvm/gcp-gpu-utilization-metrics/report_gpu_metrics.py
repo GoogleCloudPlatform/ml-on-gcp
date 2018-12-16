@@ -31,7 +31,7 @@ def report_metric(client, value, metric_type, instance_id, zone, project_id):
   """Create time series for report.
 
   Args:
-  	client: (monitoring_v3.MetricServiceClient()) A Metric Service.
+    client: (monitoring_v3.MetricServiceClient()) A Metric Service.
     value: (int) Report metric value.
     metric_type: (str) Metric type
     instance_id: (str) Instance id of Compute resource.
