@@ -27,17 +27,17 @@ METADATA_FLAVOR = {'Metadata-Flavor': 'Google'}
 SLEEP_TIME = 5
 
 
-def report_metric(value, metric_type, instance_id, zone, project_id):
+def report_metric(client, value, metric_type, instance_id, zone, project_id):
   """Create time series for report.
 
   Args:
+  	client: (monitoring_v3.MetricServiceClient()) A Metric Service.
     value: (int) Report metric value.
     metric_type: (str) Metric type
     instance_id: (str) Instance id of Compute resource.
     zone: (str) Compute Zone.
     project_id: (str) Project Identifier from GCP.
   """
-  client = monitoring_v3.MetricServiceClient()
   project_name = client.project_path(project_id)
   series = monitoring_v3.types.TimeSeries()
   series.metric.type = 'custom.googleapis.com/{type}'.format(type=metric_type)
@@ -98,10 +98,11 @@ def main():
   # Collect project id
   project_id = data.split('/')[1]
   # Report metrics loop.
+  client = monitoring_v3.MetricServiceClient()
   while True:
-    report_metric(get_gpu_utilization(), GPU_UTILIZATION_METRIC_NAME,
+    report_metric(client, get_gpu_utilization(), GPU_UTILIZATION_METRIC_NAME,
                   instance_id, zone, project_id)
-    report_metric(get_gpu_memory_utilization(),
+    report_metric(client, get_gpu_memory_utilization(),
                   GPU_MEMORY_UTILIZATION_METRIC_NAME, instance_id, zone,
                   project_id)
     time.sleep(SLEEP_TIME)
