@@ -28,11 +28,16 @@ def add_new_metrics(project_id, metric_type, desc):
   """Add new Metrics for StackDriver.
 
   Args:
-  	project_id: (str) GCP project id.
+    project_id: (str) GCP project id.
     metric_type: (int) MetricDescriptor type.
     desc: (str) MetricDescriptor description.
-  """
 
+  Raises:
+    MissingProjectIdError: GCP Project id is not defined.
+  """
+  if not project_id:
+    raise MissingProjectIdError(
+        'Set the environment variable GCLOUD_PROJECT to your GCP Project ID.')
   descriptor = monitoring_v3.types.MetricDescriptor()
   descriptor.type = 'custom.googleapis.com/{type}'.format(type=metric_type)
   descriptor.metric_kind = (
@@ -40,24 +45,23 @@ def add_new_metrics(project_id, metric_type, desc):
   descriptor.value_type = (monitoring_v3.enums.MetricDescriptor.ValueType.INT64)
   descriptor.description = desc
   # Create Metric Descriptor.
-	client = monitoring_v3.MetricServiceClient()
-	project_name = client.project_path(project_id)
+  client = monitoring_v3.MetricServiceClient()
+  project_name = client.project_path(project_id)
   descriptor = client.create_metric_descriptor(project_name, descriptor)
   print('Created {}.'.format(descriptor.name))
 
 
 def main():
-	project_id = (
-		os.environ['GOOGLE_CLOUD_PROJECT'] or os.environ['GCLOUD_PROJECT'])
+  # Get Project id information.
+  project_id = (
+      os.environ.get('GOOGLE_CLOUD_PROJECT') or
+      os.environ.get('GCLOUD_PROJECT'))
 
-	if not project_id:
-		raise MissingProjectIdError(
-			'Set the environment variable GCLOUD_PROJECT to your GCP Project ID.')
+  add_new_metrics(project_id, GPU_UTILIZATION_METRIC_NAME,
+                  'Metric for GPU utilization.')
+  add_new_metrics(project_id, GPU_MEMORY_UTILIZATION_METRIC_NAME,
+                  'Metric for GPU memory utilization.')
 
-	add_new_metrics(project_id, GPU_UTILIZATION_METRIC_NAME, 'Metric for GPU utilization.')
-	add_new_metrics(project_id, GPU_MEMORY_UTILIZATION_METRIC_NAME,
-									'Metric for GPU memory utilization.')
 
-if __name__ == "__main__":
-	main()
-
+if __name__ == '__main__':
+  main()
