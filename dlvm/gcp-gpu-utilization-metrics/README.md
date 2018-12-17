@@ -6,7 +6,8 @@ It is very simple to use, just run agent on each of your instance:
 
 ### Report metrics
 
-This will auto create the metrics. 
+Installs a monitoring agent that monitors the GPU usage on the instance.
+This will auto create the GPU metrics.
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
@@ -17,7 +18,7 @@ python report_gpu_metrics.py &
 
 ### Generate metrics
 
-If you need to create metrics first run the following commands:
+If you need to create metrics using create_metric_descriptor first run the following commands:
 
 ```bash
 # Define your Google Cloud Project
@@ -26,6 +27,12 @@ git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
 cd dlvm/gcp-gpu-utilization-metrics
 pip install -r ./requirements.txt
 python create_gpu_metrics.py
+```
+Example:
+
+```
+Created projects/project-sample/metricDescriptors/custom.googleapis.com/gpu_utilization.
+Created projects/project-sample/metricDescriptors/custom.googleapis.com/gpu_memory_utilization.
 ```
 
 ### Troubleshooting

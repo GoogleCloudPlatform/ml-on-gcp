@@ -11,7 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Report GPU metrics."""
+"""Report GPU metrics.
+
+Installs a monitoring agent that monitors the GPU usage on the instance.
+This will auto create the GPU metrics.
+"""
 
 import csv
 import subprocess

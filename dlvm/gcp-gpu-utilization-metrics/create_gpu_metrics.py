@@ -11,7 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Create GPU metrics."""
+"""Create GPU metrics.
+
+If you need to create metrics first run this script.
+"""
 import os
 
 from google.cloud import monitoring_v3

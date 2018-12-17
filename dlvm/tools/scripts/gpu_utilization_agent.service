@@ -1,0 +1,12 @@
+[Unit]
+Description=GPU Utilization Metric Agent
+[Service]
+Type=simple
+PIDFile=/run/gpu_agent.pid
+ExecStart=/bin/bash --login -c '/usr/bin/python /root/report_gpu_metrics.py'
+User=root
+Group=root
+WorkingDirectory=/
+Restart=always
+[Install]
+WantedBy=multi-user.target
