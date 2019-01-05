@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Install NVIDIA driver
+sh /opt/deeplearning/install-driver.sh
+
 # GPU Agent
 git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
 cd dlvm/gcp-gpu-utilization-metrics
