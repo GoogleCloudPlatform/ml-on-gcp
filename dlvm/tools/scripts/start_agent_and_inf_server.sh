@@ -5,7 +5,7 @@ sh /opt/deeplearning/install-driver.sh
 
 # GPU Agent
 git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
-cd dlvm/gcp-gpu-utilization-metrics
+cd ml-on-gcp/dlvm/gcp-gpu-utilization-metrics
 # Install Python dependencies.
 pip install -r ./requirements.txt
 cp ./report_gpu_metrics.py /root/report_gpu_metrics.py
