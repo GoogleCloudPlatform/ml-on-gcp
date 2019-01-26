@@ -1,4 +1,18 @@
 #!/bin/bash
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS-IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Install NVIDIA driver and create GPU utilizaton service.
 
 # Install NVIDIA driver
 sh /opt/deeplearning/install-driver.sh
@@ -45,6 +59,7 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 EOH
+
 gsutil cp gs://cloud-samples-data/dlvm/t4/model.tar.gz /root/model.tar.gz
 tar -xzvf /root/model.tar.gz -C /root
 # Reload systemd manager configuration
