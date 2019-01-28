@@ -31,12 +31,13 @@ import logging
 import requests
 import numpy as np
 
-INPUT_FILE = 'image.jpg'
+INPUT_FILE = 'cat.jpg'
 OUTPUT_FILE = '/tmp/out.json'
 
 LOAD_BALANCER = '' # Enter your Public Load Balancer IP Address.
 URL = 'http://%s/v1/models/default:predict' % LOAD_BALANCER
 UPLOAD_FOLDER = '/tmp/'
+NUM_REQUESTS = 10
 # Wait this long for outgoing HTTP connections to be established.
 _CONNECT_TIMEOUT_SECONDS = 90
 # Wait this long to read from an HTTP socket.
@@ -76,14 +77,19 @@ def convert_to_base64(image_file):
 
 def model_predict(predict_request):
   """Sends Image for prediction."""
+  total_time = 0
   session = requests.Session()
   try:
-    response = session.post(
-      URL,
-      data=predict_request,
-      timeout=(_CONNECT_TIMEOUT_SECONDS, _READ_TIMEOUT_SECONDS),
-      allow_redirects=False)
-    response.raise_for_status()
+    for _ in range(0, NUM_REQUESTS):
+      response = session.post(
+        URL,
+        data=predict_request,
+        timeout=(_CONNECT_TIMEOUT_SECONDS, _READ_TIMEOUT_SECONDS),
+        allow_redirects=False)
+      response.raise_for_status()
+      total_time += response.elapsed.total_seconds()
+    print('Num requests: {} Avg latency: {} ms'.format(NUM_REQUESTS, (
+        total_time * 1000) / NUM_REQUESTS))
     return response.json()
   except requests.exceptions.HTTPError as err:
     logging.exception(err)

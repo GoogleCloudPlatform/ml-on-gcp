@@ -78,7 +78,7 @@ function create_instance_group() {
 function verify_instances() {
   # Verify instances are created.
     gcloud compute instance-groups managed list-instances ${INSTANCE_GROUP_NAME} --region ${REGION}
-    read -p "Waiting for instances to be created..." -t 120
+    read -p "Waiting for instances to start..." -t 120
     echo ""
     export INSTANCE_GROUP_NAME="deeplearning-instance-group"
     gcloud compute instance-groups managed list-instances ${INSTANCE_GROUP_NAME} --region ${REGION}
@@ -200,11 +200,11 @@ function delete_demo() {
 }
 
 function install_demo() {
+    start=`date +%s`
     echo "┌─────────────────────────────────────────────┐"
     echo "│   Google Cloud Deep Learning VM NVIDIA T4   │"
     echo "└─────────────────────────────────────────────┘"
     echo " Demo installation starting..."
-    check_exists ${PROJECT_NAME} || err "Project not defined"
     gcloud config set project ${PROJECT_NAME}
     gcloud config list
     # Deploy Virtual Machines + Load Balancer.
@@ -218,8 +218,8 @@ function install_demo() {
     read -p "Waiting for instances to boot..." -t 15
     echo "Cluster setup is completed!"
     echo
-    echo "Verify Health check instances are healthy"
-
+    echo "Verify Health check instances are in healthy state before sending HTTP requests to ${IP}"
+    echo "Time elapsed: $(($(date +%s)-$start)) seconds"
 }
 
 function usage() {
@@ -230,9 +230,10 @@ function usage() {
 
 function main() {
   # Select valid option.
+  check_exists ${PROJECT_NAME} || err "Undefined Project Name. Define PROJECT_NAME variable in this script"
   case "$1" in
     cleanup)
-    echo "Do you wish to delete your demo cluster?"
+    echo "Are you sure you want to delete your cluster?"
       select yn in "Yes" "No"; do
         case $yn in
             # Install instances and load-balancer.

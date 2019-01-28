@@ -33,12 +33,12 @@ import numpy as np
 import os
 import requests
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 MODEL_TYPE = 'jpg'  # tensor | jpg
 LOAD_BALANCER = ''
 URL = 'http://%s/v1/models/default:predict' % LOAD_BALANCER
-UPLOAD_FOLDER = '/tmp/'
+UPLOAD_FOLDER = 'static/images/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 # Wait this long for outgoing HTTP connections to be established.
 _CONNECT_TIMEOUT_SECONDS = 90
@@ -161,7 +161,8 @@ def upload_file():
     return redirect(request.url)
   if file and allowed_file(file.filename):
     filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    user_image = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(user_image)
 
   # Call API for prediction.
   predict_request = conversion_helper(MODEL_TYPE, filename)
@@ -169,7 +170,7 @@ def upload_file():
     response = model_predict(predict_request)
     if response:
       prediction_class = response.get('predictions')[0].get('classes')
-      return render_template('index.html', init=True,
+      return render_template('index.html', init=True, user_image=filename,
                              prediction=classes[prediction_class])
     else:
       return render_template('index.html', init=True,
@@ -183,4 +184,6 @@ def upload_file():
 classes = get_classes()
 
 if __name__ == '__main__':
+  if not LOAD_BALANCER:
+    raise 'Define Load Balancer'
   app.run(debug=True, port=8001)

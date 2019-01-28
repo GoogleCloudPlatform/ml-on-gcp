@@ -46,6 +46,10 @@ $(document).ready( function() {
     </form>
     <div class="text-center">
     {% if init %}
+        <div>
+            <img src="{{ url_for('static', filename='images/'+user_image) }}" style="width: 10%; height: 10%" class="img-responsive center-block" alt="">
+        </div>
+
         {% if prediction %}
             <div class="alert alert-success" style="margin-top:18px;">
                 <strong>Prediction:</strong> {{ prediction }}
