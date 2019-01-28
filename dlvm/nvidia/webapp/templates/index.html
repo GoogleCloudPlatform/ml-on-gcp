@@ -30,9 +30,10 @@ $(document).ready( function() {
 </script>
 </head>
 <body>
-
 <div class="container">
-    <h2>Make a prediction</h2>
+    <h3><img src="https://cloud.google.com/_static/images/cloud/icons/favicons/onecloud/apple-icon.png" style="width: 5%; height: 5%">
+    Make a prediction
+    </h3>
     <form class="form-inline center-block" action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
         <div class="input-group">
             <label id="browsebutton" class="btn btn-default input-group-addon" for="my-file-selector" style="background-color:white">
@@ -43,7 +44,6 @@ $(document).ready( function() {
         </div>
       <button type="submit" class="btn btn-success">Predict</button>
     </form>
-
     <div class="text-center">
     {% if init %}
         {% if prediction %}
