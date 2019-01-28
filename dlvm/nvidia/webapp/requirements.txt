@@ -23,7 +23,7 @@ protobuf==3.6.1
 pyasn1==0.4.4
 pyasn1-modules==0.2.2
 pytz==2018.7
-PyYAML==3.13
+pyyaml>=4.2b1
 requests==2.21.0
 rsa==4.0
 scipy==1.2.0
