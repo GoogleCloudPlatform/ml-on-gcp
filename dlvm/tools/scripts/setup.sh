@@ -41,7 +41,6 @@ function err() {
 
 function check_exists() {
     if [ -z "$1" ]; then
-          echo "$1 is not defined"
           return 1
     else
           echo ""
@@ -205,6 +204,7 @@ function install_demo() {
     echo "│   Google Cloud Deep Learning VM NVIDIA T4   │"
     echo "└─────────────────────────────────────────────┘"
     echo " Demo installation starting..."
+    echo " Project setup"
     gcloud config set project ${PROJECT_NAME}
     gcloud config list
     # Deploy Virtual Machines + Load Balancer.
@@ -223,13 +223,16 @@ function install_demo() {
 }
 
 function usage() {
-    echo "Usage $0 {cleanup..|install}"
+    echo "Usage $0 {cleanup..|install|enable_firewall|firewall_status}"
     # provide more info about arguments for the start case
     # provide an example usage
 }
 
 function main() {
   # Select valid option.
+  if [[ $# -eq 2 ]]; then
+    PROJECT_NAME=$2
+  fi
   check_exists ${PROJECT_NAME} || err "Undefined Project Name. Define PROJECT_NAME variable in this script"
   case "$1" in
     cleanup)
@@ -249,4 +252,4 @@ function main() {
 
 }
 
-main $1
+main $1 $2
