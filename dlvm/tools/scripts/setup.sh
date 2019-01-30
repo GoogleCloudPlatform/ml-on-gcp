@@ -20,7 +20,7 @@ export INSTANCE_TEMPLATE_NAME="tf-inference-template"
 export IMAGE_FAMILY="tf-1-12-cu100"
 export INSTANCE_GROUP_NAME="deeplearning-instance-group"
 export STARTUP_SCRIPT="gs://cloud-samples-data/dlvm/t4/start_agent_and_inf_server.sh"
-export ZONES="us-central1-b"
+export ZONE="us-central1-b"
 export REGION="us-central1"
 export NUM_INSTANCES=2
 export UTILIZATION_TARGET=85
@@ -71,7 +71,7 @@ function create_instance_group() {
        --template ${INSTANCE_TEMPLATE_NAME} \
        --base-instance-name deeplearning-instances \
        --size ${NUM_INSTANCES} \
-       --zones ${ZONES}
+       --zones ${ZONE}
 }
 
 function verify_instances() {
@@ -206,6 +206,7 @@ function install_demo() {
     echo " Demo installation starting..."
     echo " Project setup"
     gcloud config set project ${PROJECT_NAME}
+    gcloud config set compute/zone ${ZONE}
     gcloud config list
     # Deploy Virtual Machines + Load Balancer.
     create_instance_template || err "Unable to create instance template"
@@ -223,7 +224,7 @@ function install_demo() {
 }
 
 function usage() {
-    echo "Usage $0 {cleanup..|install|enable_firewall|firewall_status}"
+    echo "Usage $0 {cleanup..|install|enable_firewall|firewall_status} {project_name}"
     # provide more info about arguments for the start case
     # provide an example usage
 }
@@ -233,7 +234,7 @@ function main() {
   if [[ $# -eq 2 ]]; then
     PROJECT_NAME=$2
   fi
-  check_exists ${PROJECT_NAME} || err "Undefined Project Name. Define PROJECT_NAME variable in this script"
+  check_exists ${PROJECT_NAME} || err "Define PROJECT_NAME variable in this script or pass it as argument"
   case "$1" in
     cleanup)
     echo "Are you sure you want to delete your cluster?"
