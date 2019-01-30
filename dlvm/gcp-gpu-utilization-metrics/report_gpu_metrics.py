@@ -28,7 +28,7 @@ GPU_UTILIZATION_METRIC_NAME = 'gpu_utilization'
 GPU_MEMORY_UTILIZATION_METRIC_NAME = 'gpu_memory_utilization'
 METADATA_SERVER = 'http://metadata/computeMetadata/v1/instance/'
 METADATA_FLAVOR = {'Metadata-Flavor': 'Google'}
-SLEEP_TIME = 5
+SLEEP_TIME = 15
 
 
 def report_metric(client, value, metric_type, instance_id, zone, project_id):
