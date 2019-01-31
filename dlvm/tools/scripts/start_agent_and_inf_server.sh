@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Install NVIDIA driver and create GPU utilizaton service.
+# Install NVIDIA driver and create GPU utilization service.
 
 # Install NVIDIA driver
 sh /opt/deeplearning/install-driver.sh

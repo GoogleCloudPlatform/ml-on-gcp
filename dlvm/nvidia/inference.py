@@ -31,10 +31,10 @@ import logging
 import requests
 import numpy as np
 
-INPUT_FILE = 'cat.jpg'
+INPUT_FILE = 'image.jpg'
 OUTPUT_FILE = '/tmp/out.json'
 
-LOAD_BALANCER = '' # Enter your Public Load Balancer IP Address.
+LOAD_BALANCER = 'localhost:8888'  # Enter your TF Serve IP Address.
 URL = 'http://%s/v1/models/default:predict' % LOAD_BALANCER
 UPLOAD_FOLDER = '/tmp/'
 NUM_REQUESTS = 10
@@ -43,6 +43,7 @@ _CONNECT_TIMEOUT_SECONDS = 90
 # Wait this long to read from an HTTP socket.
 _READ_TIMEOUT_SECONDS = 120
 MODEL_TYPE = 'jpg'  # tensor | jpg
+ENABLE_PREDICT = True
 
 
 def get_classes():
@@ -89,7 +90,7 @@ def model_predict(predict_request):
       response.raise_for_status()
       total_time += response.elapsed.total_seconds()
     print('Num requests: {} Avg latency: {} ms'.format(NUM_REQUESTS, (
-        total_time * 1000) / NUM_REQUESTS))
+      total_time * 1000) / NUM_REQUESTS))
     return response.json()
   except requests.exceptions.HTTPError as err:
     logging.exception(err)
@@ -109,11 +110,14 @@ def main():
   else:
     logging.error('Invalid Model Type')
     return
-  classes = get_classes()
-  response = model_predict(predict_request)
-  if response:
-    prediction_class = response.get('predictions')[0].get('classes')
-    print('Prediction: [%d] %s' % (prediction_class, classes[prediction_class]))
+  if ENABLE_PREDICT:
+    classes = get_classes()
+    response = model_predict(predict_request)
+    if response:
+      prediction_class = response.get('predictions')[0].get('classes') - 1
+      print(
+        'Prediction: [%d] %s' % (
+          prediction_class, classes[prediction_class]))
 
 
 if __name__ == '__main__':
