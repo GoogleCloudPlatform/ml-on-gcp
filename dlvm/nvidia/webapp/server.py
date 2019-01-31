@@ -169,7 +169,7 @@ def upload_file():
   if predict_request:
     response = model_predict(predict_request)
     if response:
-      prediction_class = response.get('predictions')[0].get('classes')
+      prediction_class = response.get('predictions')[0].get('classes') - 1
       return render_template('index.html', init=True, user_image=filename,
                              prediction=classes[prediction_class])
     else:
@@ -185,5 +185,5 @@ classes = get_classes()
 
 if __name__ == '__main__':
   if not LOAD_BALANCER:
-    raise 'Define Load Balancer'
+    raise ValueError('Define Load Balancer')
   app.run(debug=True, port=8001)

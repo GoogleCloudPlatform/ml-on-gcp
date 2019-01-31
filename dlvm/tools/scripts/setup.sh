@@ -195,7 +195,7 @@ function delete_demo() {
     gcloud -q compute firewall-rules delete www-firewall-80
     gcloud -q compute firewall-rules delete www-firewall-8888
 
-    echo "Delete has been completed"
+    echo "Cleanup has been completed"
 }
 
 function install_demo() {
@@ -224,7 +224,7 @@ function install_demo() {
 }
 
 function usage() {
-    echo "Usage $0 {cleanup..|install|enable_firewall|firewall_status} {project_name}"
+    echo "Usage $0 {cleanup|install|enable_firewall|firewall_status} {project_name}"
     # provide more info about arguments for the start case
     # provide an example usage
 }
