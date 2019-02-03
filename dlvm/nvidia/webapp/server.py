@@ -166,17 +166,21 @@ def upload_file():
 
   # Call API for prediction.
   predict_request = conversion_helper(MODEL_TYPE, filename)
-  if predict_request:
-    response = model_predict(predict_request)
-    if response:
-      prediction_class = response.get('predictions')[0].get('classes') - 1
-      return render_template('index.html', init=True, user_image=filename,
-                             prediction=classes[prediction_class])
-    else:
-      return render_template('index.html', init=True,
-                             prediction=None)
-  else:
-    logging.error('Not a valid request')
+  try:
+    if predict_request:
+      response = model_predict(predict_request)
+      if response:
+        prediction_class = response.get('predictions')[0].get('classes') - 1
+        prediction_probabilities = response.get('predictions')[0].get(
+          'probabilities')
+        if prediction_class:
+          return render_template('index.html', init=True, user_image=filename,
+                                 prediction=classes[prediction_class])
+      else:
+        return render_template('index.html', init=True,
+                               prediction=None)
+  except Exception as e:
+    logging.exception('Not a valid request: {} '.format(e))
     return redirect(request.url)
 
 

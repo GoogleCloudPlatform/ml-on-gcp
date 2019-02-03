@@ -23,6 +23,7 @@ export STARTUP_SCRIPT="gs://cloud-samples-data/dlvm/t4/start_agent_and_inf_serve
 export ZONE="us-central1-b"
 export REGION="us-central1"
 export NUM_INSTANCES=2
+export NUM_GPUS=4
 export UTILIZATION_TARGET=85
 
 # Load Balancing parameters
@@ -53,7 +54,7 @@ function create_instance_template() {
     gcloud beta compute --project=${PROJECT_NAME} instance-templates create ${INSTANCE_TEMPLATE_NAME} \
          --machine-type=n1-standard-16 \
          --maintenance-policy=TERMINATE \
-         --accelerator=type=nvidia-tesla-t4,count=4 \
+         --accelerator=type=nvidia-tesla-t4,count=${NUM_GPUS} \
          --min-cpu-platform=Intel\ Skylake \
          --tags=http-server,https-server \
          --image-family=${IMAGE_FAMILY} \
