@@ -73,7 +73,7 @@ function run_notebook() {
       # Parameters as -p key value
       echo "Manual parameters defined, running notebook now..."
       PARAMETERS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/parameters -H "Metadata-Flavor: Google")
-      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" "${PARAMETERS}" --log-output
+      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" -p "${PARAMETERS}" --log-output
     fi
   else
     # Passing parameters file
