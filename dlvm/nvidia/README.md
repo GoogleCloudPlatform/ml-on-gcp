@@ -48,11 +48,13 @@ setup.h firewall_status
 curl -X POST $IP/v1/models/default:predict -d @/tmp/out.json
 ```
 
+```bash
+python inference.py
+```
 
 ```bash
 apt-get install apache2-utils -y
-python inference.py
-ab -n 1000 -c 10 -g t4.tsv -H "Accept-Encoding: gzip,deflate" -p /tmp/out.json http://$IP/v1/models/default:predict
+ab -n 30000 -c 150 -t 600 -g t4.tsv -H "Accept-Encoding: gzip,deflate" -p /tmp/out.json http://$IP/v1/models/default:predict
 ```
 
 ```bash

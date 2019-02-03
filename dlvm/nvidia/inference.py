@@ -115,9 +115,10 @@ def main():
     response = model_predict(predict_request)
     if response:
       prediction_class = response.get('predictions')[0].get('classes') - 1
+      prediction_probabilities = response.get('predictions')[0].get('probabilities')
       print(
-        'Prediction: [%d] %s' % (
-          prediction_class, classes[prediction_class]))
+        'Prediction: [%d] %s Probability [%.2f] ' % (
+          prediction_class, classes[prediction_class], max(prediction_probabilities)))
 
 
 if __name__ == '__main__':
