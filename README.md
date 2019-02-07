@@ -14,6 +14,8 @@ really care about.
 
 1. [Genomic ancestry inference with deep learning](https://cloud.google.com/blog/big-data/2017/09/genomic-ancestry-inference-with-deep-learning) - Ancestry inference on Google Cloud Platform using the [1000 Genomes dataset](https://cloud.google.com/genomics/data/1000-genomes)
 
+2. [Running TensorFlow inference workloads at scale with TensorRT 5 and NVIDIA T4 GPUs](https://cloud.google.com/blog/products/ai-machine-learning/running-tensorflow-inference-workloads-at-scale-with-tensorrt-5-and-nvidia-t4-gpus) - Creating a demo of ML inference using Tesla T4, TensorFlow, TensorRT, Load balancing and Auo-scale.
+
 - - -
 
 ## TensorFlow
