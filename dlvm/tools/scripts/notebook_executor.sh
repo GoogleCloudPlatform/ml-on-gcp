@@ -54,11 +54,16 @@ function validate_metadata() {
 
 
 function run_notebook() {
-  
+  # Supports:
+  #   papermill gs://bucket/notebook.ipynb gs://bucket/output/notebook.ipynb
+  #   papermill gs://bucket/notebook.ipynb gs://bucket/output/notebook.ipynb -f gs://bucket/params.yaml
+  #   papermill gs://bucket/notebook.ipynb gs://bucket/output/notebook.ipynb -p epochs 128
+
+  pip install papermill[gcs]
   # Add metadata attributes.
   INPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/input_notebook -H "Metadata-Flavor: Google")
   OUTPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/output_notebook -H "Metadata-Flavor: Google")
-
+  TMP_NOTEBOOK_PATH='/tmp/notebook.ipynb'
   # Run Notebook using Papermill. https://github.com/nteract/papermill. Check if parameters option exists.
   metadata_exists parameters_file
   parameters_file_exists=$?
@@ -67,7 +72,7 @@ function run_notebook() {
     echo "Parameters file exists, running notebook now..."
     PARAMETERS_FILE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/parameters_file -H "Metadata-Flavor: Google")
     gsutil cp "${PARAMETERS_FILE}" params.yaml
-    papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" -f params.yaml --log-output    
+    papermill "${INPUT_NOTEBOOK_PATH}" "${TMP_NOTEBOOK_PATH}" -f params.yaml --log-output    
   else
     metadata_exists parameters
     parameters_exists=$?
@@ -75,13 +80,15 @@ function run_notebook() {
       # Parameters as -p key value
       echo "Manual parameters defined, running notebook now..."
       PARAMETERS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/parameters -H "Metadata-Flavor: Google")
-      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" -p "${PARAMETERS}" --log-output
+      papermill "${INPUT_NOTEBOOK_PATH}" "${TMP_NOTEBOOK_PATH}" "${PARAMETERS}" --log-output
     else
       # No parameters
       echo "Running notebook now..."
-      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" --log-output
+      papermill "${INPUT_NOTEBOOK_PATH}" "${TMP_NOTEBOOK_PATH}" --log-output
     fi    
   fi
+  # Copy file to avoid GCS limitation: https://github.com/nteract/papermill/issues/312
+  gsutil cp "${TMP_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}"
 }
 
 
