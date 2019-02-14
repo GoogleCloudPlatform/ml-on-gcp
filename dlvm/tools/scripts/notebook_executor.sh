@@ -54,7 +54,7 @@ function validate_metadata() {
 
 
 function run_notebook() {
-
+  
   # Add metadata attributes.
   INPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/input_notebook -H "Metadata-Flavor: Google")
   OUTPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/output_notebook -H "Metadata-Flavor: Google")
@@ -62,25 +62,25 @@ function run_notebook() {
   # Run Notebook using Papermill. https://github.com/nteract/papermill. Check if parameters option exists.
   metadata_exists parameters_file
   parameters_file_exists=$?
-  if [[ ${parameters_file_exists} -eq 1 ]]; then
-    metadata_exists parameters
-    parameters_exists=$?
-    if [[ ${parameters_exists} -eq 1 ]]; then
-      # No parameters
-      echo "Running notebook now..."
-      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" --log-output
-    else
-      # Parameters as -p key value
-      echo "Manual parameters defined, running notebook now..."
-      PARAMETERS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/parameters -H "Metadata-Flavor: Google")
-      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" -p "${PARAMETERS}" --log-output
-    fi
-  else
+  if [[ ${parameters_file_exists} -eq 0 ]]; then
     # Passing parameters file
     echo "Parameters file exists, running notebook now..."
     PARAMETERS_FILE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/parameters_file -H "Metadata-Flavor: Google")
     gsutil cp "${PARAMETERS_FILE}" params.yaml
-    papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" -f params.yaml --log-output
+    papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" -f params.yaml --log-output    
+  else
+    metadata_exists parameters
+    parameters_exists=$?
+    if [[ ${parameters_exists} -eq 0 ]]; then        
+      # Parameters as -p key value
+      echo "Manual parameters defined, running notebook now..."
+      PARAMETERS=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/parameters -H "Metadata-Flavor: Google")
+      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" -p "${PARAMETERS}" --log-output
+    else
+      # No parameters
+      echo "Running notebook now..."
+      papermill "${INPUT_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}" --log-output
+    fi    
   fi
 }
 
