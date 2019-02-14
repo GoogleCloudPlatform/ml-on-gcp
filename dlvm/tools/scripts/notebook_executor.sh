@@ -58,8 +58,7 @@ function run_notebook() {
   #   papermill gs://bucket/notebook.ipynb gs://bucket/output/notebook.ipynb
   #   papermill gs://bucket/notebook.ipynb gs://bucket/output/notebook.ipynb -f gs://bucket/params.yaml
   #   papermill gs://bucket/notebook.ipynb gs://bucket/output/notebook.ipynb -p epochs 128
-
-  pip install papermill[gcs]
+ 
   # Add metadata attributes.
   INPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/input_notebook_path -H "Metadata-Flavor: Google")
   OUTPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/output_notebook_path -H "Metadata-Flavor: Google")
