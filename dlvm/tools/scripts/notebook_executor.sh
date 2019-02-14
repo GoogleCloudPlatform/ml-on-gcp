@@ -61,8 +61,8 @@ function run_notebook() {
 
   pip install papermill[gcs]
   # Add metadata attributes.
-  INPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/input_notebook -H "Metadata-Flavor: Google")
-  OUTPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/output_notebook -H "Metadata-Flavor: Google")
+  INPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/input_notebook_path -H "Metadata-Flavor: Google")
+  OUTPUT_NOTEBOOK_PATH=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/output_notebook_path -H "Metadata-Flavor: Google")
   TMP_NOTEBOOK_PATH='/tmp/notebook.ipynb'
   # Run Notebook using Papermill. https://github.com/nteract/papermill. Check if parameters option exists.
   metadata_exists parameters_file
