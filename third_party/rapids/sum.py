@@ -4,15 +4,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
 import argparse
-import time
 import cupy
+import subprocess
+import sys
+import time
 
 import dask.array as da
 from dask_cuda import LocalCUDACluster
 from dask.distributed import Client, LocalCluster, wait
-import subprocess
 
 
 def create_data(rs, xdim, ydim, x_chunk_size, y_chunk_size):
