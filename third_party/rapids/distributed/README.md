@@ -39,7 +39,7 @@ cd <path> where sum.py resides
 
 ### Instructions
 
-Run the following commands from your Cloud Shell instance.
+Run the following commands to setup Distributed environment in GCP.
 
 #### Define instance template
 
