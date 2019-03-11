@@ -53,13 +53,18 @@ function gssh() {
 }
 
 function start_cuda() {
-    # Connect to remote GCP instance and start cuda
+    # Connect to remote GCP instance and start CUDA
     local SCHEDULER_IP=`hostname --all-ip-addresses | awk ' { print ( $1 )  } '`
     local SCHEDULER_PORT=8786
 
-    for i in `cat ${WORKERS_FILE}`; do 
+    # Start locally
+    echo "Starting ${WORKER} locally"
+    sh /home/jupyter/start-${WORKER}.sh ${SCHEDULER_IP} ${SCHEDULER_PORT} &
+
+    # Start in remote nodes
+    for i in `tail -n +2 workers.txt`; do
         echo "Starting ${WORKER} on node: $i"
-        gssh $i "/home/jupyter/start-${WORKER}.sh $SCHEDULER_IP $SCHEDULER_PORT" &
+        gssh $i "/home/jupyter/start-${WORKER}.sh ${SCHEDULER_IP} ${SCHEDULER_PORT}" &
     done
 }
 

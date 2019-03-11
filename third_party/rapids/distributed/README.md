@@ -50,7 +50,7 @@ export IMAGE_FAMILY="rapids-latest-gpu-experimental"
 export INSTANCE_GROUP_NAME="rapids-instance-group"
 export ZONE="us-central1-b"
 export REGION="us-central1"
-export NUM_INSTANCES=3
+export NUM_INSTANCES=5
 export NUM_GPUS=4
 export TOTAL_GPUS=$(($NUM_INSTANCES * $NUM_GPUS))
 export STARTUP_SCRIPT="gsutil cp gs://cloud-samples-data/dlvm/rapids/rapids.zip /home/jupyter/rapids.zip && unzip /home/jupyter/rapids.zip -d /home/jupyter/ && chmod +x /home/jupyter/start-dask-worker.sh && chmod +x /home/jupyter/start-dask-cuda-worker.sh && chown -R jupyter:jupyter /home/jupyter/"
@@ -121,9 +121,17 @@ gcloud compute ssh "jupyter@${MASTER}" --zone ${ZONE} --command "nohup /opt/anac
 ```
 *Connection refused error means that either VM is not yet fully up or check firewall port 22
 
+
+
+Start workers remotely and verify that cuda is working in each node
+
 ```bash
 gcloud compute ssh "jupyter@${MASTER}" --zone ${ZONE} --command "cd /home/jupyter && nohup ./start-remote-workers.sh -g" &
-gcloud compute ssh "jupyter@${MASTER}" --zone ${ZONE} --command "sudo chown -R jupyter:jupyter /home/jupyter && cd /home/jupyter/ && source /opt/anaconda3/bin/activate base && ./run.sh -g ${TOTAL_GPUS} -d"
 ```
- 
+
+Run job in a distributed way
+
+```bash
+gcloud compute ssh "jupyter@${MASTER}" --zone ${ZONE} --command "sudo chown -R jupyter:jupyter /home/jupyter && cd /home/jupyter/ && source /opt/anaconda3/bin/activate base && sudo chmod +x ./run.sh && ./run.sh -g ${TOTAL_GPUS} -d"
+``` 
 
