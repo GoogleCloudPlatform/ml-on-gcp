@@ -94,17 +94,22 @@ function create_instance_group() {
 gcloud config set project ${PROJECT_NAME}
 gcloud config set compute/zone ${ZONE}
 gcloud config list
+```
 
-## Create instances
+#### Create instances
 
+```bash
 create_instance_template 
 create_instance_group
+```
 
-## Create Firewall rule
+#### Create Firewall rule
+
+```bash
 gcloud compute firewall-rules create www-scheduler-8786 --target-tags http-server --allow tcp:8786
 ```
 
-## Wait for instances to be created
+#### Wait for instances to be created
 
 Create `workers.txt` file
 
@@ -113,7 +118,7 @@ gcloud compute instance-groups list-instances ${INSTANCE_GROUP_NAME} --region ${
 MASTER=$(head -n 1 workers.txt)
 ```
 
-Start dask-scheduler in Master node
+#### Start dask-scheduler in Master node
 
 ```bash
 gcloud compute scp ./workers.txt "jupyter@${MASTER}:/home/jupyter" --zone ${ZONE}
@@ -122,14 +127,13 @@ gcloud compute ssh "jupyter@${MASTER}" --zone ${ZONE} --command "nohup /opt/anac
 *Connection refused error means that either VM is not yet fully up or check firewall port 22
 
 
-
-Start workers remotely and verify that cuda is working in each node
+#### Start workers remotely and verify that cuda is working in each node
 
 ```bash
 gcloud compute ssh "jupyter@${MASTER}" --zone ${ZONE} --command "cd /home/jupyter && nohup ./start-remote-workers.sh -g" &
 ```
 
-Run job in a distributed way
+#### Run job in a distributed way
 
 ```bash
 gcloud compute ssh "jupyter@${MASTER}" --zone ${ZONE} --command "sudo chown -R jupyter:jupyter /home/jupyter && cd /home/jupyter/ && source /opt/anaconda3/bin/activate base && sudo chmod +x ./run.sh && ./run.sh -g ${TOTAL_GPUS} -d"
