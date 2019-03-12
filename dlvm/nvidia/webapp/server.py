@@ -36,7 +36,7 @@ import requests
 app = Flask(__name__, static_folder='static')
 
 MODEL_TYPE = 'jpg'  # tensor | jpg
-LOAD_BALANCER = ''
+LOAD_BALANCER = '' # Load Balancer IP Address (Network Services|Load Balancing)
 URL = 'http://%s/v1/models/default:predict' % LOAD_BALANCER
 UPLOAD_FOLDER = 'static/images/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
