@@ -47,8 +47,8 @@ function metadata_exists() {
 
 function validate_metadata() {
     # Validates mandatory parameters exist.
-    metadata_exists input_notebook || err "Input Notebook not defined"
-    metadata_exists output_notebook || err "Output Notebook not defined"
+    metadata_exists input_notebook_path || err "Input Notebook not defined"
+    metadata_exists output_notebook_path || err "Output Notebook not defined"
     return 0
 }
 
