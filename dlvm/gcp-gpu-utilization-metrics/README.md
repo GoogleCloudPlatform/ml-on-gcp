@@ -11,7 +11,7 @@ This will auto create the GPU metrics.
 
 ```bash
 git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
-cd dlvm/gcp-gpu-utilization-metrics
+cd ml-on-gcp/dlvm/gcp-gpu-utilization-metrics 
 pip install -r ./requirements.txt
 python report_gpu_metrics.py &
 ```
