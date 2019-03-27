@@ -16,6 +16,8 @@ really care about.
 
 2. [Running TensorFlow inference workloads at scale with TensorRT 5 and NVIDIA T4 GPUs](https://cloud.google.com/blog/products/ai-machine-learning/running-tensorflow-inference-workloads-at-scale-with-tensorrt-5-and-nvidia-t4-gpus) - Creating a demo of ML inference using Tesla T4, TensorFlow, TensorRT, Load balancing and Auto-scale.
 
+3. [NVIDIA’s RAPIDS joins our set of Deep Learning VM images for faster data science](https://cloud.google.com/blog/products/ai-machine-learning/nvidias-rapids-joins-our-set-of-deep-learning-vm-images-for-faster-data-science) - Google Cloud’s set of Deep Learning Virtual Machine (VM) images, which enable the one-click setup machine learning-focused development environments. But some data scientists still use a combination of pandas, Dask, scikit-learn, and Spark on traditional CPU-based instances. If you’d like to speed up your end-to-end pipeline through scale, Google Cloud’s Deep Learning VMs now include an experimental image with RAPIDS, NVIDIA’s open source and Python-based GPU-accelerated data processing and machine learning libraries that are a key part of NVIDIA’s larger collection of CUDA-X AI accelerated software. CUDA-X AI is the collection of NVIDIA's GPU acceleration libraries to accelerate deep learning, machine learning, and data analysis.
+
 - - -
 
 ## TensorFlow
