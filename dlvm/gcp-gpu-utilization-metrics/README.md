@@ -24,7 +24,7 @@ If you need to create metrics using create_metric_descriptor first run the follo
 # Define your Google Cloud Project
 export GOOGLE_CLOUD_PROJECT=<PROJECT_ID>
 git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
-cd dlvm/gcp-gpu-utilization-metrics
+cd ml-on-gcp/dlvm/gcp-gpu-utilization-metrics
 pip install -r ./requirements.txt
 python create_gpu_metrics.py
 ```
