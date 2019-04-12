@@ -14,7 +14,7 @@ grpcio==1.17.1
 h5py==2.9.0
 idna==2.8
 itsdangerous==1.1.0
-Jinja2==2.10
+Jinja2>=2.10.1
 Markdown==3.0.1
 MarkupSafe==1.1.0
 numpy==1.16.0
