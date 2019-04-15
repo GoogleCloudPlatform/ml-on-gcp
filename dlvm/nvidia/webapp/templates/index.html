@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Google Cloud Nvidia Inference</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script>$(document).on('change', '#browsebutton :file', function() {
+  var input = $(this),
+      numFiles = input.get(0).files ? input.get(0).files.length : 1,
+      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+  input.trigger('fileselect', [numFiles, label]);
+});
+
+$(document).ready( function() {
+    $('#browsebutton :file').on('fileselect', function(event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+        if( input.length ) {
+            input.val(log);
+        } else {
+            if( log ) alert(log);
+        }
+
+    });
+});
+</script>
+</head>
+<body>
+<div class="container">
+    <h3><img src="https://cloud.google.com/_static/images/cloud/icons/favicons/onecloud/apple-icon.png" style="width: 5%; height: 5%">
+    Make a prediction
+    </h3>
+    <form class="form-inline center-block" action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+        <div class="input-group">
+            <label id="browsebutton" class="btn btn-default input-group-addon" for="my-file-selector" style="background-color:white">
+                <input type="file" id="my-file-selector" name="image" style="display:none;">
+                Browse...
+            </label>
+            <input type="text" class="form-control" readonly="">
+        </div>
+      <button type="submit" class="btn btn-success">Predict</button>
+    </form>
+    <div class="text-center">
+    {% if init %}
+        <div>
+            <img src="{{ url_for('static', filename='images/'+user_image) }}" style="width: 10%; height: 10%" class="img-responsive center-block" alt="">
+        </div>
+
+        {% if prediction %}
+            <div class="alert alert-success" style="margin-top:18px;">
+                <strong>Prediction:&nbsp;</strong> {{ prediction }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger" style="margin-top:18px;">
+                <strong>System Error</strong> No prediction!
+            </div>
+        {% endif %}
+    {% endif %}
+    </div>
+
+</div>
+</body>
+</html>
