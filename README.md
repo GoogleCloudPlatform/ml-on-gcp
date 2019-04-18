@@ -18,6 +18,8 @@ really care about.
 
 3. [NVIDIA’s RAPIDS joins our set of Deep Learning VM images for faster data science](https://cloud.google.com/blog/products/ai-machine-learning/nvidias-rapids-joins-our-set-of-deep-learning-vm-images-for-faster-data-science) - Google Cloud’s set of Deep Learning Virtual Machine (VM) images, which enable the one-click setup machine learning-focused development environments. But some data scientists still use a combination of pandas, Dask, scikit-learn, and Spark on traditional CPU-based instances. If you’d like to speed up your end-to-end pipeline through scale, Google Cloud’s Deep Learning VMs now include an experimental image with RAPIDS, NVIDIA’s open source and Python-based GPU-accelerated data processing and machine learning libraries that are a key part of NVIDIA’s larger collection of CUDA-X AI accelerated software. CUDA-X AI is the collection of NVIDIA's GPU acceleration libraries to accelerate deep learning, machine learning, and data analysis.
 
+4. [Inferring Machine Learning Models from Google Cloud Functions](https://cloud.google.com/blog/products/ai-machine-learning/TBD) - Introduction to Inferring AI Platform models from Google Cloud Function endpoints.
+
 - - -
 
 ## TensorFlow
@@ -42,8 +44,14 @@ really care about.
 
 1. [Compute Engine survival training](gce/survival-training/README.md) - Introduces a framework for running resilient training jobs on Google Compute Engine.
 
-1. [Compute Engine burst training](gce/burst-training/README.md) - A guide to
+2. [Compute Engine burst training](gce/burst-training/README.md) - A guide to
    using powerful VMs to quickly and cheaply perform computationally intensive
    training jobs. (The example training job in this guide uses
    [xgboost](https://github.com/dmlc/xgboost) as well as
    [scikit-learn](http://scikit-learn.org/stable/).)
+
+- - -
+
+## Google Cloud Function
+
+1. [Google Cloud Function + AI Platform Example](gcf/gcf-ai-platform-example/README.md) - Example endpoints to infer AI Plaform models.
