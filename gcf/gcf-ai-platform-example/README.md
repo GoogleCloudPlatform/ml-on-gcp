@@ -4,7 +4,7 @@ Example code to infer Google Cloud AI Platform models from Google Cloud Function
 
 ### Example Endpoints
 
-main.py contains the example code for two endpoints:
+`main.py` contains the example code for two endpoints:
 
 * Inference Endpoint: get_demo_inference_endpoint
 * Model Meta Information Endpoint: get_demo_inference_meta_endpoint
