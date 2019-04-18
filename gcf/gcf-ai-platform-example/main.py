@@ -108,12 +108,11 @@ def get_demo_inference_endpoint(request):
     Returns:
         JSON formatted response with prediction results
     """
-    # expected content type is
     request_json = request.get_json(silent=True)
     sentence = request_json['sentence']
 
     service = _connect_service()
-    project = 'demo_project'
+    project = 'yourGCPProjectName'
     model = 'demo_model'
     response = _get_model_prediction(service, project,
                                      model=model,
@@ -131,7 +130,7 @@ def get_demo_inference_meta_endpoint():
         JSON formated response with model meta information
     """
     service = _connect_service()
-    project = 'demo_project'
+    project = 'yourGCPProjectName'
     model = 'demo_model'
     response = _get_model_meta(service, project, model=model)
     return json.dumps(response)
