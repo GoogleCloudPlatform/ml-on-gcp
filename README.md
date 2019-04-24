@@ -55,3 +55,12 @@ really care about.
 ## Google Cloud Function
 
 1. [Google Cloud Function + AI Platform Example](gcf/gcf-ai-platform-example/README.md) - Example endpoints to infer AI Plaform models.
+
+- - -
+
+## Example Zoo
+
+Collections of examples adapted to be runnable on [AI Platform](https://cloud.google.com/ai-platform/).
+
+1. [tensorflow-probability examples](/example_zoo/tensorflow/probability).
+
