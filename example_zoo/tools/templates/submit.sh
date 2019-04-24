@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-BUCKET_NAME=your-bucket/yourprefix
+BUCKET_NAME=your-bucket/your-prefix
 
 BUCKET="gs://"$BUCKET_NAME
 TRAINER_PACKAGE_PATH="trainer"
