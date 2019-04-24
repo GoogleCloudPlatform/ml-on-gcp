@@ -40,8 +40,11 @@ class CMLEPackage(object):
         # prefix to output filename mapping.
         self.outputs = {
             '': ['setup.py', 'config.yaml', 'submit.sh', 'README.md'],
-            'trainer': [self.source_name, '__init__.py', 'tfgfile_wrapper.py']
+            'trainer': [self.source_name, '__init__.py']
         }
+
+        if self.tfgfile_wrap:
+            self.outputs['trainer'].append('tfgfile_wrapper.py')
 
         # clean up previously generated package
         if os.path.exists(self.output_dir):
