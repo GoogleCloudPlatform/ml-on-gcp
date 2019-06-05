@@ -105,7 +105,7 @@ function main() {
     install_gpu_driver || err "Installation of GPU driver failed"
     validate_metadata   || err "Invalid metadata"
     run_notebook || err "Processing notebook failed"
-    delete_instance || err "Delete instance failed"
+    metadata_exists stay_alive || delete_instance || err "Delete instance failed"
 }
 
 main
