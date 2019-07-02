@@ -13,9 +13,8 @@
 # limitations under the License.
 
 
-BUCKET_NAME=your-bucket/your-prefix
+BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 
-BUCKET="gs://"$BUCKET_NAME
 TRAINER_PACKAGE_PATH="trainer"
 MAIN_TRAINER_MODULE="trainer.{name}"
 
@@ -24,7 +23,7 @@ JOB_NAME="{name}_$now"
 
 JOB_DIR=$BUCKET"/"$JOB_NAME"/"
 
-gcloud ml-engine jobs submit training $JOB_NAME \
+gcloud ai-platform jobs submit training $JOB_NAME \
     --job-dir $JOB_DIR  \
     --package-path $TRAINER_PACKAGE_PATH \
     --module-name $MAIN_TRAINER_MODULE \
@@ -33,4 +32,4 @@ gcloud ml-engine jobs submit training $JOB_NAME \
     --runtime-version 1.13 \
     --python-version 2.7 \
     -- \
-    --model_dir=$JOB_DIR\
+    --model_dir=$JOB_DIR

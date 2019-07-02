@@ -27,6 +27,8 @@ class CMLEPackage(object):
         self.branch = sample_dict['branch']
         self.source_path = sample_dict['source_path']
         self.source_name = sample_dict['source_name']
+        self.artifact = sample_dict['artifact']
+        self.wait_time = sample_dict['wait_time']
 
         # optional
         self.requires = sample_dict.get('requires', [])
@@ -39,7 +41,13 @@ class CMLEPackage(object):
 
         # prefix to output filename mapping.
         self.outputs = {
-            '': ['setup.py', 'config.yaml', 'submit.sh', 'README.md'],
+            '': [
+                'setup.py',
+                'config.yaml',
+                'submit.sh',
+                'README.md',
+                '{}_test.py'.format(self.name)
+            ],
             'trainer': [self.source_name, '__init__.py']
         }
 
@@ -58,7 +66,9 @@ class CMLEPackage(object):
             'source_name': self.source_name,
             'name': self.name,
             'requires': '' if not self.requires else ','.join("'{}'".format(req) for req in self.requires),
-            'web_url': self.web_url
+            'web_url': self.web_url,
+            'artifact': self.artifact,
+            'wait_time': self.wait_time
         }
 
 
@@ -126,7 +136,8 @@ class CMLEPackage(object):
                 if filename == self.source_name:
                     content = self.source_content
                 else:
-                    with open(os.path.join('templates', filename), 'r') as f:
+                    template_filename = 'test.py' if filename == '{}_test.py'.format(self.name) else filename
+                    with open(os.path.join('templates', template_filename), 'r') as f:
                         template = f.read()
 
                     content = template.format(**self.format_dict)
