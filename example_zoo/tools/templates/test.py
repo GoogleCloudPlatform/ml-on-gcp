@@ -35,7 +35,8 @@ def gcs_bucket_prefix():
 
     yield (bucket, prefix)
 
-    # Clean up.
+    # Clean up after sleeping for another minute.
+    time.sleep(60)
     for blob in bucket.list_blobs(prefix=prefix):
         blob.delete()
 
@@ -56,7 +57,7 @@ def test_{name}(gcs_bucket_prefix):
 
     time.sleep(WAIT_TIME)
 
-    # Cancel the job before the assertion.
+    # Cancel the job.
     subprocess.check_call(['gcloud', 'ai-platform', 'jobs', 'cancel', job_id])
 
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
