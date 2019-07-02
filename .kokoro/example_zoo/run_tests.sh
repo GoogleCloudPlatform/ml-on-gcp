@@ -17,7 +17,7 @@ set -eo pipefail
 cd github/ml-on-gcp/example_zoo
 
 export GOOGLE_CLOUD_PROJECT=caip-samples
-export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/keyfile.json
+export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/caip-samples-ml-on-gcp-example-zoo-kokoro-testing.json
 
 # Run tests
 nox || ret_code=$?
