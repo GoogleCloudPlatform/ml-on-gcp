@@ -1,4 +1,4 @@
-# Mahine Learning on Google Cloud Platform - Example Zoo Tools
+# Machine Learning on Google Cloud Platform - Example Zoo Tools
 
 This directory contains tools that copies and modifies code examples from other public repositories so that they are readily runnable on AI Platform and tested.
 
