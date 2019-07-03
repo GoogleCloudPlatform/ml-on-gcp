@@ -4,15 +4,17 @@ This is an automatically created sample based on [{org}/{repository}/{source_pat
 
 To run the sample:
 
-1. Update [submit.sh](submit.sh) with GCS bucket name and prefix:
+
+1. Update [submit.sh](submit.sh) with GCS bucket and GCP project ID:
 
 ```
 # in submit.sh
 
-BUCKET_NAME=your-bucket/your-prefix
+BUCKET=gs://your-bucket/your-
+PROJECT_ID=your-gcp-project-id
 ```
 
-2. Submit the job:
+1. Submit the job:
 
 ```
 bash submit.sh

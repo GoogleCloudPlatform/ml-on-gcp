@@ -23,6 +23,8 @@ JOB_NAME="bayesian_neural_network_$now"
 
 JOB_DIR=$BUCKET"/"$JOB_NAME"/"
 
+gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+
 gcloud ai-platform jobs submit training $JOB_NAME \
     --job-dir $JOB_DIR  \
     --package-path $TRAINER_PACKAGE_PATH \
@@ -31,5 +33,6 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --config config.yaml \
     --runtime-version 1.13 \
     --python-version 2.7 \
+    --project $EXAMPLE_ZOO_PROJECT_ID \
     -- \
     --model_dir=$JOB_DIR
