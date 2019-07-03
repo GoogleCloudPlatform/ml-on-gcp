@@ -22,7 +22,7 @@ import pytest
 
 from google.cloud import storage
 
-WAIT_TIME = 300
+WAIT_TIME = 600
 ARTIFACTS_BUCKET = os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET']
 PROJECT_ID = os.environ['EXAMPLE_ZOO_PROJECT_ID']
 
