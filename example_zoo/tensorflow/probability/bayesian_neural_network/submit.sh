@@ -14,6 +14,7 @@
 
 
 BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
+PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
 TRAINER_PACKAGE_PATH="trainer"
 MAIN_TRAINER_MODULE="trainer.bayesian_neural_network"
@@ -33,6 +34,6 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --config config.yaml \
     --runtime-version 1.13 \
     --python-version 2.7 \
-    --project $EXAMPLE_ZOO_PROJECT_ID \
+    --project $PROJECT_ID \
     -- \
     --model_dir=$JOB_DIR
