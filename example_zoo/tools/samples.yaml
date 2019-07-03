@@ -10,7 +10,7 @@ samples:
       - plot_weight_posteriors
       - plot_heldout_prediction
     artifact: weights.png
-    wait_time: 300
+    wait_time: 600
 
   - org: tensorflow
     repository: probability
