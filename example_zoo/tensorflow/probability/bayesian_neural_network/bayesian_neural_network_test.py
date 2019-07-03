@@ -24,6 +24,7 @@ from google.cloud import storage
 
 WAIT_TIME = 600
 ARTIFACTS_BUCKET = os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET']
+PROJECT_ID = os.environ['EXAMPLE_ZOO_PROJECT_ID']
 
 
 @pytest.fixture(scope='session')
@@ -36,7 +37,7 @@ def gcs_bucket_prefix():
     yield (bucket, prefix)
 
     # Clean up after sleeping for another minute.
-    time.sleep(60)
+    time.sleep(120)
     for blob in bucket.list_blobs(prefix=prefix):
         blob.delete()
 
@@ -58,7 +59,7 @@ def test_bayesian_neural_network(gcs_bucket_prefix):
     time.sleep(WAIT_TIME)
 
     # Cancel the job.
-    subprocess.check_call(['gcloud', 'ai-platform', 'jobs', 'cancel', job_id])
+    subprocess.check_call(['gcloud', 'ai-platform', 'jobs', 'cancel', job_id, '--project', PROJECT_ID])
 
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
     out_str = ' '.join(blob_names)
