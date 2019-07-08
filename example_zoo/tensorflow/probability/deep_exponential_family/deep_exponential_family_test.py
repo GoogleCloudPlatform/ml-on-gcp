@@ -42,7 +42,7 @@ def gcs_bucket_prefix():
         blob.delete()
 
 
-def test_bayesian_neural_network(gcs_bucket_prefix):
+def test_deep_exponential_family(gcs_bucket_prefix):
     bucket, prefix = gcs_bucket_prefix
 
     subprocess_env = os.environ.copy()
@@ -64,4 +64,4 @@ def test_bayesian_neural_network(gcs_bucket_prefix):
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
     out_str = ' '.join(blob_names)
 
-    assert 'weights.png' in out_str, 'Artifact "weights.png" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)
+    assert 'None' in out_str, 'Artifact "None" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)

@@ -28,6 +28,10 @@ samples:
     tfgfile_wrap:
       - plot_weight_posteriors
       - plot_heldout_prediction
+    args:
+      - "--fake_data"
+      - "--max_steps=5"
+      - "--viz_steps=5"
     artifact: weights.png
     wait_time: 600
 ```
@@ -56,4 +60,4 @@ The `requires` field specified additional packages to be added to the generated 
 
 The `tfgfile_wrap` function wraps functions in the example script that write to local disk, and write to `job-dir` specified in in `submit.sh` on Google Cloud Storage instead.  This allows the tests to inspect artifacts when the job is running on AI Platform Training.
 
-The `wait_time` field specifies how long the test will wait before checking for artifacts, and the `artifact` field specifies a portion of the artifact filename that must be observed for the job to be considered successful.
+The `wait_time` field specifies how long the test will wait before checking for artifacts, and the `artifact` field specifies a portion of the artifact filename that must be observed for the job to be considered successful.  The `args` list will be included in the generated `submit.sh`, and should be used to specify a small test dataset (testingi s done by running `submit.sh`).

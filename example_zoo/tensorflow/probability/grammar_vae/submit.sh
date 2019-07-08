@@ -36,4 +36,7 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --python-version 2.7 \
     --project $PROJECT_ID \
     -- \
-    --model_dir=$JOB_DIR
+    --model_dir=$JOB_DIR \
+    --max_steps=5 \
+    --latent_size=2 \
+    --num_units=3

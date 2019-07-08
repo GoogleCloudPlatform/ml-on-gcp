@@ -17,10 +17,14 @@ import tensorflow as tf
 
 
 def tfgfile_wrapper(f):
-    # When an example writes to local disk, change it to write to GCS.
+    # When an example writes to local disk, change it to write to GCS.  This assumes the filename argument is called 'fname' and is passed in either as a keyword argument or as the last non-keyword argument.
     @wraps(f)
     def wrapper(*args, **kwargs):
-        fname = kwargs.pop('fname')
+        if 'fname' in kwargs:
+            fname = kwargs.pop('fname')
+        else:
+            args = list(args)
+            fname = args.pop(-1)
         with tf.gfile.GFile(fname, 'w') as fobj:
             kwargs['fname'] = fobj
             return_value = f(*args, **kwargs)
