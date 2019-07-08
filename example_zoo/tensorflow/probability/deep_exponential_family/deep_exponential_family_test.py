@@ -64,4 +64,4 @@ def test_deep_exponential_family(gcs_bucket_prefix):
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
     out_str = ' '.join(blob_names)
 
-    assert 'None' in out_str, 'Artifact "None" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)
+    assert 'events.out.tfevents' in out_str, 'Artifact "events.out.tfevents" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)

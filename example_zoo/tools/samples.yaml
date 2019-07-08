@@ -40,7 +40,7 @@ samples:
       - "--fake_data"
       - "--max_steps=1000"
       - "--layer_sizes=5,3,2"
-    artifact: 
+    artifact: events.out.tfevents
     wait_time: 180
 
   # TODO: import example when updating to r0.7, requiring tf 1.14 support
@@ -145,6 +145,6 @@ samples:
       - "--max_steps=2"
       - "--base_depth=2"
     artifact: validation_reconstructions.png
-    wait_time: 180
+    wait_time: 240
 
 
