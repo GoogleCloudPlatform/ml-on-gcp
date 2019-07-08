@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import glob
 import os
 
 import nox
 
 
-# Registered examples to be tested.  Each example is represented by its top-level directory.
-EXAMPLES = [
-    'tensorflow/probability/bayesian_neural_network',
-    'tensorflow/probability/grammar_vae'
-]
+# Registered example sources to be tested.
+SOURCES = ['tensorflow/probability']
+ 
+# Each example is represented by its top-level directory.
+EXAMPLES = []
+for source in SOURCES:
+	EXAMPLES.extend(glob.glob(os.path.join(source, '*')))
 
 
 @nox.session(python='2.7')
