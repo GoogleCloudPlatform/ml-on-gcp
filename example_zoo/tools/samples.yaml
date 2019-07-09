@@ -71,7 +71,7 @@ samples:
       - "--latent_size=2"
       - "--num_units=3"
     artifact: -1.data-00000-of-00001
-    wait_time: 180
+    wait_time: 240
 
   - org: tensorflow
     repository: probability
