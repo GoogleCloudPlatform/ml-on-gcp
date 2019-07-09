@@ -33,7 +33,7 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --region us-central1 \
     --config config.yaml \
     --runtime-version 1.13 \
-    --python-version 2.7 \
+    --python-version 3.5 \
     --project $PROJECT_ID \
     -- \
-    --model_dir=$JOB_DIR
+    --model_dir=$JOB_DIR{args}

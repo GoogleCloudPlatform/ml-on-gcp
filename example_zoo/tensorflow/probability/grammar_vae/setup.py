@@ -16,7 +16,7 @@
 import setuptools
 
 REQUIRES = [
-    'tensorflow_probability==0.5',
+    'tensorflow_probability==0.6',
     
 ]
 

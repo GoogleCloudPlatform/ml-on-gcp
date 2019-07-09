@@ -22,7 +22,7 @@ import pytest
 
 from google.cloud import storage
 
-WAIT_TIME = {wait_time}
+WAIT_TIME = 180
 ARTIFACTS_BUCKET = os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET']
 PROJECT_ID = os.environ['EXAMPLE_ZOO_PROJECT_ID']
 
@@ -45,16 +45,16 @@ def gcs_bucket_prefix():
 
 
 @pytest.mark.parametrize('submit_script', SUBMIT_SCRIPTS)
-def test_{name}(gcs_bucket_prefix, submit_script):
+def test_vae(gcs_bucket_prefix, submit_script):
     bucket, prefix = gcs_bucket_prefix
 
     subprocess_env = os.environ.copy()
-    subprocess_env['EXAMPLE_ZOO_ARTIFACTS_BUCKET'] = 'gs://{{}}/{{}}'.format(os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET'], prefix)
+    subprocess_env['EXAMPLE_ZOO_ARTIFACTS_BUCKET'] = 'gs://{}/{}'.format(os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET'], prefix)
 
     out = subprocess.check_output(['bash', submit_script], env=subprocess_env)
     out_str = out.decode('ascii')
 
-    assert 'QUEUED' in out_str, 'Job submission failed: {{}}'.format(out_str)
+    assert 'QUEUED' in out_str, 'Job submission failed: {}'.format(out_str)
 
     # Get jobId so we can cancel the job easily.
     job_id = re.match(r'jobId: (.+)\b', out_str).group(1)
@@ -67,4 +67,4 @@ def test_{name}(gcs_bucket_prefix, submit_script):
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
     out_str = ' '.join(blob_names)
 
-    assert '{artifact}' in out_str, 'Artifact "{artifact}" not found in bucket {{}} with prefix {{}} after {{}} seconds.'.format(bucket, prefix, WAIT_TIME)
+    assert '.data-00000-of-00001' in out_str, 'Artifact ".data-00000-of-00001" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)

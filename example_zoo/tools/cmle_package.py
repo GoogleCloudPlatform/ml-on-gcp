@@ -30,6 +30,12 @@ class CMLEPackage(object):
         self.artifact = sample_dict['artifact']
         self.wait_time = sample_dict['wait_time']
 
+        if 'args' in sample_dict:
+            sep = ' \\\n    '
+            self.args = sep + sep.join(sample_dict['args'])
+        else:
+            self.args = ''
+
         # optional
         self.requires = sample_dict.get('requires', [])
         self.tfgfile_wrap = sample_dict.get('tfgfile_wrap', [])
@@ -44,7 +50,8 @@ class CMLEPackage(object):
             '': [
                 'setup.py',
                 'config.yaml',
-                'submit.sh',
+                'submit_27.sh',
+                'submit_35.sh',
                 'README.md',
                 '{}_test.py'.format(self.name)
             ],
@@ -68,7 +75,8 @@ class CMLEPackage(object):
             'requires': '' if not self.requires else ','.join("'{}'".format(req) for req in self.requires),
             'web_url': self.web_url,
             'artifact': self.artifact,
-            'wait_time': self.wait_time
+            'wait_time': self.wait_time,
+            'args': self.args
         }
 
 

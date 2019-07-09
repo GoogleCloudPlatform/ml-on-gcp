@@ -17,10 +17,10 @@ BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
 TRAINER_PACKAGE_PATH="trainer"
-MAIN_TRAINER_MODULE="trainer.grammar_vae"
+MAIN_TRAINER_MODULE="trainer.latent_dirichlet_allocation_edward2"
 
 now=$(date +"%Y%m%d_%H%M%S")
-JOB_NAME="grammar_vae_$now"
+JOB_NAME="latent_dirichlet_allocation_edward2_$now"
 
 JOB_DIR=$BUCKET"/"$JOB_NAME"/"
 
@@ -33,7 +33,12 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --region us-central1 \
     --config config.yaml \
     --runtime-version 1.13 \
-    --python-version 2.7 \
+    --python-version 3.5 \
     --project $PROJECT_ID \
     -- \
-    --model_dir=$JOB_DIR
+    --model_dir=$JOB_DIR \
+    --fake_data \
+    --max_steps=5 \
+    --delete_existing \
+    --viz_steps=5 \
+    --learning_rate=1e-7

@@ -22,9 +22,11 @@ import pytest
 
 from google.cloud import storage
 
-WAIT_TIME = 600
+WAIT_TIME = 180
 ARTIFACTS_BUCKET = os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET']
 PROJECT_ID = os.environ['EXAMPLE_ZOO_PROJECT_ID']
+
+SUBMIT_SCRIPTS = ['submit_27.sh', 'submit_35.sh']
 
 
 @pytest.fixture(scope='session')
@@ -42,13 +44,14 @@ def gcs_bucket_prefix():
         blob.delete()
 
 
-def test_bayesian_neural_network(gcs_bucket_prefix):
+@pytest.mark.parametrize('submit_script', SUBMIT_SCRIPTS)
+def test_bayesian_neural_network(gcs_bucket_prefix, submit_script):
     bucket, prefix = gcs_bucket_prefix
 
     subprocess_env = os.environ.copy()
     subprocess_env['EXAMPLE_ZOO_ARTIFACTS_BUCKET'] = 'gs://{}/{}'.format(os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET'], prefix)
 
-    out = subprocess.check_output(['bash', 'submit.sh'], env=subprocess_env)
+    out = subprocess.check_output(['bash', submit_script], env=subprocess_env)
     out_str = out.decode('ascii')
 
     assert 'QUEUED' in out_str, 'Job submission failed: {}'.format(out_str)

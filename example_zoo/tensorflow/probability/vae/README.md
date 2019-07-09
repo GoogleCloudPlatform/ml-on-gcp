@@ -1,6 +1,6 @@
-# AI Platform Example Zoo: {name}
+# AI Platform Example Zoo: vae
 
-This is an automatically created sample based on [{org}/{repository}/{source_path}/{source_name}]({web_url}).
+This is an automatically created sample based on [tensorflow/probability/tensorflow_probability/examples/vae.py](https://github.com/tensorflow/probability/blob/r0.6/tensorflow_probability/examples/vae.py).
 
 To run the sample:
 
