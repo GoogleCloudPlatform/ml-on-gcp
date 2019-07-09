@@ -50,7 +50,8 @@ class CMLEPackage(object):
             '': [
                 'setup.py',
                 'config.yaml',
-                'submit.sh',
+                'submit_27.sh',
+                'submit_35.sh',
                 'README.md',
                 '{}_test.py'.format(self.name)
             ],
