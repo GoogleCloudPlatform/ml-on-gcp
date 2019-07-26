@@ -24,7 +24,7 @@ really care about.
 
 ## TensorFlow
 
-1. [Estimators](tensorflow/tf-estimators.ipynb) - A guide to the Estimator
+1. [Estimators](tutorials/tensorflow/tf-estimators.ipynb) - A guide to the Estimator
    interface.
 
 
@@ -32,11 +32,11 @@ really care about.
 
 ## scikit-learn
 
-1. [scikit-learn on GCE](sklearn/titanic) - Train a simple model with scikit-learn on a Google Compute Engine
+1. [scikit-learn on GCE](tutorials/sklearn/titanic) - Train a simple model with scikit-learn on a Google Compute Engine
 
-2. [Model serve](sklearn/gae_serve) - Serve model with Google App Engine and Cloud Endpoints.
+2. [Model serve](tutorials/sklearn/gae_serve) - Serve model with Google App Engine and Cloud Endpoints.
 
-3. [Hyperparameter search](sklearn/hpsearch) - Hyperparameter search on a Google Kubernetes Engine cluster from a Jupyter notebook.
+3. [Hyperparameter search](tutorials/sklearn/hpsearch) - Hyperparameter search on a Google Kubernetes Engine cluster from a Jupyter notebook.
 
 - - -
 
