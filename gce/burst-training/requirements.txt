@@ -15,6 +15,6 @@ pytz==2017.3
 scikit-learn==0.19.1
 scipy==1.0.0
 six==1.11.0
-tensorflow==1.4.1
+tensorflow==1.12.2
 tensorflow-tensorboard==0.4.0rc3
 Werkzeug==0.13
