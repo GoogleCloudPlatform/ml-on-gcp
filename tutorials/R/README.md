@@ -23,7 +23,7 @@ The notebooks use the R 3.5.3 kernel. You can run these notebooks in [AI Platfor
 7. Clone the cloudml-samples Github repository by executing the following shell command:
 
 ``` bash
-git clone https://github.com/GoogleCloudPlatform/cloudml-samples.git
+git clone https://github.com/ml-on-gcp/ml-on-gcp.git
 ```
 
 8. When the command finishes, you will notice that a cloudml-sample folder appeared in the left pan. Navigate to cloudml-samples>notebooks>R
@@ -32,7 +32,7 @@ git clone https://github.com/GoogleCloudPlatform/cloudml-samples.git
 9. Run the following commands to create and download the service account key:
 
 ``` bash
-cd cloudml-samples/notebooks/R 
+cd ml-on-gcp/tutorials/R 
 gcloud config set project [YOUR-PROJECT-ID]
 gcloud auth list 
 ```
