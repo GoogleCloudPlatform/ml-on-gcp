@@ -94,7 +94,6 @@ class CMLEPackage(object):
         return content.format(**self.format_dict)
 
 
-    # TODO: use re.sub
     def add_tfgfile_wrapper(self, content):
         lines = []
         add_import = True
@@ -113,8 +112,21 @@ class CMLEPackage(object):
 
 
     def add_job_dir_flag(self, content):
-        'flags.DEFINE_string(name="job-dir", default="/tmp", help="AI Platform Training passes this to the training script.")'
-        pass
+        flags_define = 'flags.DEFINE_string(name="job-dir", default="/tmp", help="AI Platform Training passes this to the training script.")'
+        lines = []
+        add_flags_define = False
+        for line in content.split('\n'):
+            # inject the flags define line right after the import
+            if add_flags_define == True:
+                lines.append(flags_define)
+                add_flags_define = False
+
+            if line == 'from absl import flags':
+                add_flags_define = True                
+
+            lines.append(line)
+
+        return '\n'.join(lines)
 
 
     def build_pipes(self):
@@ -158,7 +170,7 @@ class CMLEPackage(object):
             )
 
         # source
-        source_transformations = []
+        source_transformations = [self.add_job_dir_flag]
 
         if self.tfgfile_wrap:
             source_transformations.append(self.add_tfgfile_wrapper)

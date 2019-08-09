@@ -1,0 +1,15 @@
+org: tensorflow
+repository: models
+samples:
+  - branch: "r1.13.0"
+    module_path: ""
+    script_path: official/mnist
+    script_name: mnist.py
+    other_sources:
+      - official/mnist/dataset.py
+      - official/utils
+    args:
+      - "--export_dir=$JOB_DIR"
+      - "--train_epochs=2"
+    artifact: saved_model.pb
+    wait_time: 180

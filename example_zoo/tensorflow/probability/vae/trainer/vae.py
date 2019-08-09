@@ -117,6 +117,7 @@ import os
 
 # Dependency imports
 from absl import flags
+flags.DEFINE_string(name="job-dir", default="/tmp", help="AI Platform Training passes this to the training script.")
 import numpy as np
 from six.moves import urllib
 import tensorflow as tf

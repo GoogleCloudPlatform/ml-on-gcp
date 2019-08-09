@@ -62,6 +62,7 @@ import time
 
 # Dependency imports
 from absl import flags
+flags.DEFINE_string(name="job-dir", default="/tmp", help="AI Platform Training passes this to the training script.")
 import six
 import tensorflow as tf
 import tensorflow_probability as tfp

@@ -19,7 +19,10 @@ import nox
 
 
 # Registered example sources to be tested.
-SOURCES = ['tensorflow/probability']
+SOURCES = [
+	'tensorflow/probability',
+	'tensorflow/models'
+]
  
 # Each example is represented by its top-level directory.
 EXAMPLES = []
