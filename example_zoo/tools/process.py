@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from contextlib import contextmanager
+import glob
 import os
 import shutil
 import tempfile
@@ -21,9 +22,7 @@ import yaml
 from cmle_package import CMLEPackage
 from git import Repo
 
-CONFIG_FILENAMES = [
-    'tf_probability_samples.yaml'
-]
+CONFIG_FILENAMES = glob.glob('*_samples.yaml')
 GITHUB_URL_TEMPLATE = 'https://github.com/{}/{}.git'
 
 
