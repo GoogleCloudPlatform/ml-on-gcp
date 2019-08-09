@@ -72,6 +72,8 @@ class CMLEPackage(object):
         self.working_dir = self.repo.working_dir
 
         # optional configs
+        self.other_sources = sample_dict.get('other_sources', [])
+
         if 'args' in sample_dict:
             sep = ' \\\n    '
             self.args = sep + sep.join(sample_dict['args'])
@@ -110,6 +112,11 @@ class CMLEPackage(object):
         return '\n'.join(lines)
 
 
+    def add_job_dir_flag(self, content):
+        'flags.DEFINE_string(name="job-dir", default="/tmp", help="AI Platform Training passes this to the training script.")'
+        pass
+
+
     def build_pipes(self):
         for template_filename in self.TEMPLATE_FILENAMES:
             self.pipes.append(
@@ -129,13 +136,17 @@ class CMLEPackage(object):
             )
         )
 
-        # init
-        self.pipes.append(
-            Pipe(
-                'templates/__init__.py',
-                os.path.join(self.output_dir, self.output_script_path, '__init__.py')
+        # add __init__.py at all levels
+        parts = self.output_script_path.split('/')
+        current_path = ''
+        for part in parts:
+            current_path = os.path.join(current_path, part)
+            self.pipes.append(
+                Pipe(
+                    'templates/__init__.py',
+                    os.path.join(self.output_dir, current_path, '__init__.py')
+                )
             )
-        )
 
         # tfgfile_wrapper if needed
         if self.tfgfile_wrap:
@@ -161,6 +172,13 @@ class CMLEPackage(object):
         )
 
         # other source files/directories
+        for other_source in self.other_sources:
+            self.pipes.append(
+                Pipe(
+                    os.path.join(self.working_dir, other_source),
+                    os.path.join(self.output_dir, other_source)
+                )
+            )
 
 
     @property
@@ -181,29 +199,17 @@ class CMLEPackage(object):
 
     @property
     def package_path(self):
-        return self.output_script_path
-        # if self.script_path:
-        #     return self.script_path.split('/')[0]
-        # else:
-        #     return 'trainer'
+        return self.output_script_path.split('/')[0]
 
 
     @property
     def module_parent(self):
         return self.output_script_path.replace('/', '.')
-        # if self.script_path:
-        #     return self.script_path.replace('/', '.')
-        # else:
-        #     return self.package_path
 
 
     @property
     def module_name(self):
         return '{}.{}'.format(self.module_parent, self.name)
-        # if self.output_script_path:
-        #     return '{}.{}'.format(self.module_parent, self.name)
-        # else:
-        #     return '{}.{}'.format(self.package_path, self.name)
 
 
     @property
@@ -250,57 +256,13 @@ class CMLEPackage(object):
         return format_dict
 
 
-    # def get_and_modify_source(self):
-    #     if self.tfgfile_wrap:
-    #         lines = []
-    #         add_import = True
-    #         for line in response:
-    #             if add_import and 'import' in line and 'from __future__' not in line:
-    #                 line = self.tfgfile_wrapper_import + line
-    #                 add_import = False
-
-    #             for to_wrap in self.tfgfile_wrap:
-    #                 if 'def {}'.format(to_wrap) in line:
-    #                     line = '@tfgfile_wrapper\n' + line
-
-    #             lines.append(line)
-
-    #         self._source_content = ''.join(lines)
-
-    #     else:
-    #         self._source_content = response.read()
-
-
-    # @property
-    # def source_content(self):
-    #     if self._source_content is None:
-    #         self.get_and_modify_source()
-    #     return self._source_content
-
-
     def generate(self):
         # clean up previously generated package
         if os.path.exists(self.output_dir):
             shutil.rmtree(self.output_dir)
-        os.makedirs(os.path.join(self.output_dir, self.package_path))
+        os.makedirs(os.path.join(self.output_dir, self.output_script_path))
 
         self.build_pipes()
 
         for pipe in self.pipes:
             pipe.run()
-
-        # for prefix, filenames in self.outputs.items():
-        #     for filename in filenames:
-        #         output_path = os.path.join(self.output_dir, prefix, filename)
-
-        #         if filename == self.script_name:
-        #             content = self.source_content
-        #         else:
-        #             template_filename = 'test.py' if filename == self.test_name else filename
-        #             with open(os.path.join('templates', template_filename), 'r') as f:
-        #                 template = f.read()
-
-        #             content = template.format(**self.format_dict)
-
-        #         with open(output_path, 'w') as f:
-        #             f.write(content)

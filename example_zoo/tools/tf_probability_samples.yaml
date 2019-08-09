@@ -130,5 +130,3 @@ samples:
       - "--base_depth=2"
     artifact: validation_reconstructions.png
     wait_time: 240
-
-

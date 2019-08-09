@@ -62,7 +62,7 @@ creates:
                 └── tfgfile_wrapper.py
 ```
 
-In this case only the example script `bayesian_neural_network.py` file is copied over from the source, specified by the `org`, `repository`, and `branch` fields.  The example script's location is specified by the `module_path`, `script_path` (optional) and `script_name` fields.  The requirement here is that `{module_path}/{script_path}/{script_name}` should point to the location on GitHub of the script that needs to be run.  If `script_path` is omitted, the output will be placed in a `trainer` directory.
+In this case only the example script `bayesian_neural_network.py` file is copied over from the source, specified by the `org`, `repository`, and `branch` fields.  The example script's location is specified by the `module_path`, `script_path` (optional) and `script_name` fields.  The requirement here is that `{module_path}/{script_path}/{script_name}` should point to the location on GitHub of the script that needs to be run.  If `script_path` is omitted, the output will be placed in a `trainer` directory.  Note that `module_path` will not be in the generated package.
 
 Other files are generated from the templates in `tools/templates`.
 
