@@ -26,7 +26,12 @@ class Pipe(object):
 
 
     def _handle_dir(self):
-        shutil.copytree(self.source, self.destination)
+        # ignore tests from sources
+        shutil.copytree(
+            self.source,
+            self.destination,
+            ignore=shutil.ignore_patterns('*_test.py')
+        )
 
 
     def _handle_file(self):
