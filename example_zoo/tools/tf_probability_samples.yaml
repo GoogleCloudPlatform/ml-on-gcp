@@ -1,5 +1,7 @@
 org: tensorflow
 repository: probability
+requires:
+  - "tensorflow_probability==0.6"
 samples:
   - branch: "r0.6"
     module_path: tensorflow_probability/examples

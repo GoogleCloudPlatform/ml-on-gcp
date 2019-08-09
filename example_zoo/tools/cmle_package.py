@@ -154,7 +154,7 @@ class CMLEPackage(object):
 
         self.pipes.append(
             Pipe(
-                os.path.join(self.working_dir, self.module_path, self.script_name),
+                os.path.join(self.working_dir, self.module_path, self.script_path, self.script_name),
                 os.path.join(self.output_dir, self.output_script_path, self.script_name),
                 source_transformations
             )

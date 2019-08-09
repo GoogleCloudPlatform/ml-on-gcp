@@ -15,10 +15,7 @@
 
 import setuptools
 
-REQUIRES = [
-    'tensorflow_probability==0.6',
-    {requires}
-]
+REQUIRES = [{requires}]
 
 setuptools.setup(name='{org}_{repository}_{name}',
       version='0.0.1',

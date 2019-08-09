@@ -31,7 +31,7 @@ def temp_clone(org, repository):
     temp_dir = tempfile.mkdtemp()
     github_url = GITHUB_URL_TEMPLATE.format(org, repository)
     print('Cloning from {}'.format(github_url))
-    repo = Repo.clone_from(github_url, temp_dir)#, multi_options=['--depth 1'])
+    repo = Repo.clone_from(github_url, temp_dir, multi_options=['--depth 1', '--no-single-branch'])
 
     try:
         yield repo
@@ -45,12 +45,16 @@ for filename in CONFIG_FILENAMES:
 
     org = config['org']
     repository = config['repository']
+    requires = config.get('requires', [])
     samples = config['samples']
 
     with temp_clone(org, repository) as repo:
         for sample_dict in samples:
             sample_dict['org'] = org
             sample_dict['repository'] = repository
+
+            # inherit from repo wide requirements
+            sample_dict.setdefault('requires', []).extend(requires)
 
             cmle_package = CMLEPackage(sample_dict, repo)
 

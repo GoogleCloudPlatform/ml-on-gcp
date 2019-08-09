@@ -17,13 +17,15 @@ This directory contains tools that copies and modifies code examples from other 
 
 ## Sample configuration
 
-The tool parses the sample configuration files such as [`tf_probability_samples.yaml`](tf_probability_samples.yaml) file to create samples.  The tool looks for filenames matching the pattern `*_samples.yaml`
+The tool parses the sample configuration files such as [`tf_probability_samples.yaml`](tf_probability_samples.yaml) file to create samples.  The tool looks for filenames matching the pattern `*_samples.yaml`, and each file should specify only one org and repository.
 
 For example,
 
 ```yaml
 org: tensorflow
 repository: probability
+requires:
+  - "tensorflow_probability==0.6"
 samples:
   - branch: "r0.6"
     module_path: tensorflow_probability/examples
@@ -38,7 +40,7 @@ samples:
       - "--max_steps=5"
       - "--viz_steps=5"
     artifact: weights.png
-    wait_time: 600
+    wait_time: 180
 ```
 
 creates:
