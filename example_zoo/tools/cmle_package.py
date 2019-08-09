@@ -147,11 +147,16 @@ class CMLEPackage(object):
             )
 
         # source
+        source_transformations = []
+
+        if self.tfgfile_wrap:
+            source_transformations.append(self.add_tfgfile_wrapper)
+
         self.pipes.append(
             Pipe(
                 os.path.join(self.working_dir, self.module_path, self.script_name),
                 os.path.join(self.output_dir, self.output_script_path, self.script_name),
-                [self.add_tfgfile_wrapper]
+                source_transformations
             )
         )
 
