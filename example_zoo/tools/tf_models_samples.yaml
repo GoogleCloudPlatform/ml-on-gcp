@@ -10,6 +10,6 @@ samples:
       - official/utils
     args:
       - "--export_dir=$JOB_DIR"
-      - "--train_epochs=2"
+      - "--train_epochs=1"
     artifact: saved_model.pb
-    wait_time: 180
+    wait_time: 300

@@ -38,4 +38,4 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     -- \
     --model_dir=$JOB_DIR \
     --export_dir=$JOB_DIR \
-    --train_epochs=2
+    --train_epochs=1
