@@ -20,7 +20,7 @@ REQUIRES = [
     {requires}
 ]
 
-setuptools.setup(name='tfp_example_{name}',
+setuptools.setup(name='{org}_{repository}_{name}',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()

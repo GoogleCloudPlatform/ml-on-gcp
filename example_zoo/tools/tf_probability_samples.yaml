@@ -1,0 +1,132 @@
+org: tensorflow
+repository: probability
+samples:
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: bayesian_neural_network.py
+    requires:
+      - "seaborn==0.9.0"
+    tfgfile_wrap:
+      - plot_weight_posteriors
+      - plot_heldout_prediction
+    args:
+      - "--fake_data"
+      - "--max_steps=5"
+      - "--viz_steps=5"
+    artifact: weights.png
+    wait_time: 180
+
+  # TODO: import example when updating to r0.7, requiring tf 1.14 support
+  # - branch: "r0.6"
+  #   module_path: tensorflow_probability/examples
+  #   script_name: cifar10_bnn.py
+  #   requires:
+  #     - "matplotlib==2.2.4"
+  #   args:
+  #     - "--fake_data"
+  #     - "--epochs=1"
+  #     - "--batch_size=5"
+  #   artifact: 
+  #   wait_time: 180
+
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: deep_exponential_family.py
+    args:
+      - "--fake_data"
+      - "--max_steps=1000"
+      - "--layer_sizes=5,3,2"
+    artifact: events.out.tfevents
+    wait_time: 180
+
+  # TODO: import example when updating to r0.7, requiring tf 1.14 support
+  # - branch: "r0.6"
+  #   module_path: tensorflow_probability/examples
+  #   script_name: disentangled_vae.py
+  #   args:
+  #     - "--fake_data"
+  #     - "--batch_size=2"
+  #     - "--hidden_size=3"
+  #     - "--latent_size_static=4"
+  #     - "--latent_size_dynamic=5"
+  #     - "--log_steps=1"
+  #     - "--max_steps=2"
+  #     - "--enable_debug_logging"
+  #   artifact: 
+  #   wait_time: 180
+
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: grammar_vae.py
+    args:
+      - "--max_steps=5"
+      - "--latent_size=2"
+      - "--num_units=3"
+    artifact: -1.data-00000-of-00001
+    wait_time: 240
+
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: latent_dirichlet_allocation_distributions.py
+    args:
+      - "--fake_data"
+      - "--max_steps=5"
+      - "--delete_existing"
+      - "--viz_steps=5"
+      - "--learning_rate=1e-7"
+    artifact: .data-00000-of-00001
+    wait_time: 180
+
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: latent_dirichlet_allocation_edward2.py
+    args:
+      - "--fake_data"
+      - "--max_steps=5"
+      - "--delete_existing"
+      - "--viz_steps=5"
+      - "--learning_rate=1e-7"
+    artifact: .data-00000-of-00001
+    wait_time: 180
+
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: logistic_regression.py
+    requires:
+      - "matplotlib==2.2.4"
+    tfgfile_wrap:
+      - visualize_decision
+    args:
+      - "--num_examples=32"
+      - "--batch_size=8"
+      - "--max_steps=50"
+    artifact: weights_inferred.png
+    wait_time: 180
+
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: vae.py
+    args:
+      - "--fake_data"
+      - "--max_steps=5"
+      - "--delete_existing"
+      - "--viz_steps=5"
+      - "--learning_rate=1e-7"
+    artifact: .data-00000-of-00001
+    wait_time: 180
+
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: vq_vae.py
+    requires:
+      - "matplotlib==2.2.4"
+    tfgfile_wrap:
+      - save_imgs
+    args:
+      - "--mnist_type='fake_data'"
+      - "--max_steps=2"
+      - "--base_depth=2"
+    artifact: validation_reconstructions.png
+    wait_time: 240
+
+

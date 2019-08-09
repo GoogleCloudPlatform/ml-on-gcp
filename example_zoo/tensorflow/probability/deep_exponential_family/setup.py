@@ -20,7 +20,7 @@ REQUIRES = [
     
 ]
 
-setuptools.setup(name='tfp_example_deep_exponential_family',
+setuptools.setup(name='tensorflow_probability_deep_exponential_family',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()

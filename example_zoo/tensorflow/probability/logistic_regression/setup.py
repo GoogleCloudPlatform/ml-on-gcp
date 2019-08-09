@@ -20,7 +20,7 @@ REQUIRES = [
     'matplotlib==2.2.4'
 ]
 
-setuptools.setup(name='tfp_example_logistic_regression',
+setuptools.setup(name='tensorflow_probability_logistic_regression',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()

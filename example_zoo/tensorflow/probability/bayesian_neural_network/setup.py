@@ -20,7 +20,7 @@ REQUIRES = [
     'seaborn==0.9.0'
 ]
 
-setuptools.setup(name='tfp_example_bayesian_neural_network',
+setuptools.setup(name='tensorflow_probability_bayesian_neural_network',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()

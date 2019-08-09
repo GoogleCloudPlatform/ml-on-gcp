@@ -20,7 +20,7 @@ REQUIRES = [
     
 ]
 
-setuptools.setup(name='tfp_example_latent_dirichlet_allocation_edward2',
+setuptools.setup(name='tensorflow_probability_latent_dirichlet_allocation_edward2',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()

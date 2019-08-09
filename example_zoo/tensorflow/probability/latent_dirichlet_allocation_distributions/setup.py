@@ -20,7 +20,7 @@ REQUIRES = [
     
 ]
 
-setuptools.setup(name='tfp_example_latent_dirichlet_allocation_distributions',
+setuptools.setup(name='tensorflow_probability_latent_dirichlet_allocation_distributions',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()

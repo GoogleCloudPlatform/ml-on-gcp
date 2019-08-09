@@ -32,7 +32,7 @@ def temp_clone(org, repository):
     temp_dir = tempfile.mkdtemp()
     github_url = GITHUB_URL_TEMPLATE.format(org, repository)
     print('Cloning from {}'.format(github_url))
-    repo = Repo.clone_from(github_url, temp_dir, multi_options=['--depth 1'])
+    repo = Repo.clone_from(github_url, temp_dir)#, multi_options=['--depth 1'])
 
     try:
         yield repo
@@ -40,7 +40,7 @@ def temp_clone(org, repository):
         shutil.rmtree(repo.working_dir)
 
 
-for fiiename in CONFIG_FILENAMES:
+for filename in CONFIG_FILENAMES:
     with open(filename, 'r') as f:
         config = yaml.load(f.read())
 
