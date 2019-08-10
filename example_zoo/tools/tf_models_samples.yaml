@@ -12,3 +12,20 @@ samples:
       - "--train_epochs=1"
     artifact: saved_model.pb
     wait_time: 300
+
+  - branch: "r1.13.0"
+    script_path: official/resnet/keras
+    script_name: keras_cifar_main.py
+    other_sources:
+      - official/resnet/cifar10_main.py
+      - official/resnet/resnet_model.py
+      - official/resnet/imagenet_processing.py
+      - official/resnet/resnet_run_loop.py
+      - official/resnet/keras/keras_common.py
+      - official/resnet/keras/resnet_cifar_model.py
+      - official/utils
+    args:
+      - "--train_epochs=1"
+      - "--use_synthetic_data"
+    artifact: .h5
+    wait_time: 300

@@ -26,11 +26,11 @@ class Pipe(object):
 
 
     def _handle_dir(self):
-        # ignore tests from sources
+        # ignore tests and test data
         shutil.copytree(
             self.source,
             self.destination,
-            ignore=shutil.ignore_patterns('*_test.py')
+            ignore=shutil.ignore_patterns('*_test.py', '*testing*')
         )
 
 
@@ -274,6 +274,7 @@ class CMLEPackage(object):
 
 
     def generate(self):
+        print('Building package for {}'.format(self.name))
         # clean up previously generated package
         if os.path.exists(self.output_dir):
             shutil.rmtree(self.output_dir)
