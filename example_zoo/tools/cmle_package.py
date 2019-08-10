@@ -65,7 +65,7 @@ class CMLEPackage(object):
         self.org = sample_dict['org']
         self.repository = sample_dict['repository']
         self.branch = sample_dict['branch']
-        self.module_path = sample_dict['module_path']
+        self.module_path = sample_dict.get('module_path', '')
         self.script_path = sample_dict.get('script_path', '')
         self.script_name = sample_dict['script_name']
         self.artifact = sample_dict['artifact']

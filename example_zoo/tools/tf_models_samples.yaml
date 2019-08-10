@@ -2,7 +2,6 @@ org: tensorflow
 repository: models
 samples:
   - branch: "r1.13.0"
-    module_path: ""
     script_path: official/mnist
     script_name: mnist.py
     other_sources:
