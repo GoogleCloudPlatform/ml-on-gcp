@@ -45,6 +45,8 @@ class Pipe(object):
 
 
     def run(self):
+        if not os.path.exists(self.source):
+            raise ValueError('{} does not exist'.format(self.source))
         if os.path.isdir(self.source):
             self._handle_dir()
         elif os.path.isfile(self.source):
@@ -188,14 +190,33 @@ class CMLEPackage(object):
             )
         )
 
-        # other source files/directories
-        for other_source in self.other_sources:
+        # # other source files/directories
+        # for other_source in self.other_sources:
+        #     self.pipes.append(
+        #         Pipe(
+        #             os.path.join(self.working_dir, other_source),
+        #             os.path.join(self.output_dir, other_source)
+        #         )
+        #     )
+
+        # experimental: use source_finder to find minimally required other source files
+        from source_finder import SourceFinder
+        sf = SourceFinder(
+            os.path.join(self.working_dir, self.module_path),
+            os.path.join(self.working_dir, self.module_path, self.script_path, self.script_name)
+        )
+        sf.process()
+
+        for module_path in sf.script_imports.keys():
+            rel_path = sf.path_to_relative_path(module_path)
+
             self.pipes.append(
                 Pipe(
-                    os.path.join(self.working_dir, other_source),
-                    os.path.join(self.output_dir, other_source)
+                    module_path,
+                    os.path.join(self.output_dir, rel_path)
                 )
             )
+
 
 
     @property

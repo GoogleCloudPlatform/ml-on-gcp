@@ -19,13 +19,14 @@ samples:
     other_sources:
       - official/resnet/cifar10_main.py
       - official/resnet/resnet_model.py
-      - official/resnet/imagenet_processing.py
+      - official/resnet/imagenet_preprocessing.py
       - official/resnet/resnet_run_loop.py
       - official/resnet/keras/keras_common.py
       - official/resnet/keras/resnet_cifar_model.py
       - official/utils
     args:
-      - "--train_epochs=1"
+      - "--train_steps=100"
+      - "--skip_eval"
       - "--use_synthetic_data"
     artifact: .h5
     wait_time: 300
