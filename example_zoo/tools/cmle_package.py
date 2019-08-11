@@ -35,6 +35,10 @@ class Pipe(object):
 
 
     def _handle_file(self):
+        parent, _ = os.path.split(self.destination)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
+
         with open(self.source, 'r') as source_file, open(self.destination, 'w') as destination_file:
                 content = source_file.read()
 
@@ -202,12 +206,18 @@ class CMLEPackage(object):
         # experimental: use source_finder to find minimally required other source files
         from source_finder import SourceFinder
         sf = SourceFinder(
-            os.path.join(self.working_dir, self.module_path),
+            os.path.join(self.working_dir, self.module_path, self.package_path),
             os.path.join(self.working_dir, self.module_path, self.script_path, self.script_name)
         )
         sf.process()
 
+        # import ipdb; ipdb.set_trace()
+
         for module_path in sf.script_imports.keys():
+            # skip the script itself
+            if module_path == sf.script_path:
+                continue
+
             rel_path = sf.path_to_relative_path(module_path)
 
             self.pipes.append(
