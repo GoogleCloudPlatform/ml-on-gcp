@@ -55,8 +55,8 @@ gssh $INSTANCE_NAME
 Once you login, from your terminal:
 
 ```bash
-gsutil cp gs://dpe-sandbox/tensotrt_bert_demo.tar.gz .
-Copying gs://dpe-sandbox/tensotrt_bert_demo.tar.gz...
+gsutil cp gs://aihub/assets/docker/tensotrt_bert_demo.tar.gz .
+Copying gs://aihub/assets/docker/tensotrt_bert_demo.tar.gz...
 / [1 files][ 14.8 GiB/ 14.8 GiB]   61.1 MiB/s       
 ```
 
