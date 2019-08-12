@@ -25,13 +25,16 @@ gcloud compute instances create $INSTANCE_NAME \
        --image-project=deeplearning-platform-release \
        --maintenance-policy=TERMINATE \
        --accelerator="type=nvidia-tesla-t4,count=2" \
-       --metadata="install-nvidia-driver=True" \
-       --boot-disk-size=100GB 
+       --metadata='install-nvidia-driver=True,proxy-mode=project_editors' \
+       --boot-disk-size=100GB \
+       --scopes=https://www.googleapis.com/auth/cloud-platform 
+       
 ```
 
 Note:
    - You can create this instance in any available zone that supports T4 GPUs.
    - The option install-nvidia-driver=True installs NVIDIA GPU driver automatically.
+   - The option proxy-mode=project_editors makes the VM visible in the [Notebook Instances section.](https://console.cloud.google.com/mlengine/notebooks/instances)
     
 #### Login to instance
 
