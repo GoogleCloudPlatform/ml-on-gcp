@@ -15,21 +15,22 @@
 Create a Compute Engine with at least 100 GB Hard Disk
 
 ```bash
+export CONTAINER="gcr.io/dpe-cloud-mle/tensortrt_bert_sample:latest"
 export IMAGE_FAMILY="common-cu101"
 export ZONE="us-central1-b"
 export INSTANCE_NAME="bert-experiment"
+export INSTANCE_TYPE="n1-standard-16"
 gcloud compute instances create $INSTANCE_NAME \
-       --zone=$ZONE \
-       --image-family=$IMAGE_FAMILY \
-       --machine-type=n1-standard-16 \
-       --image-project=deeplearning-platform-release \
-       --maintenance-policy=TERMINATE \
-       --accelerator="type=nvidia-tesla-t4,count=2" \
-       --metadata='install-nvidia-driver=True,proxy-mode=project_editors' \
-       --boot-disk-size=100GB \
-       --scopes=https://www.googleapis.com/auth/cloud-platform 
-       --tags http-server,https-server
-       
+        --zone=$ZONE \
+        --image-family=$IMAGE_FAMILY \
+        --image-project=deeplearning-platform-release \
+        --machine-type=$INSTANCE_TYPE \
+        --boot-disk-size=120GB \
+        --maintenance-policy TERMINATE --restart-on-failure \
+        --accelerator="type=nvidia-tesla-t4,count=2" \
+        --scopes=https://www.googleapis.com/auth/cloud-platform \
+        --metadata="install-nvidia-driver=True,proxy-mode=project_editors,container=${CONTAINER}" \
+        --tags http-server,https-server       
 ```
 
 Note:
@@ -50,43 +51,16 @@ function gssh() {
 gssh $INSTANCE_NAME
 ```
 
-#### Download Docker image
-
-Once you login, from your terminal:
-
-```bash
-gsutil cp gs://aihub/assets/docker/tensotrt_bert_demo.tar.gz .
-Copying gs://aihub/assets/docker/tensotrt_bert_demo.tar.gz...
-/ [1 files][ 14.8 GiB/ 14.8 GiB]   61.1 MiB/s       
-```
-
-#### Extract Docker image
-
-```bash
-gunzip tensotrt_bert_demo.tar.gz
-ls -alh
-total 20G
-drwxr-xr-x  2 root root 4.0K Aug 12 04:13 .
-drwxr-xr-x 23 root root 4.0K Aug 12 02:54 ..
--rw-r--r--  1 root root  20G Aug 12 02:57 tensotrt_bert_demo.tar
-```
 
 ## Running the Docker image
 
 ### 1. Run the docker image
 
-Uncompress the tar.gz file:
-```
-tensotrt_bert_demo.tar.gz
-```
-and load it with docker (it will accept a tar file)
+
+Run
 
 ```
-docker load -i tensotrt_bert_demo.tar
-```
-run
-```
-nvidia-docker run  --publish 0.0.0.0:8888:8888 -e LD_LIBRARY_PATH=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/tensorrt/lib -it tensortrt_bert_demo:demo bash
+nvidia-docker run  --publish 0.0.0.0:8888:8888 -e LD_LIBRARY_PATH=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/tensorrt/lib -it gcr.io/dpe-cloud-mle/tensortrt_bert_sample:latest bash
 ```
 
 ### 2. Test the TensorRT Engine creation
@@ -96,6 +70,10 @@ The starting directory is
 /workspace
 ```
 Navigate to **/workspace/TensorRT/demo/BERT**
+
+```
+cd TensorRT/demo/BERT
+```
 
 From the docker container the folder structure is:
 
