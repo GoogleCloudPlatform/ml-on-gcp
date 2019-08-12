@@ -28,6 +28,7 @@ gcloud compute instances create $INSTANCE_NAME \
        --metadata='install-nvidia-driver=True,proxy-mode=project_editors' \
        --boot-disk-size=100GB \
        --scopes=https://www.googleapis.com/auth/cloud-platform 
+       --tags http-server,https-server
        
 ```
 
@@ -182,14 +183,19 @@ Run:
 ```
 jupyter notebook --ip=0.0.0.0 --allow-root
 ```
-Now you should be able to connect with a browser and run the notebook:
 
+Now you should be able to connect with a browser and run the notebook:
 ```
 BERT_TRT.ipynb
 ```
+
+Note: Verify you open the firewall, when accessing the notebook for external. Open TCP port 8888.
+
 The default configuration if set to run BERT base but there are options
 to also run BERT Large un-commenting the lines for the TensorRT engine location
 and the vocab.txt file.
+
+
 
 
 # 4. Compile TensorRT Demo BERT
