@@ -4,9 +4,6 @@ samples:
   - branch: "r1.13.0"
     script_path: official/mnist
     script_name: mnist.py
-    # other_sources:
-    #   - official/mnist/dataset.py
-    #   - official/utils
     args:
       - "--export_dir=$JOB_DIR"
       - "--train_epochs=1"
@@ -16,14 +13,6 @@ samples:
   - branch: "r1.13.0"
     script_path: official/resnet/keras
     script_name: keras_cifar_main.py
-    # other_sources:
-    #   - official/resnet/cifar10_main.py
-    #   - official/resnet/resnet_model.py
-    #   - official/resnet/imagenet_preprocessing.py
-    #   - official/resnet/resnet_run_loop.py
-    #   - official/resnet/keras/keras_common.py
-    #   - official/resnet/keras/resnet_cifar_model.py
-    #   - official/utils
     args:
       - "--train_steps=100"
       - "--skip_eval"

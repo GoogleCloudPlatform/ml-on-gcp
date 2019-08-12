@@ -194,24 +194,14 @@ class CMLEPackage(object):
             )
         )
 
-        # # other source files/directories
-        # for other_source in self.other_sources:
-        #     self.pipes.append(
-        #         Pipe(
-        #             os.path.join(self.working_dir, other_source),
-        #             os.path.join(self.output_dir, other_source)
-        #         )
-        #     )
-
-        # experimental: use source_finder to find minimally required other source files
+        # other source files/directories
+        # use source_finder to find minimally required other source files
         from source_finder import SourceFinder
         sf = SourceFinder(
             os.path.join(self.working_dir, self.module_path, self.package_path),
             os.path.join(self.working_dir, self.module_path, self.script_path, self.script_name)
         )
         sf.process()
-
-        # import ipdb; ipdb.set_trace()
 
         for module_path in sf.script_imports.keys():
             # skip the script itself
