@@ -160,6 +160,14 @@ For BERT Base (This is our configuration of choice)
 ```
 python bert_model.py -m "./data/finetuned_model_base_fp32/model.ckpt-8144" -o ./bert_python_base.engine -c ./data/uncased_L-12_H-768_A-12/
 ```
+
+Verify you see:
+```
+Serializing the engine....
+Saving the engine....
+Done.
+```
+
 _If this does not work it is possible that you need to rebuild the c++ binary sampleBERT.cpp_.
 _See Paragraph 4 for this_
 
