@@ -70,9 +70,21 @@ class SourceFinder(object):
                 if path not in self.script_imports:
                     to_visit.append(path)
 
+                # also add sibling and all parent __init__.py of the script currently being visited
+                parent, tail = os.path.split(path)
+                while tail != self.package_name and parent:
+                    init_path = os.path.join(parent, '__init__.py')
+                    if not os.path.exists(init_path):
+                        raise FileNotFoundError(init_path)
+
+                    if init_path not in self.script_imports:
+                        to_visit.append(init_path)
+
+                    parent, tail = os.path.split(parent)
+
 
     def process_script(self, path):
-        # side effect: updates self.externals and self.script_imports
+        # side effect: updates set self.externals and dict self.script_imports (adding value only for key = path)
         # returns the script_imports of the processed script
         with open(path, 'r') as f:
             code = f.read()
