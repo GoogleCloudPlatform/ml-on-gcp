@@ -15,7 +15,7 @@
 Create a Compute Engine with at least 100 GB Hard Disk
 
 ```bash
-export CONTAINER="gcr.io/dpe-cloud-mle/tensortrt_bert_sample:latest"
+export CONTAINER="gcr.io/dpe-cloud-mle/tensorrt_bert_sample:dev"
 export IMAGE_FAMILY="common-container"
 export ZONE="us-central1-b"
 export INSTANCE_NAME="bert-experiment"
@@ -65,7 +65,7 @@ sudo systemctl stop jupyter.service
 Run
 
 ```
-nvidia-docker run  --publish 0.0.0.0:8080:8888 -e LD_LIBRARY_PATH=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/tensorrt/lib -it gcr.io/dpe-cloud-mle/tensortrt_bert_sample:latest bash
+nvidia-docker run  --publish 0.0.0.0:8080:8888 -e LD_LIBRARY_PATH=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/tensorrt/lib -it gcr.io/dpe-cloud-mle/tensorrt_bert_sample:dev bash
 ```
 
 ### 2. Test the TensorRT Engine creation
