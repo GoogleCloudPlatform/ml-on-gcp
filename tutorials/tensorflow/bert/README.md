@@ -65,7 +65,6 @@ gcloud compute instances create $INSTANCE_NAME \
         --tags http-server,https-server       
 ```
 
-
 #### Login to instance
 
 Login via SSH to the compute instance:
@@ -251,7 +250,6 @@ Note: Verify you open the firewall, when accessing the notebook for external. Op
 The default configuration if set to run BERT base but there are options
 to also run BERT Large un-commenting the lines for the TensorRT engine location
 and the vocab.txt file.
-
 
 
 # 4. Compile TensorRT Demo BERT
