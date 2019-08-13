@@ -40,6 +40,7 @@ Note:
    - The option install-nvidia-driver=True installs NVIDIA GPU driver automatically.
    - The option proxy-mode=project_editors makes the VM visible in the [Notebook Instances section.](https://console.cloud.google.com/mlengine/notebooks/instances)
     
+Once instance is created, you should be able to access directly to Jupyter Lab notebook via `AI Platform | Notebooks | Open JupyterLab`.
 
 ### Full installation
 
