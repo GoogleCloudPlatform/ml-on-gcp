@@ -22,7 +22,7 @@ import pytest
 
 from google.cloud import storage
 
-WAIT_TIME = 300
+WAIT_TIME = 180
 ARTIFACTS_BUCKET = os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET']
 PROJECT_ID = os.environ['EXAMPLE_ZOO_PROJECT_ID']
 
@@ -67,4 +67,4 @@ def test_keras_cifar_main(gcs_bucket_prefix, submit_script):
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
     out_str = ' '.join(blob_names)
 
-    assert '.h5' in out_str, 'Artifact ".h5" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)
+    assert 'events' in out_str, 'Artifact "events" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)

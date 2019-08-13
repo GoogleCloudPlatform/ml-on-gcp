@@ -20,5 +20,5 @@ samples:
       - "--train_steps=100"
       - "--skip_eval"
       - "--use_synthetic_data"
-    artifact: .h5
-    wait_time: 300
+    artifact: events
+    wait_time: 180
