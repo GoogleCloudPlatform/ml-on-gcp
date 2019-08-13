@@ -12,7 +12,7 @@ or you can install the image from scratch.
 
 ### Simplified installation
 
-#### Create Google Cloud Compute Engine instance
+#### Create Google Cloud Compute Engine instance with custom container
 
 Create a Compute Engine with at least 100 GB Hard Disk
 
@@ -42,6 +42,8 @@ Note:
     
 
 ### Full installation
+
+#### Create Google Cloud Compute Engine instance 
 
 Create a Compute Engine with at least 100 GB Hard Disk
 
