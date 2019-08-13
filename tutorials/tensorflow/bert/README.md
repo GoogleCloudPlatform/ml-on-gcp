@@ -56,11 +56,16 @@ gssh $INSTANCE_NAME
 
 ### 1. Run the docker image
 
+Stop existing Jupyer Lab
+
+```
+sudo systemctl stop jupyter.service
+```
 
 Run
 
 ```
-nvidia-docker run  --publish 0.0.0.0:8888:8888 -e LD_LIBRARY_PATH=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/tensorrt/lib -it gcr.io/dpe-cloud-mle/tensortrt_bert_sample:latest bash
+nvidia-docker run  --publish 0.0.0.0:8080:8888 -e LD_LIBRARY_PATH=LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/tensorrt/lib -it gcr.io/dpe-cloud-mle/tensortrt_bert_sample:latest bash
 ```
 
 ### 2. Test the TensorRT Engine creation
@@ -72,7 +77,7 @@ The starting directory is
 Navigate to **/workspace/TensorRT/demo/BERT**
 
 ```
-cd TensorRT/demo/BERT
+cd /workspace/TensorRT/demo/BERT/
 ```
 
 From the docker container the folder structure is:
