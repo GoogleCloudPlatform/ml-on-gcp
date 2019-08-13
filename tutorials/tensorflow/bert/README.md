@@ -16,7 +16,7 @@ Create a Compute Engine with at least 100 GB Hard Disk
 
 ```bash
 export CONTAINER="gcr.io/dpe-cloud-mle/tensortrt_bert_sample:latest"
-export IMAGE_FAMILY="common-cu101"
+export IMAGE_FAMILY="common-container"
 export ZONE="us-central1-b"
 export INSTANCE_NAME="bert-experiment"
 export INSTANCE_TYPE="n1-standard-16"
