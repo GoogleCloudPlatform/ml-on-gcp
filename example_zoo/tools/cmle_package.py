@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import re
 import shutil
 import urllib2
 
@@ -74,6 +75,7 @@ class CMLEPackage(object):
         self.module_path = sample_dict.get('module_path', '')
         self.script_path = sample_dict.get('script_path', '')
         self.script_name = sample_dict['script_name']
+        self.replace = sample_dict.get('replace', [])
         self.artifact = sample_dict['artifact']
         self.wait_time = sample_dict['wait_time']
 
@@ -140,6 +142,13 @@ class CMLEPackage(object):
         return '\n'.join(lines)
 
 
+    def make_replace_transformation(self, match, replace):
+        def replace_transformation(content):
+            return content.replace(match, replace)
+
+        return replace_transformation
+
+
     def build_pipes(self):
         for template_filename in self.TEMPLATE_FILENAMES:
             self.pipes.append(
@@ -185,6 +194,11 @@ class CMLEPackage(object):
 
         if self.tfgfile_wrap:
             source_transformations.append(self.add_tfgfile_wrapper)
+
+        for match, replace in self.replace:
+            source_transformations.append(
+                self.make_replace_transformation(match, replace)
+            )
 
         self.pipes.append(
             Pipe(

@@ -13,6 +13,9 @@ samples:
   - branch: "r1.13.0"
     script_path: official/resnet/keras
     script_name: keras_cifar_main.py
+    replace:
+      - - "return run(flags.FLAGS)"
+        - "run(flags.FLAGS)"
     args:
       - "--train_steps=100"
       - "--skip_eval"
