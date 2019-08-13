@@ -11,5 +11,9 @@
 # limitations under the License.
 FROM gcr.io/dpe-cloud-mle/tensorrt_bert_sample:dev
 COPY ./script.sh /usr/local/bin/start.sh
+ARG LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/tensorrt/lib
 EXPOSE 8080
 ENTRYPOINT /usr/local/bin/start.sh
+
+# docker build --build-arg LD_LIBRARY_PATH=$LD_LIBRARY_PATH -t gcr.io/dpe-cloud-mle/tensorrt_bert_sample:staging ./
