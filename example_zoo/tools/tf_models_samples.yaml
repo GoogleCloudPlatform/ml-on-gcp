@@ -17,6 +17,21 @@ samples:
       - - "return run(flags.FLAGS)"
         - "run(flags.FLAGS)"
     args:
+      - "--export_dir=$JOB_DIR"
+      - "--train_steps=100"
+      - "--skip_eval"
+      - "--use_synthetic_data"
+    artifact: events
+    wait_time: 180
+
+  - branch: "r1.13.0"
+    script_path: official/resnet/keras
+    script_name: keras_imagenet_main.py
+    replace:
+      - - "return run(flags.FLAGS)"
+        - "run(flags.FLAGS)"
+    args:
+      - "--export_dir=$JOB_DIR"
       - "--train_steps=100"
       - "--skip_eval"
       - "--use_synthetic_data"

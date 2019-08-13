@@ -17,10 +17,10 @@ BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
 PACKAGE_PATH="official"
-MODULE_NAME="official.resnet.keras.keras_cifar_main"
+MODULE_NAME="official.resnet.keras.keras_imagenet_main"
 
 now=$(date +"%Y%m%d_%H%M%S")
-JOB_NAME="keras_cifar_main_$now"
+JOB_NAME="keras_imagenet_main_$now"
 
 JOB_DIR=$BUCKET"/"$JOB_NAME"/"
 
