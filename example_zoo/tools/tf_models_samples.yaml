@@ -1,0 +1,50 @@
+org: tensorflow
+repository: models
+samples:
+  - branch: "r1.13.0"
+    script_path: official/mnist
+    script_name: mnist.py
+    args:
+      - "--export_dir=$JOB_DIR"
+      - "--train_epochs=1"
+    artifact: saved_model.pb
+    wait_time: 300
+
+  - branch: "r1.13.0"
+    script_path: official/resnet/keras
+    script_name: keras_cifar_main.py
+    replace:
+      - - "return run(flags.FLAGS)"
+        - "run(flags.FLAGS)"
+    args:
+      - "--export_dir=$JOB_DIR"
+      - "--train_steps=100"
+      - "--skip_eval"
+      - "--use_synthetic_data"
+    artifact: events
+    wait_time: 180
+
+  - branch: "r1.13.0"
+    script_path: official/resnet/keras
+    script_name: keras_imagenet_main.py
+    replace:
+      - - "return run(flags.FLAGS)"
+        - "run(flags.FLAGS)"
+    args:
+      - "--export_dir=$JOB_DIR"
+      - "--train_steps=100"
+      - "--skip_eval"
+      - "--use_synthetic_data"
+    artifact: events
+    wait_time: 180
+
+  - branch: "r1.13.0"
+    script_path: official/recommendation
+    script_name: ncf_main.py
+    requires:
+      - "typing==3.7.4"
+    args:
+      - "--train_epochs=1"
+      - "--use_synthetic_data"
+    artifact: timeline-1000.json
+    wait_time: 180

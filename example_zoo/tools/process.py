@@ -12,18 +12,50 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from contextlib import contextmanager
+import glob
 import os
 import shutil
-import urllib2
+import tempfile
 import yaml
+
 from cmle_package import CMLEPackage
+from git import Repo
+
+CONFIG_FILENAMES = glob.glob('*_samples.yaml')
+GITHUB_URL_TEMPLATE = 'https://github.com/{}/{}.git'
 
 
-with open('samples.yaml', 'r') as f:
-    samples = yaml.load(f.read())['samples']
+@contextmanager
+def temp_clone(org, repository):
+    temp_dir = tempfile.mkdtemp()
+    github_url = GITHUB_URL_TEMPLATE.format(org, repository)
+    print('Cloning from {}'.format(github_url))
+    repo = Repo.clone_from(github_url, temp_dir, multi_options=['--depth 1', '--no-single-branch'])
+
+    try:
+        yield repo
+    finally:
+        shutil.rmtree(repo.working_dir)
 
 
-for sample_dict in samples:
-    cmle_package = CMLEPackage(sample_dict)
+for filename in CONFIG_FILENAMES:
+    with open(filename, 'r') as f:
+        config = yaml.load(f.read())
 
-    cmle_package.generate()
+    org = config['org']
+    repository = config['repository']
+    requires = config.get('requires', [])
+    samples = config['samples']
+
+    with temp_clone(org, repository) as repo:
+        for sample_dict in samples:
+            sample_dict['org'] = org
+            sample_dict['repository'] = repository
+
+            # inherit from repo wide requirements
+            sample_dict.setdefault('requires', []).extend(requires)
+
+            cmle_package = CMLEPackage(sample_dict, repo)
+
+            cmle_package.generate()

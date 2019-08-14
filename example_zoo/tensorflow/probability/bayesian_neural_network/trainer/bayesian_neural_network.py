@@ -34,6 +34,7 @@ import warnings
 
 # Dependency imports
 from absl import flags
+flags.DEFINE_string(name="job-dir", default="/tmp", help="AI Platform Training passes this to the training script.")
 import matplotlib
 matplotlib.use("Agg")
 from matplotlib import figure  # pylint: disable=g-import-not-at-top

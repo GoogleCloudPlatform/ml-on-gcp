@@ -40,6 +40,7 @@ import time
 
 # Dependency imports
 from absl import flags
+flags.DEFINE_string(name="job-dir", default="/tmp", help="AI Platform Training passes this to the training script.")
 from matplotlib import cm
 from matplotlib import figure
 from matplotlib.backends import backend_agg

@@ -16,8 +16,8 @@
 BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
-TRAINER_PACKAGE_PATH="trainer"
-MAIN_TRAINER_MODULE="trainer.{name}"
+PACKAGE_PATH="{package_path}"
+MODULE_NAME="{module_name}"
 
 now=$(date +"%Y%m%d_%H%M%S")
 JOB_NAME="{name}_$now"
@@ -28,8 +28,8 @@ gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
 
 gcloud ai-platform jobs submit training $JOB_NAME \
     --job-dir $JOB_DIR  \
-    --package-path $TRAINER_PACKAGE_PATH \
-    --module-name $MAIN_TRAINER_MODULE \
+    --package-path $PACKAGE_PATH \
+    --module-name $MODULE_NAME \
     --region us-central1 \
     --config config.yaml \
     --runtime-version 1.13 \

@@ -17,15 +17,19 @@ This directory contains tools that copies and modifies code examples from other 
 
 ## Sample configuration
 
-The tool parses the [`samples.yaml`](samples.yaml) file to create samples.  For example,
+The tool parses the sample configuration files such as [`tf_probability_samples.yaml`](tf_probability_samples.yaml) file to create samples.  The tool looks for filenames matching the pattern `*_samples.yaml`, and each file should specify only one org and repository.
+
+For example,
 
 ```yaml
+org: tensorflow
+repository: probability
+requires:
+  - "tensorflow_probability==0.6"
 samples:
-  - org: tensorflow
-    repository: probability
-    branch: "r0.6"
-    source_path: tensorflow_probability/examples
-    source_name: bayesian_neural_network.py
+  - branch: "r0.6"
+    module_path: tensorflow_probability/examples
+    script_name: bayesian_neural_network.py
     requires:
       - "seaborn==0.9.0"
     tfgfile_wrap:
@@ -36,7 +40,7 @@ samples:
       - "--max_steps=5"
       - "--viz_steps=5"
     artifact: weights.png
-    wait_time: 600
+    wait_time: 180
 ```
 
 creates:
@@ -47,7 +51,7 @@ creates:
     └── probability
         └── bayesian_neural_network
             ├── README.md
-            ├── bayesian_neural_network_test.py
+            ├── cmle_bayesian_neural_network_test.py
             ├── config.yaml
             ├── setup.py
             ├── submit_27.sh
@@ -58,7 +62,9 @@ creates:
                 └── tfgfile_wrapper.py
 ```
 
-In this case only the example script `bayesian_neural_network.py` file is copied over from the source, specified by the `org`, `repository`, and `branch` fields.  The example script's location is specified by the `source_path` and `source_name` fields.  All other files are generated from the templates in `tools/templates`.
+In this case only the example script `bayesian_neural_network.py` file is copied over from the source, specified by the `org`, `repository`, and `branch` fields.  The example script's location is specified by the `module_path` (optional), `script_path` (optional) and `script_name` fields.  The requirement here is that `{module_path}/{script_path}/{script_name}` should point to the location on GitHub of the script that needs to be run.  If `script_path` is omitted, the output will be placed in a `trainer` directory.  Note that `module_path` will not be in the generated package.
+
+Other files are generated from the templates in `tools/templates`.
 
 The `requires` field specified additional packages to be added to the generated `setup.py` file.
 

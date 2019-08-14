@@ -15,12 +15,9 @@
 
 import setuptools
 
-REQUIRES = [
-    'tensorflow_probability==0.6',
-    'matplotlib==2.2.4'
-]
+REQUIRES = ['matplotlib==2.2.4','tensorflow_probability==0.6']
 
-setuptools.setup(name='tfp_example_vq_vae',
+setuptools.setup(name='tensorflow_probability_vq_vae',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()
