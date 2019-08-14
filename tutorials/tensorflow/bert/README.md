@@ -17,7 +17,7 @@ or you can install the image from scratch.
 Create a Compute Engine with at least 100 GB Hard Disk
 
 ```bash
-export CONTAINER="gcr.io/dpe-cloud-mle/tensorrt_bert_sample:staging"
+export CONTAINER="gcr.io/dpe-cloud-mle/tensorrt_bert_sample:latest"
 export IMAGE_FAMILY="common-container"
 export ZONE="us-central1-b"
 export INSTANCE_NAME="bert-experiment"
