@@ -252,7 +252,6 @@ to also run BERT Large un-commenting the lines for the TensorRT engine location
 and the vocab.txt file.
 
 
-
 # 4. Compile TensorRT Demo BERT
 
 It may be possible that the TensorRT plugins need to be re-built
