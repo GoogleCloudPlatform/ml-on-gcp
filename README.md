@@ -20,11 +20,13 @@ really care about.
 
 4. [Inferring Machine Learning Models from Google Cloud Functions](https://cloud.google.com/blog/products/ai-machine-learning/TBD) - Introduction to Inferring AI Platform models from Google Cloud Function endpoints.
 
+4. [NVIDIA Achieves Breakthroughs in Language Understanding to Enable Real-Time Conversational AI](https://nvidianews.nvidia.com/news/nvidia-achieves-breakthroughs-in-language-understandingto-enable-real-time-conversational-ai?ncid=so-elev-49597#cid=organicSocial_en-us_Elevate_Deep-Learning-AI-for-Developers-DL13) - BERT Notebook in AI Hub and AI Platform Notebooks
+
 - - -
 
 ## TensorFlow
 
-1. [Estimators](tensorflow/tf-estimators.ipynb) - A guide to the Estimator
+1. [Estimators](tutorials/tensorflow/tf-estimators.ipynb) - A guide to the Estimator
    interface.
 
 
@@ -32,11 +34,11 @@ really care about.
 
 ## scikit-learn
 
-1. [scikit-learn on GCE](sklearn/titanic) - Train a simple model with scikit-learn on a Google Compute Engine
+1. [scikit-learn on GCE](tutorials/sklearn/titanic) - Train a simple model with scikit-learn on a Google Compute Engine
 
-2. [Model serve](sklearn/gae_serve) - Serve model with Google App Engine and Cloud Endpoints.
+2. [Model serve](tutorials/sklearn/gae_serve) - Serve model with Google App Engine and Cloud Endpoints.
 
-3. [Hyperparameter search](sklearn/hpsearch) - Hyperparameter search on a Google Kubernetes Engine cluster from a Jupyter notebook.
+3. [Hyperparameter search](tutorials/sklearn/hpsearch) - Hyperparameter search on a Google Kubernetes Engine cluster from a Jupyter notebook.
 
 - - -
 
