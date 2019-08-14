@@ -20,6 +20,8 @@ really care about.
 
 4. [Inferring Machine Learning Models from Google Cloud Functions](https://cloud.google.com/blog/products/ai-machine-learning/TBD) - Introduction to Inferring AI Platform models from Google Cloud Function endpoints.
 
+4. [NVIDIA Achieves Breakthroughs in Language Understanding to Enable Real-Time Conversational AI](https://nvidianews.nvidia.com/news/nvidia-achieves-breakthroughs-in-language-understandingto-enable-real-time-conversational-ai?ncid=so-elev-49597#cid=organicSocial_en-us_Elevate_Deep-Learning-AI-for-Developers-DL13) - BERT Notebook in AI Hub and AI Platform Notebooks
+
 - - -
 
 ## TensorFlow
