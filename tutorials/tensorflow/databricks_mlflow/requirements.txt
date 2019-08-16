@@ -1,0 +1,6 @@
+numpy>=1.14
+pandas>=0.22
+six>=1.11
+google-api-python-client
+tensorflow>=1.14,<2
+mlflow>1.0,<2
