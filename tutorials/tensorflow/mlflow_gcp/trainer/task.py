@@ -35,7 +35,8 @@ import mlflow
 import mlflow.tensorflow
 import tensorflow as tf
 
-mlflow.tensorflow.autolog()
+
+# mlflow.tensorflow.autolog()
 
 
 def get_args():
@@ -45,6 +46,14 @@ def get_args():
       Dictionary of arguments.
     """
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--train-files',
+        help='GCS file or local paths to training data',
+        default='gs://cloud-samples-data/ml-engine/census/data/adult.data.csv')
+    parser.add_argument(
+        '--eval-files',
+        help='GCS file or local paths to evaluation data',
+        default='gs://cloud-samples-data/ml-engine/census/data/adult.test.csv')
     parser.add_argument(
         '--job-dir',
         type=str,
@@ -151,7 +160,8 @@ def train_and_evaluate(args):
     else:
         logging.info('Reusing job_dir {} if it exists'.format(args.job_dir))
 
-    train_x, train_y, eval_x, eval_y = utils.load_data()
+    train_x, train_y, eval_x, eval_y = utils.load_data(args.train_files,
+                                                       args.eval_files)
 
     # dimensions
     num_train_examples, input_dim = train_x.shape
@@ -202,14 +212,16 @@ def train_and_evaluate(args):
         logging.info(metrics)
         keras_model.summary()
         # Export SavedModel
-        model_export_path = os.path.join(args.job_dir, run_id, 'model')
-        tf.keras.experimental.export_saved_model(keras_model, model_export_path)
+        model_local_path = os.path.join(args.job_dir, run_id, 'model')
+        tf.keras.experimental.export_saved_model(keras_model, model_local_path)
         # Define artifacts.
-        logging.info('Model exported to: ', model_export_path)
-        mlflow.tensorflow.log_model(tf_saved_model_dir=model_export_path,
+        logging.info('Model exported to: ', model_local_path)
+        mlflow.tensorflow.log_model(tf_saved_model_dir=model_local_path,
                                     tf_meta_graph_tags=[tag_constants.SERVING],
                                     tf_signature_def_key='serving_default',
                                     artifact_path='model')
+        mlflow.log_param('train_files', args.train_files)
+        mlflow.log_param('eval_files', args.eval_files)
         mlflow.log_param('num_epochs', args.num_epochs)
         mlflow.log_param('batch_size', args.batch_size)
         mlflow.log_param('learning_rate', args.learning_rate)
@@ -228,8 +240,12 @@ def train_and_evaluate(args):
         pyfunc_model = mlflow.pyfunc.load_model(
             mlflow.get_artifact_uri('model'))
         logging.info('Uploading TensorFlow events as a run artifact.')
-        timed = time() - start_time
-        mlflow.log_metric("time", timed)
+        mlflow.log_artifacts(os.path.join(args.job_dir, run_id, 'tensorboard'),
+                             artifact_path='events')
+        print("\nLaunch TensorBoard with:\n\ntensorboard --logdir=%s" %
+              os.path.join(mlflow.get_artifact_uri(), 'events'))
+        duration = time() - start_time
+        mlflow.log_metric('duration', duration)
         mlflow.end_run()
 
     # Deploy to AI Platform.
@@ -238,17 +254,15 @@ def train_and_evaluate(args):
         model_helper = model_deployment.AIPlatformModel(
             project_id=args.project_id)
         # Copy local model to GCS for deployment.
-        local_path = os.path.join(model_export_path)
-        gcs_path = os.path.join('gs://', args.gcs_bucket, run_id, 'model')
-        subprocess.call(
-            "gsutil -m cp -r {} {}".format(local_path, gcs_path), shell=True)
+        model_gcs_path = os.path.join('gs://', args.gcs_bucket, run_id, 'model')
+        model_helper.upload_model(model_local_path, model_gcs_path)
         # Create model
         model_helper.create_model(args.model_name)
         # Create model version
-        model_helper.deploy_model(gcs_path, args.model_name, run_id,
+        model_helper.deploy_model(model_gcs_path, args.model_name, run_id,
                                   args.run_time_version)
         print('Model deployment in GCP completed')
-    print("This model took", timed, "seconds to train and test.")
+    print('This model took: ', duration, 'seconds to train and test.')
 
 
 if __name__ == '__main__':

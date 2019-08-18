@@ -16,6 +16,8 @@
 import logging
 import json
 import time
+import subprocess
+
 from googleapiclient import discovery
 from googleapiclient import errors
 
@@ -35,6 +37,20 @@ class AIPlatformModel(object):
     def __init__(self, project_id):
         self._project_id = project_id
         self._service = _create_service()
+
+    def upload_model(self, model_local_path, model_gcs_path):
+        """
+
+        :param model_local_path:
+        :param model_gcs_path:
+        :return:
+        """
+        logging.info(
+            'Moving model directory from {} to {}'.format(model_local_path,
+                                                          model_gcs_path))
+        subprocess.call(
+            "gsutil -m cp -r {} {}".format(model_local_path, model_gcs_path),
+            shell=True)
 
     def model_exists(self, model_name):
         """
@@ -65,10 +81,11 @@ class AIPlatformModel(object):
           Dictionary of model versions.
         """
         versions = self._service.projects().models().versions()
-        request = versions.list(
-            parent='projects/{}/models/{}'.format(self._project_id, model_name))
+
         try:
-            return request.execute()
+            return versions.list(
+                parent='projects/{}/models/{}'.format(self._project_id,
+                                                      model_name)).execute()
         except errors.HttpError as err:
             logging.error('%s', json.loads(err.content)['error']['message'])
 

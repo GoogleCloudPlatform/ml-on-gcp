@@ -193,17 +193,21 @@ def standardize(dataframe):
     return dataframe
 
 
-def load_data():
+def load_data(training_file_path, eval_file_path, *args, **kwargs):
     """Loads data into preprocessed (train_x, train_y, eval_y, eval_y)
     dataframes.
 
+    Args:
+        training_file_path: GCS file location for training files
+        eval_file_path: GCS file location for eval files
     Returns:
       A tuple (train_x, train_y, eval_x, eval_y), where train_x and eval_x are
       Pandas dataframes with features for training and train_y and eval_y are
       numpy arrays with the corresponding labels.
     """
     # Download Census dataset: Training and eval csv files.
-    training_file_path, eval_file_path = download(DATA_DIR)
+    if not (training_file_path and eval_file_path):
+        training_file_path, eval_file_path = download(DATA_DIR)
 
     # This census data uses the value '?' for missing entries. We use
     # na_values to
