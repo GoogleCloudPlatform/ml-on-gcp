@@ -59,7 +59,7 @@ export TRAIN_STEPS=1000
 #### Run using Python
 
 ```
-python -m trainer.task --train-files $TRAIN_FILE \
+python3 -m trainer.task --train-files $TRAIN_FILE \
     --eval-files $EVAL_FILE \
     --job-dir $JOB_DIR \
     --train-steps $TRAIN_STEPS \
@@ -99,7 +99,6 @@ To check the [Tracking UI](https://www.mlflow.org/docs/latest/tracking.html#trac
 ```
 mlflow ui
 ```
-
 
 ### Run MLFLow model
 
@@ -142,8 +141,22 @@ matches the name of the image referenced in the MLproject file.
 
 Finally, run the example project using:
 
+Copy `MLProject` file to project folder:
+
 ```
-mlflow run mlflow_gcp/docker -P train-files=$TRAIN_FILE -P eval-files=$EVAL_FILE -P job-dir=$JOB_DIR -P train-steps=$TRAIN_STEPS -P eval-steps=1 -P num-epochs=20
+cd mlflow_gcp
+cp mflow/docker/MLProject .
+cd ..
+```
+
+You can run now:
+```
+mlflow run mlflow_gcp
+```
+or
+
+```
+mlflow run mlflow_gcp -P train-files=$TRAIN_FILE -P eval-files=$EVAL_FILE -P job-dir=$JOB_DIR -P train-steps=$TRAIN_STEPS -P eval-steps=1 -P num-epochs=20
 ```
 
 You will see all the runs.
