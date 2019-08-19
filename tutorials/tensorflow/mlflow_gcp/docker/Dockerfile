@@ -13,6 +13,6 @@
 # docker build -t mlflow-gcp-example -f Dockerfile .
 
 FROM gcr.io/deeplearning-platform-release/tf-cpu
-COPY . /opt/mlflow_gcp
-WORKDIR /opt/mlflow_gcp
+RUN git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
+WORKDIR  ml-on-gcp/tutorials/tensorflow/mlflow_gcp
 RUN pip install -r requirements.txt
