@@ -54,16 +54,19 @@ export JOB_DIR=mlflow
 export TRAIN_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.data.csv
 export EVAL_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.test.csv
 export TRAIN_STEPS=1000
+export EVAL_STEPS=100
 ```
 
 #### Run using Python
 
 ```
-python3 -m trainer.task --train-files $TRAIN_FILE \
-    --eval-files $EVAL_FILE \
-    --job-dir $JOB_DIR \
-    --train-steps $TRAIN_STEPS \
-    --eval-steps 100
+python -m trainer.task \
+    --train-files=$TRAIN_FILE \
+    --eval-files=$EVAL_FILE \
+    --job-dir=$JOB_DIR \
+    --train-steps=$TRAIN_STEPS \
+    --eval-steps=$EVAL_STEPS \
+    --num-epochs=5
 ```
 
 #### Deploy model in GCP after MLflow
@@ -73,21 +76,24 @@ export JOB_DIR=mlflow
 export TRAIN_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.data.csv
 export EVAL_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.test.csv
 export TRAIN_STEPS=1000
-export BUCKET_NAME=<Your GCS bucket>
-export PROJECT_ID=<Your Project id>
+export EVAL_STEPS=1
+export BUCKET_NAME=<Your GCS bucket name, do not include gs://>
+export PROJECT_ID=<Your Project ID>
 ```
 
-Enable `deploy-gcp` flag.
+Enable `deploy-gcp` flag to create a Model and a model version for 
+each run.
 
 ```
-python -m trainer.task -W ignore --train-files $TRAIN_FILE \ 
-    --eval-files $EVAL_FILE \
-    --job-dir $JOB_DIR \
-    --train-steps $TRAIN_STEPS \
-    --eval-steps 1 \
+python -m trainer.task \
+    --train-files $TRAIN_FILE \
+    --eval-files=$EVAL_FILE \
+    --job-dir=$JOB_DIR \
+    --train-steps=$TRAIN_STEPS \
+    --eval-steps=1 \
     --num-epochs=20 \
     --deploy-gcp \
-    --gcs-bucket=$BUCKET_NAME
+    --gcs-bucket=$BUCKET_NAME \
     --project-id=$PROJECT_ID
 ```
 
@@ -102,13 +108,13 @@ mlflow ui
 
 ### Run MLFLow model
 
-Running mlflow run mlflow_gcp/docker builds a new Docker image based on 
-mlflow-gcp-example that also contains our project code. The resulting 
-image is tagged as mlflow-gcp-example-<git-version> where <git-version> 
+Running `mlflow run mlflow_gcp/docker` builds a new Docker image based on 
+`mlflow-gcp-example` that also contains our project code. The resulting 
+image is tagged as `mlflow-gcp-example-<git-version>` where `<git-version> `
 is the git commit ID. After the image is built, MLflow executes the 
 default (main) project entry point within the container using docker run.
 
-Environment variables, such as MLFLOW_TRACKING_URI, are propagated 
+Environment variables, such as `MLFLOW_TRACKING_URI`, are propagated 
 inside the container during project execution. When running against a 
 local tracking URI, MLflow mounts the host system's tracking directory 
 (e.g., a local mlruns directory) inside the container so that metrics 
@@ -123,7 +129,7 @@ You can always change it for your preferred Docker image.
 docker build -t mlflow-gcp-example -f Dockerfile .
 ```
 
-### Running this Example
+### Running this example in Docker
 
 First, install MLflow (via pip install mlflow) and install Docker.
 
@@ -172,7 +178,7 @@ gcloud ai-platform local train --package-path trainer \
     --eval-files $EVAL_FILE \
     --job-dir $JOB_DIR \
     --train-steps $TRAIN_STEPS \
-    --eval-steps 100
+    --eval-steps $EVAL_STEPS
 ```
 
 #### Hyperparameter tuning:
