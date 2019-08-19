@@ -181,6 +181,30 @@ gcloud ai-platform local train --package-path trainer \
     --eval-steps $EVAL_STEPS
 ```
 
+#### Run via the `gcloud` command in AI Platform:
+
+```
+DATE=`date '+%Y%m%d_%H%M%S'`
+export JOB_NAME=mlflow_$DATE
+export REGION=us-central1
+export GCS_JOB_DIR=gs://mlflow_gcp/jobs/$JOB_NAME
+
+gcloud ai-platform job sumit training $JOB_NAME \
+    --stream-logs \
+    --runtime-version 1.14 \
+    --package-path trainer \
+    --module-name trainer.task \
+    --region $REGION \
+    -- \
+    --train-files $TRAIN_FILE \
+    --eval-files $EVAL_FILE \
+    --job-dir $GCS_JOB_DIR \
+    --train-steps $TRAIN_STEPS \
+    --eval-steps $EVAL_STEPS
+    --mlflow-tracking-uri http://<MLFlow Public IP Address>:5000
+```
+
+
 #### Hyperparameter tuning:
 
 You can optionally perform hyperparameter tuning by using the included 

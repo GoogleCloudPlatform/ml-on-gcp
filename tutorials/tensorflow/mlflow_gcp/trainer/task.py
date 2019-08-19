@@ -102,6 +102,12 @@ def get_args():
         '--project-id',
         type=str,
         help='AI Platform project id')
+    #
+    parser.add_argument(
+        '--mlflow-tracking-uri',
+        type=str,
+        default='mlflow tracking URI',
+        help='MLFlow tracking URI')
     parser.add_argument(
         '--gcs-bucket',
         type=str,
@@ -187,8 +193,10 @@ def train_and_evaluate(args):
         batch_size=num_eval_examples)
 
     start_time = time()
+    # Set tracking URI
+    if args.mlflow_tracking_uri:
+        mlflow.set_tracking_uri(args.mlflow_tracking_uri)
     # Train model
-
     with mlflow.start_run() as active_run:
         run_id = active_run.info.run_id
         # Setup Learning Rate decay.
