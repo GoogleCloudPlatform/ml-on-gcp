@@ -17,7 +17,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-
 from builtins import list
 from builtins import zip
 from builtins import map
@@ -31,7 +30,6 @@ import random
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-
 
 # Storage directory
 DATA_DIR = os.path.join(tempfile.gettempdir(), 'census_data')
@@ -205,9 +203,11 @@ def load_data(training_file_path, eval_file_path, *args, **kwargs):
       Pandas dataframes with features for training and train_y and eval_y are
       numpy arrays with the corresponding labels.
     """
-    # Download Census dataset: Training and eval csv files.
-    if not (training_file_path and eval_file_path):
-        training_file_path, eval_file_path = download(DATA_DIR)
+
+    # TODO Download and clean custom files.
+    print('Location train file: %s, eval file %s', training_file_path,
+          eval_file_path)
+    training_file_path, eval_file_path = download(DATA_DIR)
 
     # This census data uses the value '?' for missing entries. We use
     # na_values to
