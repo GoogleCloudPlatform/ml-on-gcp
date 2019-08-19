@@ -18,7 +18,6 @@ from __future__ import division
 from __future__ import print_function
 
 import argparse
-import subprocess
 import logging
 import os
 
@@ -122,8 +121,9 @@ def get_args():
     return args
 
 
-def _log_metrics(metrics, metric_name):
-    """
+def _mlflow_log_metrics(metrics, metric_name):
+    """Record metric value during each epoch using the step parameter in
+    mlflow.log_metric.
 
     :param metrics:
     :param metric_name:
@@ -162,7 +162,6 @@ def train_and_evaluate(args):
 
     train_x, train_y, eval_x, eval_y = utils.load_data(args.train_files,
                                                        args.eval_files)
-
     # dimensions
     num_train_examples, input_dim = train_x.shape
     num_eval_examples = eval_x.shape[0]
@@ -211,15 +210,6 @@ def train_and_evaluate(args):
         metrics = history.history
         logging.info(metrics)
         keras_model.summary()
-        # Export SavedModel
-        model_local_path = os.path.join(args.job_dir, run_id, 'model')
-        tf.keras.experimental.export_saved_model(keras_model, model_local_path)
-        # Define artifacts.
-        logging.info('Model exported to: ', model_local_path)
-        mlflow.tensorflow.log_model(tf_saved_model_dir=model_local_path,
-                                    tf_meta_graph_tags=[tag_constants.SERVING],
-                                    tf_signature_def_key='serving_default',
-                                    artifact_path='model')
         mlflow.log_param('train_files', args.train_files)
         mlflow.log_param('eval_files', args.eval_files)
         mlflow.log_param('num_epochs', args.num_epochs)
@@ -231,11 +221,20 @@ def train_and_evaluate(args):
         mlflow.log_param('steps_per_epoch',
                          int(num_train_examples / args.batch_size))
         # Add metrics
-        _log_metrics(metrics, 'loss')
-        _log_metrics(metrics, 'acc')
-        _log_metrics(metrics, 'val_loss')
-        _log_metrics(metrics, 'val_acc')
-        _log_metrics(metrics, 'lr')
+        _mlflow_log_metrics(metrics, 'loss')
+        _mlflow_log_metrics(metrics, 'acc')
+        _mlflow_log_metrics(metrics, 'val_loss')
+        _mlflow_log_metrics(metrics, 'val_acc')
+        _mlflow_log_metrics(metrics, 'lr')
+        # Export SavedModel
+        model_local_path = os.path.join(args.job_dir, run_id, 'model')
+        tf.keras.experimental.export_saved_model(keras_model, model_local_path)
+        # Define artifacts.
+        logging.info('Model exported to: ', model_local_path)
+        mlflow.tensorflow.log_model(tf_saved_model_dir=model_local_path,
+                                    tf_meta_graph_tags=[tag_constants.SERVING],
+                                    tf_signature_def_key='serving_default',
+                                    artifact_path='model')
         # Reloading the model
         pyfunc_model = mlflow.pyfunc.load_model(
             mlflow.get_artifact_uri('model'))
