@@ -37,7 +37,63 @@ This dataset is provided by a third party. Google provides no
 representation, warranty, or other guarantees about the validity or any 
 other aspects of this dataset.
 
+### Create a Compute Engine instance
+
+Create a new Deep Learning Virtual Machine instance
+
+```
+export IMAGE_FAMILY="tf-latest-cpu"
+export ZONE="us-central1-b"
+export INSTANCE_NAME="mlflow-server"
+gcloud compute instances create $INSTANCE_NAME \
+       --zone=$ZONE \
+       --image-family=$IMAGE_FAMILY \
+       --machine-type=n1-standard-8 \
+       --image-project=deeplearning-platform-release \
+       --maintenance-policy=TERMINATE \
+       --scopes=https://www.googleapis.com/auth/cloud-platform \
+       --tags http-server,https-server
+```
+
+#### Installing MLflow
+
+Install git, pip and virtual environment
+
+```
+sudo apt-get install git -y
+sudo apt-get install python-pip -y
+pip install virtualenv
+```
+
+Create virtual environment
+
+```
+virtualenv -p `which python3` mlflow_env
+source mlflow_env/bin/activate
+```
+
+Install MLflow
+
+```
+pip install mlflow
+```
+Verify installation
+
+```
+pip freeze | grep mlflow
+mlflow==1.2.0
+```
+
 ### **Install dependencies**
+
+In this tutorial we will train a TensorFlow model and use different 
+parameters. We will use MLflow to track those different parameters and 
+their metrics. Start by cloning the repo.
+
+```
+git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
+cd ml-on-gcp/tutorials/tensorflow/mlflow_gcp/
+```
 
 Install the python dependencies. 
 
@@ -189,19 +245,19 @@ export JOB_NAME=mlflow_$DATE
 export REGION=us-central1
 export GCS_JOB_DIR=gs://mlflow_gcp/jobs/$JOB_NAME
 
-gcloud ai-platform job sumit training $JOB_NAME \
-    --stream-logs \
-    --runtime-version 1.14 \
-    --package-path trainer \
-    --module-name trainer.task \
-    --region $REGION \
-    -- \
-    --train-files $TRAIN_FILE \
-    --eval-files $EVAL_FILE \
-    --job-dir $GCS_JOB_DIR \
-    --train-steps $TRAIN_STEPS \
-    --eval-steps $EVAL_STEPS
-    --mlflow-tracking-uri http://<MLFlow Public IP Address>:5000
+gcloud ai-platform jobs submit training $JOB_NAME \
+   --stream-logs \
+   --runtime-version 1.14 \
+   --job-dir $GCS_JOB_DIR \
+   --package-path trainer \
+   --module-name trainer.task \
+   --region $REGION \
+   -- \
+   --train-files $TRAIN_FILE \
+   --eval-files $EVAL_FILE \
+   --train-steps $TRAIN_STEPS \
+   --eval-steps $EVAL_STEPS \
+   --mlflow-tracking-uri http://<MLflow Server Public IP Address>:<MLflow server port>
 ```
 
 

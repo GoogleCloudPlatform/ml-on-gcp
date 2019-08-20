@@ -19,7 +19,9 @@ from __future__ import print_function
 
 import argparse
 import logging
+import tempfile
 import os
+import shutil
 
 from builtins import int
 from mlflow import pyfunc
@@ -157,7 +159,7 @@ def train_and_evaluate(args):
       args: dictionary of arguments - see get_args() for details
     """
 
-    logging.info('Resume training:', args.reuse_job_dir)
+    logging.info('Resume training: {}'.format(args.reuse_job_dir))
     if not args.reuse_job_dir:
         if tf.io.gfile.exists(args.job_dir):
             tf.io.gfile.rmtree(args.job_dir)
@@ -199,13 +201,23 @@ def train_and_evaluate(args):
     # Train model
     with mlflow.start_run() as active_run:
         run_id = active_run.info.run_id
+
+        class MlflowCallback(tf.keras.callbacks.Callback):
+            # This function will be called after training completes.
+            def on_train_end(self, logs=None):
+                mlflow.log_param('num_layers', len(self.model.layers))
+                mlflow.log_param('optimizer_name',
+                                 type(self.model.optimizer).__name__)
+
+        mlflow_callback = MlflowCallback()
         # Setup Learning Rate decay.
         lr_decay_callback = tf.keras.callbacks.LearningRateScheduler(
             lambda epoch: args.learning_rate + 0.02 * (0.5 ** (1 + epoch)),
             verbose=False)
         # Setup TensorBoard callback.
+        tensorboard_path = os.path.join(args.job_dir, run_id, 'tensorboard')
         tensorboard_callback = tf.keras.callbacks.TensorBoard(
-            os.path.join(args.job_dir, run_id, 'tensorboard'),
+            tensorboard_path,
             histogram_freq=1)
         history = keras_model.fit(
             training_dataset,
@@ -214,7 +226,8 @@ def train_and_evaluate(args):
             validation_data=validation_dataset,
             validation_steps=args.eval_steps,
             verbose=1,
-            callbacks=[lr_decay_callback, tensorboard_callback])
+            callbacks=[lr_decay_callback, tensorboard_callback,
+                       mlflow_callback])
         metrics = history.history
         logging.info(metrics)
         keras_model.summary()
@@ -238,7 +251,19 @@ def train_and_evaluate(args):
         model_local_path = os.path.join(args.job_dir, run_id, 'model')
         tf.keras.experimental.export_saved_model(keras_model, model_local_path)
         # Define artifacts.
-        logging.info('Model exported to: ', model_local_path)
+        logging.info('Model exported to: {}'.format(model_local_path))
+        # MLflow workaround since is unable to read GCS path.
+        if model_local_path.startswith('gs://'):
+            logging.info('Creating temp folder')
+            temp = tempfile.mkdtemp()
+            model_deployment.copy_artifacts(model_local_path, temp)
+            model_local_path = os.path.join(temp, 'model')
+        if tensorboard_path.startswith('gs://'):
+            logging.info('Creating temp folder')
+            temp = tempfile.mkdtemp()
+            model_deployment.copy_artifacts(tensorboard_path, temp)
+            tensorboard_path = temp
+
         mlflow.tensorflow.log_model(tf_saved_model_dir=model_local_path,
                                     tf_meta_graph_tags=[tag_constants.SERVING],
                                     tf_signature_def_key='serving_default',
@@ -247,13 +272,17 @@ def train_and_evaluate(args):
         pyfunc_model = mlflow.pyfunc.load_model(
             mlflow.get_artifact_uri('model'))
         logging.info('Uploading TensorFlow events as a run artifact.')
-        mlflow.log_artifacts(os.path.join(args.job_dir, run_id, 'tensorboard'),
-                             artifact_path='events')
-        print("\nLaunch TensorBoard with:\n\ntensorboard --logdir=%s" %
-              os.path.join(mlflow.get_artifact_uri(), 'events'))
+        mlflow.log_artifacts(tensorboard_path)
+        logging.info(
+            'Launch TensorBoard with:\n\ntensorboard --logdir=%s' %
+            tensorboard_path)
         duration = time() - start_time
         mlflow.log_metric('duration', duration)
         mlflow.end_run()
+        if model_local_path.startswith('gs://') and tensorboard_path.startswith(
+            'gs://'):
+            shutil.rmtree(model_local_path)
+            shutil.rmtree(tensorboard_path)
 
     # Deploy to AI Platform.
     if args.deploy_gcp:
@@ -261,15 +290,18 @@ def train_and_evaluate(args):
         model_helper = model_deployment.AIPlatformModel(
             project_id=args.project_id)
         # Copy local model to GCS for deployment.
-        model_gcs_path = os.path.join('gs://', args.gcs_bucket, run_id, 'model')
-        model_helper.upload_model(model_local_path, model_gcs_path)
+        if not model_local_path.startswith('gs://'):
+            model_gcs_path = os.path.join('gs://', args.gcs_bucket, run_id,
+                                          'model')
+            model_deployment.copy_artifacts(model_local_path, model_gcs_path)
         # Create model
         model_helper.create_model(args.model_name)
         # Create model version
         model_helper.deploy_model(model_gcs_path, args.model_name, run_id,
                                   args.run_time_version)
-        print('Model deployment in GCP completed')
-    print('This model took: ', duration, 'seconds to train and test.')
+        logging.info('Model deployment in GCP completed')
+    logging.info(
+        'This model took: {} seconds to train and test.'.format(duration))
 
 
 if __name__ == '__main__':
