@@ -253,11 +253,13 @@ def train_and_evaluate(args):
         # Define artifacts.
         logging.info('Model exported to: {}'.format(model_local_path))
         # MLflow workaround since is unable to read GCS path.
+        # https://github.com/mlflow/mlflow/issues/1765
         if model_local_path.startswith('gs://'):
             logging.info('Creating temp folder')
             temp = tempfile.mkdtemp()
             model_deployment.copy_artifacts(model_local_path, temp)
             model_local_path = os.path.join(temp, 'model')
+
         if tensorboard_path.startswith('gs://'):
             logging.info('Creating temp folder')
             temp = tempfile.mkdtemp()

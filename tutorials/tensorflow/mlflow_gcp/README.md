@@ -106,7 +106,7 @@ pip install --upgrade -r requirements.txt
 Define environment variables:
 
 ```
-export JOB_DIR=mlflow
+export JOB_DIR=gs://mlflow_gcp/jobs
 export TRAIN_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.data.csv
 export EVAL_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.test.csv
 export TRAIN_STEPS=1000
@@ -122,7 +122,7 @@ python -m trainer.task \
     --job-dir=$JOB_DIR \
     --train-steps=$TRAIN_STEPS \
     --eval-steps=$EVAL_STEPS \
-    --num-epochs=5
+    --num-epochs=2
 ```
 
 #### Deploy model in GCP after MLflow
