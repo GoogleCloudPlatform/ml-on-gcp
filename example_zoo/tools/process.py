@@ -47,14 +47,16 @@ for filename in CONFIG_FILENAMES:
     repository = config['repository']
     requires = config.get('requires', [])
     samples = config['samples']
+    runtime_version = config['runtime_version']
 
     with temp_clone(org, repository) as repo:
         for sample_dict in samples:
             sample_dict['org'] = org
             sample_dict['repository'] = repository
 
-            # inherit from repo wide requirements
+            # inherit from repo wide config
             sample_dict.setdefault('requires', []).extend(requires)
+            sample_dict['runtime_version'] = runtime_version
 
             cmle_package = CMLEPackage(sample_dict, repo)
 

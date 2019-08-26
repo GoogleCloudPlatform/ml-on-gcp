@@ -71,6 +71,7 @@ class CMLEPackage(object):
     def __init__(self, sample_dict, repo):
         self.org = sample_dict['org']
         self.repository = sample_dict['repository']
+        self.runtime_version = sample_dict['runtime_version']
         self.branch = sample_dict['branch']
         self.module_path = sample_dict.get('module_path', '')
         self.script_path = sample_dict.get('script_path', '')
@@ -296,6 +297,7 @@ class CMLEPackage(object):
             'org': self.org,
             'repository': self.repository,
             'name': self.name,
+            'runtime_version': self.runtime_version,
             'package_path': self.package_path,
             'module_name': self.module_name,
             'full_path': self.full_path,

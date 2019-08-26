@@ -1,5 +1,6 @@
 org: tensorflow
 repository: models
+runtime_version: "1.13"
 samples:
   - branch: "r1.13.0"
     script_path: official/mnist
