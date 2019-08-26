@@ -40,5 +40,4 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --fake_data \
     --max_steps=5 \
     --delete_existing \
-    --viz_steps=5 \
-    --learning_rate=1e-7
+    --viz_steps=5

@@ -13,7 +13,6 @@ samples:
       - plot_weight_posteriors
       - plot_heldout_prediction
     args:
-      - "--fake_data"
       - "--max_steps=5"
       - "--viz_steps=5"
     artifact: weights.png
@@ -59,8 +58,7 @@ samples:
   #   script_name: generative_adversarial_network.py
   #   args:
   #     - "--max_steps=5"
-  #     - "--latent_size=2"
-  #     - "--num_units=3"
+  #     - "--viz_steps=5"
   #   artifact: -1.data-00000-of-00001
   #   wait_time: 240
 
@@ -80,7 +78,6 @@ samples:
       - "--max_steps=5"
       - "--delete_existing"
       - "--viz_steps=5"
-      - "--learning_rate=1e-7"
     artifact: .data-00000-of-00001
     wait_time: 180
 
@@ -91,7 +88,6 @@ samples:
       - "--max_steps=5"
       - "--delete_existing"
       - "--viz_steps=5"
-      - "--learning_rate=1e-7"
     artifact: .data-00000-of-00001
     wait_time: 180
 
@@ -115,7 +111,6 @@ samples:
       - "--max_steps=5"
       - "--delete_existing"
       - "--viz_steps=5"
-      - "--learning_rate=1e-7"
     artifact: .data-00000-of-00001
     wait_time: 180
 
@@ -126,7 +121,6 @@ samples:
     tfgfile_wrap:
       - save_imgs
     args:
-      - "--mnist_type='fake_data'"
       - "--max_steps=2"
       - "--base_depth=2"
     artifact: validation_reconstructions.png
