@@ -45,6 +45,7 @@ for filename in CONFIG_FILENAMES:
 
     org = config['org']
     repository = config['repository']
+    branch = config['branch']
     requires = config.get('requires', [])
     samples = config['samples']
     runtime_version = config['runtime_version']
@@ -57,6 +58,7 @@ for filename in CONFIG_FILENAMES:
             # inherit from repo wide config
             sample_dict.setdefault('requires', []).extend(requires)
             sample_dict['runtime_version'] = runtime_version
+            sample_dict['branch'] = branch
 
             cmle_package = CMLEPackage(sample_dict, repo)
 

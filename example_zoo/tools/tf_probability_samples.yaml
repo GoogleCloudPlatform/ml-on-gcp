@@ -1,11 +1,11 @@
 org: tensorflow
 repository: probability
-runtime_version: "1.13"
+branch: "r0.7"
+runtime_version: "1.14"
 requires:
-  - "tensorflow_probability==0.6"
+  - "tensorflow_probability==0.7"
 samples:
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: bayesian_neural_network.py
     requires:
       - "seaborn==0.9.0"
@@ -20,8 +20,7 @@ samples:
     wait_time: 180
 
   # TODO: import example when updating to r0.7, requiring tf 1.14 support
-  # - branch: "r0.6"
-  #   module_path: tensorflow_probability/examples
+  # - module_path: tensorflow_probability/examples
   #   script_name: cifar10_bnn.py
   #   requires:
   #     - "matplotlib==2.2.4"
@@ -32,8 +31,7 @@ samples:
   #   artifact: 
   #   wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: deep_exponential_family.py
     args:
       - "--fake_data"
@@ -43,8 +41,7 @@ samples:
     wait_time: 180
 
   # TODO: import example when updating to r0.7, requiring tf 1.14 support
-  # - branch: "r0.6"
-  #   module_path: tensorflow_probability/examples
+  # - module_path: tensorflow_probability/examples
   #   script_name: disentangled_vae.py
   #   args:
   #     - "--fake_data"
@@ -58,8 +55,16 @@ samples:
   #   artifact: 
   #   wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  # - module_path: tensorflow_probability/examples
+  #   script_name: generative_adversarial_network.py
+  #   args:
+  #     - "--max_steps=5"
+  #     - "--latent_size=2"
+  #     - "--num_units=3"
+  #   artifact: -1.data-00000-of-00001
+  #   wait_time: 240
+
+  - module_path: tensorflow_probability/examples
     script_name: grammar_vae.py
     args:
       - "--max_steps=5"
@@ -68,8 +73,7 @@ samples:
     artifact: -1.data-00000-of-00001
     wait_time: 240
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: latent_dirichlet_allocation_distributions.py
     args:
       - "--fake_data"
@@ -80,8 +84,7 @@ samples:
     artifact: .data-00000-of-00001
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: latent_dirichlet_allocation_edward2.py
     args:
       - "--fake_data"
@@ -92,8 +95,7 @@ samples:
     artifact: .data-00000-of-00001
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: logistic_regression.py
     requires:
       - "matplotlib==2.2.4"
@@ -106,8 +108,7 @@ samples:
     artifact: weights_inferred.png
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: vae.py
     args:
       - "--fake_data"
@@ -118,8 +119,7 @@ samples:
     artifact: .data-00000-of-00001
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: vq_vae.py
     requires:
       - "matplotlib==2.2.4"
