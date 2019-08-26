@@ -13,10 +13,10 @@ samples:
       - plot_weight_posteriors
       - plot_heldout_prediction
     args:
-      - "--max_steps=5"
-      - "--viz_steps=5"
+      - "--max_steps=3"
+      - "--viz_steps=3"
     artifact: weights.png
-    wait_time: 180
+    wait_time: 300
 
   # TODO: import example when updating to r0.7, requiring tf 1.14 support
   # - module_path: tensorflow_probability/examples
@@ -24,7 +24,6 @@ samples:
   #   requires:
   #     - "matplotlib==2.2.4"
   #   args:
-  #     - "--fake_data"
   #     - "--epochs=1"
   #     - "--batch_size=5"
   #   artifact: 
@@ -59,7 +58,7 @@ samples:
   #   args:
   #     - "--max_steps=5"
   #     - "--viz_steps=5"
-  #   artifact: -1.data-00000-of-00001
+  #   artifact: _images.png
   #   wait_time: 240
 
   - module_path: tensorflow_probability/examples
