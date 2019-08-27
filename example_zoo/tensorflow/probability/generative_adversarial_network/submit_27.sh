@@ -37,5 +37,6 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --project $PROJECT_ID \
     -- \
     --model_dir=$JOB_DIR \
+    --fake_data \
     --max_steps=5 \
     --viz_steps=5

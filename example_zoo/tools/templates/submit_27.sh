@@ -16,7 +16,7 @@
 BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
-PACKAGE_PATH="{package_path}"
+PACKAGE_PATH="{output_package_path}"
 MODULE_NAME="{module_name}"
 
 now=$(date +"%Y%m%d_%H%M%S")

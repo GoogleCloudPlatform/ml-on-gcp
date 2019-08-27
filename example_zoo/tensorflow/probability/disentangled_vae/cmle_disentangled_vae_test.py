@@ -67,4 +67,4 @@ def test_disentangled_vae(gcs_bucket_prefix, submit_script):
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
     out_str = ' '.join(blob_names)
 
-    assert 'None' in out_str, 'Artifact "None" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)
+    assert '-1.data-00000-of-00001' in out_str, 'Artifact "-1.data-00000-of-00001" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)

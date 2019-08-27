@@ -16,8 +16,8 @@
 BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
-PACKAGE_PATH="trainer"
-MODULE_NAME="trainer.cifar10_bnn"
+PACKAGE_PATH="tensorflow_probability"
+MODULE_NAME="tensorflow_probability.examples.cifar10_bnn"
 
 now=$(date +"%Y%m%d_%H%M%S")
 JOB_NAME="cifar10_bnn_$now"
@@ -37,5 +37,5 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --project $PROJECT_ID \
     -- \
     --model_dir=$JOB_DIR \
-    --epochs=1 \
-    --batch_size=5
+    --fake_data \
+    --epochs=1

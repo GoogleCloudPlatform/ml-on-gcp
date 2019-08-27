@@ -16,8 +16,8 @@
 BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
-PACKAGE_PATH="trainer"
-MODULE_NAME="trainer.disentangled_vae"
+PACKAGE_PATH="tensorflow_probability"
+MODULE_NAME="tensorflow_probability.examples.disentangled_vae"
 
 now=$(date +"%Y%m%d_%H%M%S")
 JOB_NAME="disentangled_vae_$now"

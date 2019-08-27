@@ -18,15 +18,16 @@ samples:
     artifact: weights.png
     wait_time: 300
 
-  - module_path: tensorflow_probability/examples
-    script_name: cifar10_bnn.py
-    requires:
-      - "matplotlib==2.2.4"
-    args:
-      - "--epochs=1"
-      - "--batch_size=5"
-    artifact: 
-    wait_time: 180
+  # TODO: udpate the source example to write artifacts to model_dir
+  # - script_path: tensorflow_probability/examples
+  #   script_name: cifar10_bnn.py
+  #   requires:
+  #     - "matplotlib==2.2.4"
+  #   args:
+  #     - "--fake_data"
+  #     - "--epochs=1"
+  #   artifact: 
+  #   wait_time: 180
 
   - module_path: tensorflow_probability/examples
     script_name: deep_exponential_family.py
@@ -37,7 +38,7 @@ samples:
     artifact: events.out.tfevents
     wait_time: 180
 
-  - module_path: tensorflow_probability/examples
+  - script_path: tensorflow_probability/examples
     script_name: disentangled_vae.py
     args:
       - "--fake_data"
@@ -48,12 +49,27 @@ samples:
       - "--log_steps=1"
       - "--max_steps=2"
       - "--enable_debug_logging"
-    artifact: 
+    artifact: -1.data-00000-of-00001
     wait_time: 180
 
   - module_path: tensorflow_probability/examples
     script_name: generative_adversarial_network.py
+    requires:
+      - "matplotlib==2.2.4"
+    tfgfile_wrap:
+      - plot_generated_images
+    # TODO: update the source example
+    replace:
+      - - "import matplotlib.pyplot as plt"
+        - "from matplotlib import figure"
+      - - "plt.figure"
+        - "figure.Figure"
+      - - "plt.axis"
+        - "ax.axis"
+      - - "plt.subplots_adjust"
+        - "fig.subplots_adjust"
     args:
+      - "--fake_data"
       - "--max_steps=5"
       - "--viz_steps=5"
     artifact: _images.png

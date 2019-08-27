@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2018 The TensorFlow Probability Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,14 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-import setuptools
-
-REQUIRES = ['matplotlib==2.2.4','tensorflow_probability==0.7']
-
-setuptools.setup(name='tensorflow_probability_generative_adversarial_network',
-      version='0.0.1',
-      install_requires=REQUIRES,
-      packages=setuptools.find_packages()
-)
+# ============================================================================
