@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 from contextlib import contextmanager
 import glob
 import os
@@ -39,27 +40,45 @@ def temp_clone(org, repository):
         shutil.rmtree(repo.working_dir)
 
 
-for filename in CONFIG_FILENAMES:
-    with open(filename, 'r') as f:
-        config = yaml.load(f.read())
+def main(args):
+    for filename in CONFIG_FILENAMES:
+        with open(filename, 'r') as f:
+            config = yaml.load(f.read())
 
-    org = config['org']
-    repository = config['repository']
-    branch = config['branch']
-    requires = config.get('requires', [])
-    samples = config['samples']
-    runtime_version = config['runtime_version']
+        org = config['org']
+        repository = config['repository']
+        branch = config['branch']
+        requires = config.get('requires', [])
+        samples = config['samples']
+        runtime_version = config['runtime_version']
 
-    with temp_clone(org, repository) as repo:
-        for sample_dict in samples:
-            sample_dict['org'] = org
-            sample_dict['repository'] = repository
+        # filter samples
+        if args.filter:
+            print('Building samples with script_name containing: {}'.format(args.filter))
+            samples = [s for s in samples if args.filter in s['script_name']]
 
-            # inherit from repo wide config
-            sample_dict.setdefault('requires', []).extend(requires)
-            sample_dict['runtime_version'] = runtime_version
-            sample_dict['branch'] = branch
+        if not samples:
+            continue
 
-            cmle_package = CMLEPackage(sample_dict, repo)
+        with temp_clone(org, repository) as repo:
+            for sample_dict in samples:
+                sample_dict['org'] = org
+                sample_dict['repository'] = repository
 
-            cmle_package.generate()
+                # inherit from repo wide config
+                sample_dict.setdefault('requires', []).extend(requires)
+                sample_dict['runtime_version'] = runtime_version
+                sample_dict['branch'] = branch
+
+                cmle_package = CMLEPackage(sample_dict, repo)
+
+                cmle_package.generate()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--filter', type=str, default='', help='process only samples whose script_name contains the filter string')
+
+    args = parser.parse_args()
+
+    main(args)
