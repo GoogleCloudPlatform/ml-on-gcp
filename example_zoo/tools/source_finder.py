@@ -92,8 +92,7 @@ class SourceFinder(object):
                 continue
 
             for module_name in module_names:
-                # the second condition here is to avoid treating library imports (such as import tensorflow_probability) as in-package import
-                if module_name.startswith(self.package_name) and module_name != self.package_name:
+                if module_name.startswith(self.package_name):
                     self.script_imports[path].add(module_name)
                 else:
                     self.externals.add(module_name)

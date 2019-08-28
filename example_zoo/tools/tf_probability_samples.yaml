@@ -19,7 +19,8 @@ samples:
     wait_time: 300
 
   # TODO: udpate the source example to write artifacts to model_dir
-  # - script_path: tensorflow_probability/examples
+  # - module_paty: tensorflow_probability
+  #   script_path: examples
   #   script_name: cifar10_bnn.py
   #   requires:
   #     - "matplotlib==2.2.4"
@@ -38,19 +39,24 @@ samples:
     artifact: events.out.tfevents
     wait_time: 180
 
-  - script_path: tensorflow_probability/examples
-    script_name: disentangled_vae.py
-    args:
-      - "--fake_data"
-      - "--batch_size=2"
-      - "--hidden_size=3"
-      - "--latent_size_static=4"
-      - "--latent_size_dynamic=5"
-      - "--log_steps=1"
-      - "--max_steps=2"
-      - "--enable_debug_logging"
-    artifact: -1.data-00000-of-00001
-    wait_time: 180
+  # TODO: fix the source example to allow using source finder (blocked by the tensorflow_probability name collision)
+  # - module_path: tensorflow_probability
+  #   script_path: examples
+  #   script_name: disentangled_vae.py
+  #   replace:
+  #     - - "from tensorflow_probability.examples import sprites_dataset"
+  #       - "from examples import sprites_dataset"
+  #   args:
+  #     - "--fake_data"
+  #     - "--batch_size=2"
+  #     - "--hidden_size=3"
+  #     - "--latent_size_static=4"
+  #     - "--latent_size_dynamic=5"
+  #     - "--log_steps=1"
+  #     - "--max_steps=2"
+  #     - "--enable_debug_logging"
+  #   artifact: -1.data-00000-of-00001
+  #   wait_time: 180
 
   - module_path: tensorflow_probability/examples
     script_name: generative_adversarial_network.py
