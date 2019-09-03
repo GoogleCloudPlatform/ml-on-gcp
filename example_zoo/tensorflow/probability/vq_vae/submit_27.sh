@@ -32,11 +32,10 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --module-name $MODULE_NAME \
     --region us-central1 \
     --config config.yaml \
-    --runtime-version 1.13 \
+    --runtime-version 1.14 \
     --python-version 2.7 \
     --project $PROJECT_ID \
     -- \
     --model_dir=$JOB_DIR \
-    --mnist_type='fake_data' \
     --max_steps=2 \
     --base_depth=2

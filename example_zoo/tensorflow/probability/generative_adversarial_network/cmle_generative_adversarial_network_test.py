@@ -22,7 +22,7 @@ import pytest
 
 from google.cloud import storage
 
-WAIT_TIME = 300
+WAIT_TIME = 240
 ARTIFACTS_BUCKET = os.environ['EXAMPLE_ZOO_ARTIFACTS_BUCKET']
 PROJECT_ID = os.environ['EXAMPLE_ZOO_PROJECT_ID']
 
@@ -45,7 +45,7 @@ def gcs_bucket_prefix():
 
 
 @pytest.mark.parametrize('submit_script', SUBMIT_SCRIPTS)
-def test_bayesian_neural_network(gcs_bucket_prefix, submit_script):
+def test_generative_adversarial_network(gcs_bucket_prefix, submit_script):
     bucket, prefix = gcs_bucket_prefix
 
     subprocess_env = os.environ.copy()
@@ -67,4 +67,4 @@ def test_bayesian_neural_network(gcs_bucket_prefix, submit_script):
     blob_names = [blob.name for blob in bucket.list_blobs(prefix=prefix)]
     out_str = ' '.join(blob_names)
 
-    assert 'weights.png' in out_str, 'Artifact "weights.png" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)
+    assert '_images.png' in out_str, 'Artifact "_images.png" not found in bucket {} with prefix {} after {} seconds.'.format(bucket, prefix, WAIT_TIME)
