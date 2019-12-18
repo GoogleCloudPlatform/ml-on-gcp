@@ -22,7 +22,8 @@ from googleapiclient import discovery
 from googleapiclient import errors
 
 _WAIT_FOR_COMPLETION_SLEEP_SECONDS = 10
-RUN_TIME_VERSION = '1.14'
+_PYTHON_VERSION = '3.5'
+_RUN_TIME_VERSION = '1.15'
 
 
 def _create_service():
@@ -33,24 +34,25 @@ def _create_service():
     return discovery.build('ml', 'v1')
 
 
+def copy_artifacts(source_path, destination_path):
+    """
+
+    :param source_path:
+    :param destination_path:
+    :return:
+    """
+    logging.info(
+        'Moving model directory from {} to {}'.format(source_path,
+                                                      destination_path))
+    subprocess.call(
+        "gsutil -m cp -r {} {}".format(source_path, destination_path),
+        shell=True)
+
+
 class AIPlatformModel(object):
     def __init__(self, project_id):
         self._project_id = project_id
         self._service = _create_service()
-
-    def upload_model(self, model_local_path, model_gcs_path):
-        """
-
-        :param model_local_path:
-        :param model_gcs_path:
-        :return:
-        """
-        logging.info(
-            'Moving model directory from {} to {}'.format(model_local_path,
-                                                          model_gcs_path))
-        subprocess.call(
-            "gsutil -m cp -r {} {}".format(model_local_path, model_gcs_path),
-            shell=True)
 
     def model_exists(self, model_name):
         """
@@ -114,7 +116,7 @@ class AIPlatformModel(object):
             logging.warning('Model "%s" already exists.', model_name)
 
     def deploy_model(self, bucket_name, model_name, model_version,
-                     runtime_version=RUN_TIME_VERSION):
+                     runtime_version=_RUN_TIME_VERSION):
         """Deploys model on AI Platform.
 
         Args:
@@ -145,7 +147,8 @@ class AIPlatformModel(object):
                 'name': model_version,
                 'deploymentUri': '{}'.format(bucket_name),
                 'framework': 'TENSORFLOW',
-                'runtimeVersion': runtime_version
+                'runtimeVersion': runtime_version,
+                'pythonVersion': _PYTHON_VERSION
             }
             parent = 'projects/{}/models/{}'.format(self._project_id,
                                                     model_name)
