@@ -253,6 +253,7 @@ export GCS_JOB_DIR=gs://mlflow_gcp/jobs/$JOB_NAME
 gcloud ai-platform jobs submit training $JOB_NAME \
    --stream-logs \
    --runtime-version 1.15 \
+   --python-version 3.5 \
    --job-dir $GCS_JOB_DIR \
    --package-path trainer \
    --module-name trainer.task \

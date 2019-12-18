@@ -194,22 +194,23 @@ def train_and_evaluate(args):
         batch_size=num_eval_examples)
 
     start_time = time()
-    # Set tracking URI
+    # Set MLflow tracking URI
     if args.mlflow_tracking_uri:
         mlflow.set_tracking_uri(args.mlflow_tracking_uri)
     # Train model
     with mlflow.start_run() as active_run:
         run_id = active_run.info.run_id
 
+        # Callbacks
         class MlflowCallback(tf.keras.callbacks.Callback):
             # This function will be called after training completes.
             def on_train_end(self, logs=None):
                 mlflow.log_param('num_layers', len(self.model.layers))
                 mlflow.log_param('optimizer_name',
                                  type(self.model.optimizer).__name__)
-
+        # MLflow callback
         mlflow_callback = MlflowCallback()
-        # Setup Learning Rate decay.
+        # Setup Learning Rate decay callback.
         lr_decay_callback = tf.keras.callbacks.LearningRateScheduler(
             lambda epoch: args.learning_rate + 0.02 * (0.5 ** (1 + epoch)),
             verbose=False)
@@ -218,6 +219,7 @@ def train_and_evaluate(args):
         tensorboard_callback = tf.keras.callbacks.TensorBoard(
             tensorboard_path,
             histogram_freq=1)
+
         history = keras_model.fit(
             training_dataset,
             steps_per_epoch=int(num_train_examples / args.batch_size),
@@ -288,6 +290,10 @@ def train_and_evaluate(args):
     # Deploy model to AI Platform.
     if args.deploy_gcp:
         # Create AI Platform helper instance.
+        if not args.project_id:
+            raise ValueError('No Project is defined')
+        if not args.gcs_bucket:
+            raise ValueError('No GCS bucket')
         model_helper = model_deployment.AIPlatformModel(
             project_id=args.project_id)
         # Copy local model to GCS for deployment.

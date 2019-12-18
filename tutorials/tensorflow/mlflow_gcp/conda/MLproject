@@ -8,10 +8,13 @@ entry_points:
         default: '/tmp/'
       num_epochs:
         type: int
-        default: 5
+        default: 10
       train_steps:
         type: int
         default: 1000
+      batch_size:
+        type: int
+        default: 128
       eval_steps:
         type: int
         default: 1
@@ -28,6 +31,6 @@ entry_points:
             --train-steps {train_steps} \
             --eval-steps {eval_steps} \
             --train-files {train_files} \
-            --eval-files {eval_files}
-
+            --eval-files {eval_files} \
+            --batch-size {batch_size}
 #
