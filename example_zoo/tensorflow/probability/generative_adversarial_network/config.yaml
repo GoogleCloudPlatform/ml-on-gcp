@@ -12,13 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-import setuptools
-
-REQUIRES = ['seaborn==0.9.0','tensorflow_probability==0.7']
-
-setuptools.setup(name='tensorflow_probability_bayesian_neural_network',
-      version='0.0.1',
-      install_requires=REQUIRES,
-      packages=setuptools.find_packages()
-)
+trainingInput:
+  scaleTier: BASIC

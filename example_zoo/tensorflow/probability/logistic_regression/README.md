@@ -1,6 +1,6 @@
 # AI Platform Example Zoo: logistic_regression
 
-This is an automatically created sample based on [tensorflow/probability/tensorflow_probability/examples/logistic_regression.py](https://github.com/tensorflow/probability/blob/r0.6/tensorflow_probability/examples/logistic_regression.py).
+This is an automatically created sample based on [tensorflow/probability/tensorflow_probability/examples/logistic_regression.py](https://github.com/tensorflow/probability/blob/r0.7/tensorflow_probability/examples/logistic_regression.py).
 
 To run the sample:
 

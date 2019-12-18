@@ -15,7 +15,7 @@
 
 import setuptools
 
-REQUIRES = ['matplotlib==2.2.4','tensorflow_probability==0.6']
+REQUIRES = ['matplotlib==2.2.4','tensorflow_probability==0.7']
 
 setuptools.setup(name='tensorflow_probability_logistic_regression',
       version='0.0.1',

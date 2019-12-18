@@ -16,7 +16,7 @@
 BUCKET=$EXAMPLE_ZOO_ARTIFACTS_BUCKET
 PROJECT_ID=$EXAMPLE_ZOO_PROJECT_ID
 
-PACKAGE_PATH="{package_path}"
+PACKAGE_PATH="{output_package_path}"
 MODULE_NAME="{module_name}"
 
 now=$(date +"%Y%m%d_%H%M%S")
@@ -32,7 +32,7 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --module-name $MODULE_NAME \
     --region us-central1 \
     --config config.yaml \
-    --runtime-version 1.13 \
+    --runtime-version {runtime_version} \
     --python-version 3.5 \
     --project $PROJECT_ID \
     -- \
