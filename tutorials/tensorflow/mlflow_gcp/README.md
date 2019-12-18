@@ -81,7 +81,7 @@ Verify installation
 
 ```
 pip freeze | grep mlflow
-mlflow==1.2.0
+mlflow==1.4.0
 ```
 
 ### **Install dependencies**
@@ -110,7 +110,8 @@ export JOB_DIR=gs://mlflow_gcp/jobs
 export TRAIN_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.data.csv
 export EVAL_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.test.csv
 export TRAIN_STEPS=1000
-export EVAL_STEPS=100
+export EVAL_STEPS=1
+export BATCH_SIZE=128
 ```
 
 #### Run using Python
@@ -122,7 +123,8 @@ python -m trainer.task \
     --job-dir=$JOB_DIR \
     --train-steps=$TRAIN_STEPS \
     --eval-steps=$EVAL_STEPS \
-    --num-epochs=2
+    --batch-size=$BATCH_SIZE \
+    --num-epochs=10
 ```
 
 #### Deploy model in GCP after MLflow
@@ -133,6 +135,7 @@ export TRAIN_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.data.csv
 export EVAL_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.test.csv
 export TRAIN_STEPS=1000
 export EVAL_STEPS=1
+export BATCH_SIZE=128
 export BUCKET_NAME=<Your GCS bucket name, do not include gs://>
 export PROJECT_ID=<Your Project ID>
 ```
@@ -147,6 +150,7 @@ python -m trainer.task \
     --job-dir=$JOB_DIR \
     --train-steps=$TRAIN_STEPS \
     --eval-steps=1 \
+    --batch-size=$BATCH_SIZE \
     --num-epochs=20 \
     --deploy-gcp \
     --gcs-bucket=$BUCKET_NAME \
@@ -235,6 +239,7 @@ gcloud ai-platform local train --package-path trainer \
     --job-dir $JOB_DIR \
     --train-steps $TRAIN_STEPS \
     --eval-steps $EVAL_STEPS
+    --batch-size=$BATCH_SIZE \
 ```
 
 #### Run via the `gcloud` command in AI Platform:
@@ -247,7 +252,7 @@ export GCS_JOB_DIR=gs://mlflow_gcp/jobs/$JOB_NAME
 
 gcloud ai-platform jobs submit training $JOB_NAME \
    --stream-logs \
-   --runtime-version 1.14 \
+   --runtime-version 1.15 \
    --job-dir $GCS_JOB_DIR \
    --package-path trainer \
    --module-name trainer.task \
@@ -257,6 +262,7 @@ gcloud ai-platform jobs submit training $JOB_NAME \
    --eval-files $EVAL_FILE \
    --train-steps $TRAIN_STEPS \
    --eval-steps $EVAL_STEPS \
+   --batch-size=$BATCH_SIZE \
    --mlflow-tracking-uri http://<MLflow Server Public IP Address>:<MLflow server port>
 ```
 

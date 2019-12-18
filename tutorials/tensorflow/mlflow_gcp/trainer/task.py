@@ -65,17 +65,17 @@ def get_args():
         '--num-epochs',
         type=int,
         default=20,
-        help='number of times to go through the data, default=20')
+        help='Number of times to go through the data, default=20')
     parser.add_argument(
         '--batch-size',
-        default=128,
+        default=64,
         type=int,
-        help='number of records to read during each training step, default=128')
+        help='Number of records to read during each training step, default=128')
     parser.add_argument(
         '--learning-rate',
         default=.01,
         type=float,
-        help='learning rate for gradient descent, default=.01')
+        help='Learning rate for gradient descent, default=.01')
     parser.add_argument(
         '--eval-steps',
         help='Number of steps to run evaluation for, at each checkpoint',
@@ -98,17 +98,16 @@ def get_args():
         '--deploy-gcp',
         action='store_true',
         default=False,
-        help='local or GCS location for writing checkpoints and exporting '
+        help='Local or GCS location for writing checkpoints and exporting '
              'models')
     parser.add_argument(
         '--project-id',
         type=str,
         help='AI Platform project id')
-    #
     parser.add_argument(
         '--mlflow-tracking-uri',
         type=str,
-        default='mlflow tracking URI',
+        default='',
         help='MLFlow tracking URI')
     parser.add_argument(
         '--gcs-bucket',
@@ -123,7 +122,7 @@ def get_args():
     parser.add_argument(
         '--run-time-version',
         type=str,
-        default='1.14',
+        default='1.15',
         help='AI Platform Run time version')
     args, _ = parser.parse_known_args()
     return args
@@ -286,7 +285,7 @@ def train_and_evaluate(args):
             shutil.rmtree(model_local_path)
             shutil.rmtree(tensorboard_path)
 
-    # Deploy to AI Platform.
+    # Deploy model to AI Platform.
     if args.deploy_gcp:
         # Create AI Platform helper instance.
         model_helper = model_deployment.AIPlatformModel(
