@@ -71,6 +71,7 @@ class CMLEPackage(object):
     def __init__(self, sample_dict, repo):
         self.org = sample_dict['org']
         self.repository = sample_dict['repository']
+        self.runtime_version = sample_dict['runtime_version']
         self.branch = sample_dict['branch']
         self.module_path = sample_dict.get('module_path', '')
         self.script_path = sample_dict.get('script_path', '')
@@ -168,18 +169,6 @@ class CMLEPackage(object):
             )
         )
 
-        # add __init__.py at all levels
-        parts = self.output_script_path.split('/')
-        current_path = ''
-        for part in parts:
-            current_path = os.path.join(current_path, part)
-            self.pipes.append(
-                Pipe(
-                    'templates/__init__.py',
-                    os.path.join(self.output_dir, current_path, '__init__.py')
-                )
-            )
-
         # tfgfile_wrapper if needed
         if self.tfgfile_wrap:
             self.pipes.append(
@@ -232,7 +221,6 @@ class CMLEPackage(object):
             )
 
 
-
     @property
     def name(self):
         return self.script_name.split('.')[0]
@@ -250,8 +238,16 @@ class CMLEPackage(object):
     
 
     @property
-    def package_path(self):
+    def output_package_path(self):
         return self.output_script_path.split('/')[0]
+
+
+    @property
+    def package_path(self):
+        if self.script_path:
+            return self.script_path.split('/')[0]
+        else:
+            return 'trainer'
 
 
     @property
@@ -296,7 +292,8 @@ class CMLEPackage(object):
             'org': self.org,
             'repository': self.repository,
             'name': self.name,
-            'package_path': self.package_path,
+            'runtime_version': self.runtime_version,
+            'output_package_path': self.output_package_path,
             'module_name': self.module_name,
             'full_path': self.full_path,
             'requires': self.requires,
@@ -319,3 +316,11 @@ class CMLEPackage(object):
 
         for pipe in self.pipes:
             pipe.run()
+
+        # add __init__.py to all directories
+        for path, _, files in os.walk(self.output_dir):
+            if path != self.output_dir and '__init__.py' not in files:
+                Pipe(
+                    'templates/__init__.py',
+                    os.path.join(path, '__init__.py')
+                ).run()

@@ -15,9 +15,9 @@
 
 import setuptools
 
-REQUIRES = ['seaborn==0.9.0','tensorflow_probability==0.7']
+REQUIRES = ['matplotlib==2.2.4','tensorflow_probability==0.7']
 
-setuptools.setup(name='tensorflow_probability_bayesian_neural_network',
+setuptools.setup(name='tensorflow_probability_generative_adversarial_network',
       version='0.0.1',
       install_requires=REQUIRES,
       packages=setuptools.find_packages()

@@ -32,7 +32,7 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --module-name $MODULE_NAME \
     --region us-central1 \
     --config config.yaml \
-    --runtime-version 1.13 \
+    --runtime-version 1.14 \
     --python-version 2.7 \
     --project $PROJECT_ID \
     -- \
@@ -40,5 +40,4 @@ gcloud ai-platform jobs submit training $JOB_NAME \
     --fake_data \
     --max_steps=5 \
     --delete_existing \
-    --viz_steps=5 \
-    --learning_rate=1e-7
+    --viz_steps=5

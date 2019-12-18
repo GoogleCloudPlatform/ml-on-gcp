@@ -15,7 +15,7 @@
 
 import setuptools
 
-REQUIRES = ['tensorflow_probability==0.6']
+REQUIRES = ['tensorflow_probability==0.7']
 
 setuptools.setup(name='tensorflow_probability_latent_dirichlet_allocation_distributions',
       version='0.0.1',

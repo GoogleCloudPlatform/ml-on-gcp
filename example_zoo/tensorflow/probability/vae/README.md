@@ -1,6 +1,6 @@
 # AI Platform Example Zoo: vae
 
-This is an automatically created sample based on [tensorflow/probability/tensorflow_probability/examples/vae.py](https://github.com/tensorflow/probability/blob/r0.6/tensorflow_probability/examples/vae.py).
+This is an automatically created sample based on [tensorflow/probability/tensorflow_probability/examples/vae.py](https://github.com/tensorflow/probability/blob/r0.7/tensorflow_probability/examples/vae.py).
 
 To run the sample:
 
