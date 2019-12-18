@@ -46,8 +46,7 @@ def input_fn(features, labels, shuffle, num_epochs, batch_size):
 
     # We call repeat after shuffling, rather than before, to prevent separate
     # epochs from blending together.
-    dataset = dataset.repeat(num_epochs)
-    dataset = dataset.batch(batch_size)
+    dataset = dataset.repeat(num_epochs).batch(batch_size)
     return dataset
 
 
