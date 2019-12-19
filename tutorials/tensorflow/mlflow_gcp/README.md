@@ -222,7 +222,17 @@ mlflow run mlflow_gcp
 or
 
 ```
-mlflow run mlflow_gcp -P train-files=$TRAIN_FILE -P eval-files=$EVAL_FILE -P job-dir=$JOB_DIR -P train-steps=$TRAIN_STEPS -P eval-steps=1 -P num-epochs=20
+export MLFLOW_TRACKING_URI=http://<URL>:5000
+export GOOGLE_APPLICATION_CREDENTIALS=/keys/key.json
+
+mlflow run mlflow_gcp \
+    -P train-files=$TRAIN_FILE \
+    -P eval-files=$EVAL_FILE \
+    -P job-dir=$JOB_DIR \
+    -P train-steps=$TRAIN_STEPS \
+    -P eval-steps=1 \
+    -P batch_size=128 \
+    -P num-epochs=10 
 ```
 
 You will see all the runs.

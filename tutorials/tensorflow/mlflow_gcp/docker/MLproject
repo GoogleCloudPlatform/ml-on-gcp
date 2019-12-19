@@ -18,13 +18,16 @@ entry_points:
         default: 1
       batch_size:
         type: int
-        default: 128
+        default: 64
       train_files:
         type: string
         default: 'gs://cloud-samples-data/ml-engine/census/data/adult.data.csv'
       eval_files:
         type: string
         default: 'gs://cloud-samples-data/ml-engine/census/data/adult.test.csv'
+      mlflow_tracking_uri:
+        type: uri
+        default: ''
 
     command: |
         python -m trainer.task --job-dir {job_dir} \
@@ -33,4 +36,5 @@ entry_points:
             --eval-steps {eval_steps} \
             --train-files {train_files} \
             --eval-files {eval_files} \
-            --batch-size {batch_size}
+            --batch-size {batch_size} \
+            --mlflow-tracking-uri {mlflow_tracking_uri}
