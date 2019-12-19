@@ -101,6 +101,11 @@ def get_args():
         help='Local or GCS location for writing checkpoints and exporting '
              'models')
     parser.add_argument(
+        '--model-reload',
+        action='store_true',
+        default=False,
+        help='Reload model using pyfunc')
+    parser.add_argument(
         '--project-id',
         type=str,
         help='AI Platform project id')
@@ -157,7 +162,6 @@ def train_and_evaluate(args):
     Args:
       args: dictionary of arguments - see get_args() for details
     """
-
     logging.info('Resume training: {}'.format(args.reuse_job_dir))
     if not args.reuse_job_dir:
         if tf.io.gfile.exists(args.job_dir):
@@ -272,8 +276,9 @@ def train_and_evaluate(args):
                                     tf_signature_def_key='serving_default',
                                     artifact_path='model')
         # Reloading the model
-        pyfunc_model = mlflow.pyfunc.load_model(
-            mlflow.get_artifact_uri('model'))
+        if args.model_reload:
+            mlflow.pyfunc.load_model(mlflow.get_artifact_uri('model'))
+
         logging.info('Uploading TensorFlow events as a run artifact.')
         mlflow.log_artifacts(tensorboard_path)
         logging.info(
