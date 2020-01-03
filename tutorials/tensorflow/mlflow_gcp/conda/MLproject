@@ -1,5 +1,6 @@
 name: mlflow_gcp
-conda_env: conda.yaml
+conda_env:
+  conda_env: conda.yaml
 entry_points:
   main:
     parameters:
@@ -8,26 +9,34 @@ entry_points:
         default: '/tmp/'
       num_epochs:
         type: int
-        default: 5
+        default: 10
       train_steps:
         type: int
         default: 1000
       eval_steps:
         type: int
         default: 1
+      batch_size:
+        type: int
+        default: 64
       train_files:
         type: string
         default: 'gs://cloud-samples-data/ml-engine/census/data/adult.data.csv'
       eval_files:
         type: string
         default: 'gs://cloud-samples-data/ml-engine/census/data/adult.test.csv'
+      mlflow_tracking_uri:
+        type: uri
+        default: ''
 
     command: |
-        python -m trainer.task --job_dir {job_dir} \
+        python -m trainer.task --job-dir {job_dir} \
             --num-epochs {num_epochs} \
             --train-steps {train_steps} \
             --eval-steps {eval_steps} \
             --train-files {train_files} \
-            --eval-files {eval_files}
+            --eval-files {eval_files} \
+            --batch-size {batch_size} \
+            --mlflow-tracking-uri {mlflow_tracking_uri}
 
 #
