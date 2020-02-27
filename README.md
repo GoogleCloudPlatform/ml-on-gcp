@@ -56,7 +56,7 @@ really care about.
 
 ## Google Cloud Function
 
-1. [Google Cloud Function + AI Platform Example](gcf/gcf-ai-platform-example/README.md) - Example endpoints to infer AI Plaform models.
+1. [Google Cloud Functions + AI Platform Example](gcf/gcf-ai-platform-example/README.md) - Example endpoints to infer AI Platform models.
 
 - - -
 
