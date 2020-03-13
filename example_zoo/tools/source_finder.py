@@ -28,7 +28,6 @@ class SourceFinder(object):
         # script_path should be absolute path to script
         self.script_path = script_path
 
-        # for this to work properly self.root must not have a trailing '/'
         # parent is used to figure out the absolute path of dependency scripts
         self.parent, self.package_name = os.path.split(self.package_path)
 
@@ -49,38 +48,26 @@ class SourceFinder(object):
         to_visit = [self.script_path]
 
         while len(to_visit) > 0:
-            path = to_visit.pop(0)
+            visit_path = to_visit.pop(0)
 
-            module_names = self.process_script(path)
+            module_names = self.process_script(visit_path)
 
             for module_name in module_names:
                 # turn this into absolute path
-                path = os.path.join(self.parent, self.module_name_to_path(module_name))
+                module_path = os.path.join(self.parent, self.module_name_to_path(module_name))
 
                 # sometimes a variable is imported, in which case we back track one level
-                if not os.path.exists(path):
-                    parent, _ = os.path.split(path)
-                    path = parent + '.py'
+                if not os.path.exists(module_path):
+                    parent, _ = os.path.split(module_path)
+                    module_path = parent + '.py'
 
                 # at this point the file should exist
-                if not os.path.exists(path):
-                    raise FileNotFoundError(path)
+                if not os.path.exists(module_path):
+                    raise FileNotFoundError(module_path)
 
                 # add to the to_visit list if not yet visited
-                if path not in self.script_imports:
-                    to_visit.append(path)
-
-                # also add sibling and all parent __init__.py of the script currently being visited
-                parent, tail = os.path.split(path)
-                while tail != self.package_name and parent:
-                    init_path = os.path.join(parent, '__init__.py')
-                    if not os.path.exists(init_path):
-                        raise FileNotFoundError(init_path)
-
-                    if init_path not in self.script_imports:
-                        to_visit.append(init_path)
-
-                    parent, tail = os.path.split(parent)
+                if module_path not in self.script_imports:
+                    to_visit.append(module_path)
 
 
     def process_script(self, path):

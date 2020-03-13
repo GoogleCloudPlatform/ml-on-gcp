@@ -1,8 +1,9 @@
 org: tensorflow
 repository: models
+branch: "r1.13.0"
+runtime_version: "1.13"
 samples:
-  - branch: "r1.13.0"
-    script_path: official/mnist
+  - script_path: official/mnist
     script_name: mnist.py
     args:
       - "--export_dir=$JOB_DIR"
@@ -10,8 +11,7 @@ samples:
     artifact: saved_model.pb
     wait_time: 300
 
-  - branch: "r1.13.0"
-    script_path: official/resnet/keras
+  - script_path: official/resnet/keras
     script_name: keras_cifar_main.py
     replace:
       - - "return run(flags.FLAGS)"
@@ -24,8 +24,7 @@ samples:
     artifact: events
     wait_time: 180
 
-  - branch: "r1.13.0"
-    script_path: official/resnet/keras
+  - script_path: official/resnet/keras
     script_name: keras_imagenet_main.py
     replace:
       - - "return run(flags.FLAGS)"
@@ -38,8 +37,7 @@ samples:
     artifact: events
     wait_time: 180
 
-  - branch: "r1.13.0"
-    script_path: official/recommendation
+  - script_path: official/recommendation
     script_name: ncf_main.py
     requires:
       - "typing==3.7.4"

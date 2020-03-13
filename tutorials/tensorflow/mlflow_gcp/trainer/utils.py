@@ -205,8 +205,8 @@ def load_data(training_file_path, eval_file_path, *args, **kwargs):
     """
 
     # TODO Download and clean custom files.
-    print('Location train file: %s, eval file %s', training_file_path,
-          eval_file_path)
+    print('Location train file: {}, eval file {}'.format(training_file_path,
+                                                         eval_file_path))
     training_file_path, eval_file_path = download(DATA_DIR)
 
     # This census data uses the value '?' for missing entries. We use

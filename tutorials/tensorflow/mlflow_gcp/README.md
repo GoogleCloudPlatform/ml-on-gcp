@@ -37,7 +37,63 @@ This dataset is provided by a third party. Google provides no
 representation, warranty, or other guarantees about the validity or any 
 other aspects of this dataset.
 
+### Create a Compute Engine instance
+
+Create a new Deep Learning Virtual Machine instance
+
+```
+export IMAGE_FAMILY="tf-latest-cpu"
+export ZONE="us-central1-b"
+export INSTANCE_NAME="mlflow-server"
+gcloud compute instances create $INSTANCE_NAME \
+       --zone=$ZONE \
+       --image-family=$IMAGE_FAMILY \
+       --machine-type=n1-standard-8 \
+       --image-project=deeplearning-platform-release \
+       --maintenance-policy=TERMINATE \
+       --scopes=https://www.googleapis.com/auth/cloud-platform \
+       --tags http-server,https-server
+```
+
+#### Installing MLflow
+
+Install git, pip and virtual environment
+
+```
+sudo apt-get install git -y
+sudo apt-get install python-pip -y
+pip install virtualenv
+```
+
+Create virtual environment
+
+```
+virtualenv -p `which python3` mlflow_env
+source mlflow_env/bin/activate
+```
+
+Install MLflow
+
+```
+pip install mlflow
+```
+Verify installation
+
+```
+pip freeze | grep mlflow
+mlflow==1.4.0
+```
+
 ### **Install dependencies**
+
+In this tutorial we will train a TensorFlow model and use different 
+parameters. We will use MLflow to track those different parameters and 
+their metrics. Start by cloning the repo.
+
+```
+git clone https://github.com/GoogleCloudPlatform/ml-on-gcp.git
+cd ml-on-gcp/tutorials/tensorflow/mlflow_gcp/
+```
 
 Install the python dependencies. 
 
@@ -50,11 +106,12 @@ pip install --upgrade -r requirements.txt
 Define environment variables:
 
 ```
-export JOB_DIR=mlflow
+export JOB_DIR=gs://mlflow_gcp/jobs
 export TRAIN_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.data.csv
 export EVAL_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.test.csv
 export TRAIN_STEPS=1000
-export EVAL_STEPS=100
+export EVAL_STEPS=1
+export BATCH_SIZE=128
 ```
 
 #### Run using Python
@@ -66,7 +123,8 @@ python -m trainer.task \
     --job-dir=$JOB_DIR \
     --train-steps=$TRAIN_STEPS \
     --eval-steps=$EVAL_STEPS \
-    --num-epochs=5
+    --batch-size=$BATCH_SIZE \
+    --num-epochs=10
 ```
 
 #### Deploy model in GCP after MLflow
@@ -77,6 +135,7 @@ export TRAIN_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.data.csv
 export EVAL_FILE=gs://cloud-samples-data/ml-engine/census/data/adult.test.csv
 export TRAIN_STEPS=1000
 export EVAL_STEPS=1
+export BATCH_SIZE=128
 export BUCKET_NAME=<Your GCS bucket name, do not include gs://>
 export PROJECT_ID=<Your Project ID>
 ```
@@ -91,6 +150,7 @@ python -m trainer.task \
     --job-dir=$JOB_DIR \
     --train-steps=$TRAIN_STEPS \
     --eval-steps=1 \
+    --batch-size=$BATCH_SIZE \
     --num-epochs=20 \
     --deploy-gcp \
     --gcs-bucket=$BUCKET_NAME \
@@ -162,7 +222,17 @@ mlflow run mlflow_gcp
 or
 
 ```
-mlflow run mlflow_gcp -P train-files=$TRAIN_FILE -P eval-files=$EVAL_FILE -P job-dir=$JOB_DIR -P train-steps=$TRAIN_STEPS -P eval-steps=1 -P num-epochs=20
+export MLFLOW_TRACKING_URI=http://<URL>:5000
+export GOOGLE_APPLICATION_CREDENTIALS=/keys/key.json
+
+mlflow run mlflow_gcp \
+    -P train-files=$TRAIN_FILE \
+    -P eval-files=$EVAL_FILE \
+    -P job-dir=$JOB_DIR \
+    -P train-steps=$TRAIN_STEPS \
+    -P eval-steps=1 \
+    -P batch_size=128 \
+    -P num-epochs=10 
 ```
 
 You will see all the runs.
@@ -179,6 +249,7 @@ gcloud ai-platform local train --package-path trainer \
     --job-dir $JOB_DIR \
     --train-steps $TRAIN_STEPS \
     --eval-steps $EVAL_STEPS
+    --batch-size=$BATCH_SIZE \
 ```
 
 #### Run via the `gcloud` command in AI Platform:
@@ -189,19 +260,21 @@ export JOB_NAME=mlflow_$DATE
 export REGION=us-central1
 export GCS_JOB_DIR=gs://mlflow_gcp/jobs/$JOB_NAME
 
-gcloud ai-platform job sumit training $JOB_NAME \
-    --stream-logs \
-    --runtime-version 1.14 \
-    --package-path trainer \
-    --module-name trainer.task \
-    --region $REGION \
-    -- \
-    --train-files $TRAIN_FILE \
-    --eval-files $EVAL_FILE \
-    --job-dir $GCS_JOB_DIR \
-    --train-steps $TRAIN_STEPS \
-    --eval-steps $EVAL_STEPS
-    --mlflow-tracking-uri http://<MLFlow Public IP Address>:5000
+gcloud ai-platform jobs submit training $JOB_NAME \
+   --stream-logs \
+   --runtime-version 1.15 \
+   --python-version 3.5 \
+   --job-dir $GCS_JOB_DIR \
+   --package-path trainer \
+   --module-name trainer.task \
+   --region $REGION \
+   -- \
+   --train-files $TRAIN_FILE \
+   --eval-files $EVAL_FILE \
+   --train-steps $TRAIN_STEPS \
+   --eval-steps $EVAL_STEPS \
+   --batch-size=$BATCH_SIZE \
+   --mlflow-tracking-uri http://<MLflow Server Public IP Address>:<MLflow server port>
 ```
 
 

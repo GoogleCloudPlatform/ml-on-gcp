@@ -15,7 +15,7 @@
 
 import setuptools
 
-REQUIRES = ['seaborn==0.9.0','tensorflow_probability==0.6']
+REQUIRES = ['seaborn==0.9.0','tensorflow_probability==0.7']
 
 setuptools.setup(name='tensorflow_probability_bayesian_neural_network',
       version='0.0.1',

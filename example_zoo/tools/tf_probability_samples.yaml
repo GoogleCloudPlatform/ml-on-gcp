@@ -1,10 +1,11 @@
 org: tensorflow
 repository: probability
+branch: "r0.7"
+runtime_version: "1.14"
 requires:
-  - "tensorflow_probability==0.6"
+  - "tensorflow_probability==0.7"
 samples:
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: bayesian_neural_network.py
     requires:
       - "seaborn==0.9.0"
@@ -12,27 +13,24 @@ samples:
       - plot_weight_posteriors
       - plot_heldout_prediction
     args:
-      - "--fake_data"
-      - "--max_steps=5"
-      - "--viz_steps=5"
+      - "--max_steps=3"
+      - "--viz_steps=3"
     artifact: weights.png
-    wait_time: 180
+    wait_time: 300
 
-  # TODO: import example when updating to r0.7, requiring tf 1.14 support
-  # - branch: "r0.6"
-  #   module_path: tensorflow_probability/examples
+  # TODO: udpate the source example to write artifacts to model_dir
+  # - module_paty: tensorflow_probability
+  #   script_path: examples
   #   script_name: cifar10_bnn.py
   #   requires:
   #     - "matplotlib==2.2.4"
   #   args:
   #     - "--fake_data"
   #     - "--epochs=1"
-  #     - "--batch_size=5"
   #   artifact: 
   #   wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: deep_exponential_family.py
     args:
       - "--fake_data"
@@ -41,10 +39,13 @@ samples:
     artifact: events.out.tfevents
     wait_time: 180
 
-  # TODO: import example when updating to r0.7, requiring tf 1.14 support
-  # - branch: "r0.6"
-  #   module_path: tensorflow_probability/examples
+  # TODO: fix the source example to allow using source finder (blocked by the tensorflow_probability name collision)
+  # - module_path: tensorflow_probability
+  #   script_path: examples
   #   script_name: disentangled_vae.py
+  #   replace:
+  #     - - "from tensorflow_probability.examples import sprites_dataset"
+  #       - "from examples import sprites_dataset"
   #   args:
   #     - "--fake_data"
   #     - "--batch_size=2"
@@ -54,11 +55,33 @@ samples:
   #     - "--log_steps=1"
   #     - "--max_steps=2"
   #     - "--enable_debug_logging"
-  #   artifact: 
+  #   artifact: -1.data-00000-of-00001
   #   wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
+    script_name: generative_adversarial_network.py
+    requires:
+      - "matplotlib==2.2.4"
+    tfgfile_wrap:
+      - plot_generated_images
+    # TODO: update the source example
+    replace:
+      - - "import matplotlib.pyplot as plt"
+        - "from matplotlib import figure"
+      - - "plt.figure"
+        - "figure.Figure"
+      - - "plt.axis"
+        - "ax.axis"
+      - - "plt.subplots_adjust"
+        - "fig.subplots_adjust"
+    args:
+      - "--fake_data"
+      - "--max_steps=5"
+      - "--viz_steps=5"
+    artifact: _images.png
+    wait_time: 240
+
+  - module_path: tensorflow_probability/examples
     script_name: grammar_vae.py
     args:
       - "--max_steps=5"
@@ -67,32 +90,27 @@ samples:
     artifact: -1.data-00000-of-00001
     wait_time: 240
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: latent_dirichlet_allocation_distributions.py
     args:
       - "--fake_data"
       - "--max_steps=5"
       - "--delete_existing"
       - "--viz_steps=5"
-      - "--learning_rate=1e-7"
     artifact: .data-00000-of-00001
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: latent_dirichlet_allocation_edward2.py
     args:
       - "--fake_data"
       - "--max_steps=5"
       - "--delete_existing"
       - "--viz_steps=5"
-      - "--learning_rate=1e-7"
     artifact: .data-00000-of-00001
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: logistic_regression.py
     requires:
       - "matplotlib==2.2.4"
@@ -105,27 +123,23 @@ samples:
     artifact: weights_inferred.png
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: vae.py
     args:
       - "--fake_data"
       - "--max_steps=5"
       - "--delete_existing"
       - "--viz_steps=5"
-      - "--learning_rate=1e-7"
     artifact: .data-00000-of-00001
     wait_time: 180
 
-  - branch: "r0.6"
-    module_path: tensorflow_probability/examples
+  - module_path: tensorflow_probability/examples
     script_name: vq_vae.py
     requires:
       - "matplotlib==2.2.4"
     tfgfile_wrap:
       - save_imgs
     args:
-      - "--mnist_type='fake_data'"
       - "--max_steps=2"
       - "--base_depth=2"
     artifact: validation_reconstructions.png
