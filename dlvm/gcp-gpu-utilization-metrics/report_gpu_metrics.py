@@ -66,7 +66,7 @@ class GpuMetrics(Enum):
     @classmethod
     def validate(cls, key):
         if key not in cls.all():
-            raise ValueError('Invalid accelerator key provided: %s.' % key)
+            raise ValueError('Invalid metric key provided: %s.' % key)
 
 
 def get_args():
