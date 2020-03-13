@@ -192,9 +192,9 @@ def report_metrics(resource_values, sleep_time, metrics):
             metric_type='utilization_gpu',
             resource_values=resource_values)
         report_metric(
-          value=get_metric_value(metrics.get('memory_used')),
-          metric_type='memory_used',
-          resource_values=resource_values)
+            value=get_metric_value(metrics.get('memory_used')),
+            metric_type='memory_used',
+            resource_values=resource_values)
         time.sleep(sleep_time)
 
 
