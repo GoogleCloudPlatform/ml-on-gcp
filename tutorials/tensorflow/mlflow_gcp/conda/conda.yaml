@@ -4,6 +4,6 @@ channels:
   - anaconda
 dependencies:
   - python==3.7
-  - tensorflow==1.14.0
+  - tensorflow==1.15.0
   - pip:
     - mlflow

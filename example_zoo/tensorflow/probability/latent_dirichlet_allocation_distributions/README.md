@@ -1,6 +1,6 @@
 # AI Platform Example Zoo: latent_dirichlet_allocation_distributions
 
-This is an automatically created sample based on [tensorflow/probability/tensorflow_probability/examples/latent_dirichlet_allocation_distributions.py](https://github.com/tensorflow/probability/blob/r0.6/tensorflow_probability/examples/latent_dirichlet_allocation_distributions.py).
+This is an automatically created sample based on [tensorflow/probability/tensorflow_probability/examples/latent_dirichlet_allocation_distributions.py](https://github.com/tensorflow/probability/blob/r0.7/tensorflow_probability/examples/latent_dirichlet_allocation_distributions.py).
 
 To run the sample:
 
