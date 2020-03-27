@@ -12,59 +12,58 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Create GPU metrics.
-
 If you need to create metrics first run this script.
 """
 import os
 
 from google.cloud import monitoring_v3
 
-GPU_UTILIZATION_METRIC_NAME = 'gpu_utilization'
-GPU_MEMORY_UTILIZATION_METRIC_NAME = 'gpu_memory_utilization'
-
 
 class MissingProjectIdError(Exception):
-  pass
+    pass
 
 
-def add_new_metrics(project_id, metric_type, desc):
-  """Add new Metrics for StackDriver.
+def add_new_metric(project_id, metric_type, desc):
+    """Add new Metrics for StackDriver.
 
-  Args:
-    project_id: (str) GCP project id.
-    metric_type: (int) MetricDescriptor type.
-    desc: (str) MetricDescriptor description.
+    Args:
+      project_id: (str) GCP project id.
+      metric_type: (int) MetricDescriptor type.
+      desc: (str) MetricDescriptor description.
 
-  Raises:
-    MissingProjectIdError: GCP Project id is not defined.
-  """
-  if not project_id:
-    raise MissingProjectIdError(
-        'Set the environment variable GCLOUD_PROJECT to your GCP Project ID.')
-  descriptor = monitoring_v3.types.MetricDescriptor()
-  descriptor.type = 'custom.googleapis.com/{type}'.format(type=metric_type)
-  descriptor.metric_kind = (
-      monitoring_v3.enums.MetricDescriptor.MetricKind.GAUGE)
-  descriptor.value_type = (monitoring_v3.enums.MetricDescriptor.ValueType.INT64)
-  descriptor.description = desc
-  # Create Metric Descriptor.
-  client = monitoring_v3.MetricServiceClient()
-  project_name = client.project_path(project_id)
-  descriptor = client.create_metric_descriptor(project_name, descriptor)
-  print('Created {}.'.format(descriptor.name))
+    Raises:
+      MissingProjectIdError: GCP Project id is not defined.
+    """
+    if not project_id:
+        raise MissingProjectIdError(
+            'Set the environment variable GCLOUD_PROJECT to your GCP Project '
+            'ID.')
+    descriptor = monitoring_v3.types.MetricDescriptor()
+    descriptor.type = 'custom.googleapis.com/{type}'.format(type=metric_type)
+    descriptor.metric_kind = (
+        monitoring_v3.enums.MetricDescriptor.MetricKind.GAUGE)
+    descriptor.value_type = (
+        monitoring_v3.enums.MetricDescriptor.ValueType.INT64)
+    descriptor.description = desc
+    # Create Metric Descriptor.
+    client = monitoring_v3.MetricServiceClient()
+    project_name = client.project_path(project_id)
+    descriptor = client.create_metric_descriptor(project_name, descriptor)
+    print('Created {}.'.format(descriptor.name))
 
 
 def main():
-  # Get Project id information.
-  project_id = (
-      os.environ.get('GOOGLE_CLOUD_PROJECT') or
-      os.environ.get('GCLOUD_PROJECT'))
-
-  add_new_metrics(project_id, GPU_UTILIZATION_METRIC_NAME,
-                  'Metric for GPU utilization.')
-  add_new_metrics(project_id, GPU_MEMORY_UTILIZATION_METRIC_NAME,
-                  'Metric for GPU memory utilization.')
+    # Get Project id information.
+    project_id = (
+        os.environ.get('GOOGLE_CLOUD_PROJECT') or
+        os.environ.get('GCLOUD_PROJECT'))
+    add_new_metric(project_id, 'utilization_memory',
+                   'Metric for GPU utilization.')
+    add_new_metric(project_id, 'utilization_gpu',
+                   'Metric for GPU memory utilization.')
+    add_new_metric(project_id, 'memory_used',
+                   'Metric for amount of GPU memory used.')
 
 
 if __name__ == '__main__':
-  main()
+    main()
