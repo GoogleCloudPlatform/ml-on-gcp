@@ -54,7 +54,7 @@ really care about.
 
 - - -
 
-## Google Cloud Function
+## Google Cloud Functions
 
 1. [Google Cloud Functions + AI Platform Example](gcf/gcf-ai-platform-example/README.md) - Example endpoints to infer AI Platform models.
 
@@ -68,3 +68,10 @@ Collections of examples adapted to be runnable on [AI Platform](https://cloud.go
 
 1. [tensorflow-models examples](/example_zoo/tensorflow/models).
 
+## Google Machine Learning Repositories
+
+If you’re looking for our guides on how to do Machine Learning on Google Cloud Platform (GCP) using other services, please checkout our other repositories: 
+
+- [AI Platform samples](https://github.com/GoogleCloudPlatform/ai-platform-samples), which has guides on how to bring your code from various ML frameworks to Google Cloud AI Platform using different products such as AI Platform Training, Prediction, Notebooks and AI Hub.
+- [Keras Idiomatic Programmer](https://github.com/GoogleCloudPlatform/keras-idiomatic-programmer) This repository contains content produced by Google Cloud AI Developer Relations for machine learning and artificial intelligence. The content covers a wide spectrum from educational, training, and research, covering from novices, junior/intermediate to advanced.
+- [Professional Services](https://github.com/GoogleCloudPlatform/professional-services), common solutions and tools developed by Google Cloud's Professional Services team.
