@@ -16,8 +16,8 @@ The [Census Income Data
 Set](https://archive.ics.uci.edu/ml/datasets/Census+Income) that this 
 sample uses for training is hosted by the [UC Irvine Machine Learning
 Repository](https://archive.ics.uci.edu/ml/datasets/).
-The specific files used in this tutorial are [adult.data.csv]
-(https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data)
+The specific files used in this tutorial are 
+[adult.data.csv](https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data)
 and [adult.test.csv](https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test)
  (see below).
 
@@ -208,16 +208,12 @@ and params logged during project execution are accessible afterwards.
 We create a new install based on GCP Deep Learning containers image.
 You can always change it for your preferred Docker image.
 
-```
-docker build -t mlflow-gcp-example -f Dockerfile .
-```
-
 ### Running this example in Docker
 
 First, install MLflow (via pip install mlflow) and install Docker.
 
 Then, build the image for the project's Docker container environment. 
-You must use the same image name that is given by the docker_env.image 
+You must use the same image name that is given by the `docker_env.image` 
 field of the MLproject file. In this example, the image name is mlflow-gcp-example. 
 Issue the following command to build an image with this name:
 
