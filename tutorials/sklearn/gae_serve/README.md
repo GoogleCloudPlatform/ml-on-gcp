@@ -30,7 +30,7 @@ The benefits of this configuration include:
 
 1. `git clone https://github.com/GoogleCloudPlatform/ml-on-gcp`
 
-1. `cd ml-on-gcp/sklearn/gae_serve`
+1. `cd ml-on-gcp/tutorials/sklearn/gae_serve`
 
 1. This sample demonstrates how to deploy an App Engine service named `modelserve`.  If you prefer to deploy to the `default` service (for example, if this is the first App Engine service in your project, it must be named `default`), use the yaml files in the `default/` subdirectory by copying them over the yaml files in the root directory of this sample.
 
