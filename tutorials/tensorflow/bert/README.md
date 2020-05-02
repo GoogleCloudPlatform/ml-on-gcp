@@ -1,6 +1,6 @@
 # QA Inference on BERT using TensorRT
 
-## The purpose of this docker:
+## Objective:
 
   -  Create a TensorRT BERT Base(Large) Engine
   -  Run QA Inference on BERT Base(Large) by using the Engine previously created
@@ -95,7 +95,9 @@ Copying gs://aihub/assets/docker/tensorrt_bert_sample.tar.gz...
 / [1 files][ 14.8 GiB/ 14.8 GiB]   61.1 MiB/s       
 ```
 
-Unzip Docker container
+Unzip Docker container:
+
+**Warning:**  Image tar.gz file size is 14GB and uncompressed is 20GB, make sure you have enough storage resources to uncompress.
 
 ```
 gunzip tensorrt_bert_sample.tar.gz
@@ -106,7 +108,7 @@ drwxr-xr-x 23 root root 4.0K Aug 12 02:54 ..
 -rw-r--r--  1 root root  20G Aug 12 02:57 tensorrt_bert_sample.tar
 ```
 
-### 1. Run the docker image
+1. Run the docker image
 
 Uncompress the tar.gz file and load it with docker (it will accept a tar file)
 
@@ -137,7 +139,7 @@ nvidia-docker run  --publish 0.0.0.0:8080:8080 -e LD_LIBRARY_PATH=LD_LIBRARY_PAT
 ```
 
 
-### 2. Test the TensorRT Engine creation
+2. Test the TensorRT Engine creation
 
 The starting directory is:
 
@@ -203,20 +205,23 @@ From the docker container the folder structure is:
 The script to launch is **bert_model.py**
 
 ```
-usage: bert_model.py [-h] -m MODEL -o OUTPUT [-b BATCHSIZE] [-s SEQUENCE] -c
-                     CONFIG
+Usage: bert_model.py [-h] -m MODEL -o OUTPUT [-b BATCHSIZE] [-s SEQUENCE] -c CONFIG
 ```
+
 Typical configuration is (for BERT Large):
+
 ```
 python bert_model.py -m "./data/finetuned_model_fp32/model.ckpt-8144" -o ./bert_python.engine -c ./data/uncased_L-24_H-1024_A-16/
 ```
 
 For BERT Base (This is our configuration of choice)
+
 ```
 python bert_model.py -m "./data/finetuned_model_base_fp32/model.ckpt-8144" -o ./bert_python_base.engine -c ./data/uncased_L-12_H-768_A-12/
 ```
 
 Verify you see:
+
 ```
 Serializing the engine....
 Saving the engine....
@@ -226,9 +231,10 @@ Done.
 _If this does not work it is possible that you need to rebuild the c++ binary sampleBERT.cpp_.
 _See Paragraph 4 for this_
 
- ## 3. Running Inference with the Jupyter Notebook
+3. Running Inference with the Jupyter Notebook
 
  From the working directory:
+
  ```
  /workspace/TensorRT/demo/BERT
  ```
@@ -248,12 +254,11 @@ BERT_TRT.ipynb
 
 Note: Verify you open the firewall, when accessing the notebook for external. Open TCP port 8080.
 
-The default configuration if set to run BERT base but there are options
-to also run BERT Large un-commenting the lines for the TensorRT engine location
-and the vocab.txt file.
+The default configuration if set to run BERT base but there are options to also run BERT Large un-commenting the lines for the TensorRT 
+engine location and the vocab.txt file.
 
 
-# 4. Compile TensorRT Demo BERT
+4. Compile TensorRT Demo BERT
 
 It may be possible that the TensorRT plugins need to be re-built
 in order to do so please follow the steps below:
