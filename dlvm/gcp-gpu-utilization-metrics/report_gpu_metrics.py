@@ -99,7 +99,7 @@ def report_metric(value, metric_type, resource_values):
     instance_id = resource_values.get('instance_id')
     zone = resource_values.get('zone')
 
-    project_name = client.project_path(project_id)
+    project_name = client.common_project_path(project_id)
     # TimeSeries definition.
     series = monitoring_v3.types.TimeSeries()
     series.metric.type = 'custom.googleapis.com/{type}'.format(type=metric_type)
