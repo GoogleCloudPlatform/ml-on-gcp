@@ -47,7 +47,7 @@ def add_new_metric(project_id, metric_type, desc):
     descriptor.description = desc
     # Create Metric Descriptor.
     client = monitoring_v3.MetricServiceClient()
-    project_name = client.current_project_path(project_id)
+    project_name = client.common_project_path(project_id)
     descriptor = client.create_metric_descriptor(project_name, descriptor)
     print('Created {}.'.format(descriptor.name))
 
