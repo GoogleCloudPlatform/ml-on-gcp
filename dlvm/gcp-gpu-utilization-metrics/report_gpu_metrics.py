@@ -107,13 +107,15 @@ def report_metric(value, metric_type, resource_values):
     series.resource.labels['instance_id'] = instance_id
     series.resource.labels['zone'] = zone
     series.resource.labels['project_id'] = project_id
-    point = series.points.add()
-    point.value.int64_value = value
     now = time.time()
-    point.interval.end_time.seconds = int(now)
-    point.interval.end_time.nanos = int(
-        (now - point.interval.end_time.seconds) * 10 ** 9)
-    client.create_time_series(project_name, [series])
+    seconds = int(now)
+    nanos = int((now - seconds) * 10 ** 9)
+    interval = monitoring_v3.TimeInterval(
+        {"end_time": {"seconds": seconds, "nanos": nanos}}
+    )
+    point = monitoring_v3.Point({"interval": interval, "value": {"int64_value": value}})
+    series.points = [point]
+    client.create_time_series(name=project_name, time_series=[series])
 
 
 def get_nvidia_smi_utilization(gpu_query_metric):
