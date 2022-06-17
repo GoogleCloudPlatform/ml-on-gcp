@@ -1,7 +1,7 @@
 google-cloud-storage==1.4.0
 google-api-python-client==1.6.3
 
-numpy==1.13.1
+numpy==1.21.0
 scipy==0.19.1
 
 scikit-learn==0.19.0
