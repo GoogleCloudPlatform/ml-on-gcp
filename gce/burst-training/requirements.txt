@@ -6,7 +6,7 @@ futures==3.2.0
 html5lib==0.9999999
 Markdown==2.6.10
 mock==2.0.0
-numpy==1.13.3
+numpy==1.22.0
 pandas==0.21.1
 pbr==3.1.1
 protobuf==3.5.0.post1
