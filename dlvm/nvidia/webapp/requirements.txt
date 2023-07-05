@@ -10,7 +10,7 @@ google-api-core==1.6.0
 google-auth==1.6.1
 google-cloud-monitoring==0.31.0
 googleapis-common-protos==1.5.5
-grpcio==1.17.1
+grpcio==1.53.0
 h5py==2.9.0
 idna==2.8
 itsdangerous==1.1.0
