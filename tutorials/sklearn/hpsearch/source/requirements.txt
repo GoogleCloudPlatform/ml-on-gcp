@@ -2,7 +2,7 @@ google-cloud-storage==1.4.0
 google-api-python-client==1.6.3
 
 numpy==1.13.1
-scipy==0.19.1
+scipy==1.10.0
 
 scikit-learn==0.19.0
 scikit-optimize==0.4
