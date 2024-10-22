@@ -18,7 +18,7 @@ Jinja2>=2.10.1
 Markdown==3.0.1
 MarkupSafe==1.1.0
 numpy==1.16.0
-Pillow==6.2.0
+Pillow==10.3.0
 protobuf==3.6.1
 pyasn1==0.4.4
 pyasn1-modules==0.2.2
