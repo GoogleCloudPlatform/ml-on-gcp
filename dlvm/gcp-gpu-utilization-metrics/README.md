@@ -2,6 +2,9 @@
 
 This repository provides simple way to monitor GPU utilization on GCP.
 It supports the following NVIDIA Accelerators:
+ -  A100
+ -  H100
+ -  L4
  -  K80
  -  P100
  -  P4
