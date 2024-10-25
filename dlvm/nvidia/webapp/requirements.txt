@@ -12,7 +12,7 @@ google-cloud-monitoring==0.31.0
 googleapis-common-protos==1.5.5
 grpcio==1.17.1
 h5py==2.9.0
-idna==2.8
+idna==3.7
 itsdangerous==1.1.0
 Jinja2>=2.10.1
 Markdown==3.0.1
