@@ -240,19 +240,19 @@ export GCP_PROJECT=$(gcloud config get-value project)
 Then
 
 ```bash
-gsutil mb gs://${GCP_PROJECT}-cifar-10-data
+gcloud storage buckets create gs://${GCP_PROJECT}-cifar-10-data
 ```
 
 Now we can upload our data to the bucket:
 
 ```bash
-gsutil -m cp -r /tmp/cifar-10-data/*  gs://${GCP_PROJECT}-cifar-10-data/
+gcloud storage cp --recursive /tmp/cifar-10-data/*  gs://${GCP_PROJECT}-cifar-10-data/
 ```
 
 You can test that the data has been transferred using
 
 ```bash
-gsutil ls gs://${GCP_PROJECT}-cifar-10-data/
+gcloud storage ls gs://${GCP_PROJECT}-cifar-10-data/
 ```
 
 
@@ -263,7 +263,7 @@ In the course of training, checkpoints will be stored at the path provided to th
 Let us make ourselves a checkpoint bucket:
 
 ```bash
-gsutil mb gs://${GCP_PROJECT}-cifar-10-checkpoints
+gcloud storage buckets create gs://${GCP_PROJECT}-cifar-10-checkpoints
 ```
 
 With all this preparation in place, we are ready to specify a startup script and define our instance metadata.
@@ -333,7 +333,7 @@ If this times out at first, just try a few more times, as it relies on your inst
 If you would like to test that the process actually works, wait for a couple of checkpoints to get stored to your `$JOB_DIR`, which you can monitor with:
 
 ```bash
-gsutil ls $JOB_DIR
+gcloud storage ls $JOB_DIR
 ```
 
 Then stop the instance with

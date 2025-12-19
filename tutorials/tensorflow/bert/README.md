@@ -90,7 +90,7 @@ From terminal
 Copy Docker container
 
 ```
-gsutil cp gs://aihub/assets/docker/tensorrt_bert_sample.tar.gz .
+gcloud storage cp gs://aihub/assets/docker/tensorrt_bert_sample.tar.gz .
 Copying gs://aihub/assets/docker/tensorrt_bert_sample.tar.gz...
 / [1 files][ 14.8 GiB/ 14.8 GiB]   61.1 MiB/s       
 ```
