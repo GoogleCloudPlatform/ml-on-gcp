@@ -53,7 +53,7 @@ export REGION="us-central1"
 export NUM_INSTANCES=5
 export NUM_GPUS=4
 export TOTAL_GPUS=$(($NUM_INSTANCES * $NUM_GPUS))
-export STARTUP_SCRIPT="gsutil cp gs://cloud-samples-data/dlvm/rapids/rapids.zip /home/jupyter/rapids.zip && unzip /home/jupyter/rapids.zip -d /home/jupyter/ && chmod +x /home/jupyter/start-dask-worker.sh && chmod +x /home/jupyter/start-dask-cuda-worker.sh && chown -R jupyter:jupyter /home/jupyter/"
+export STARTUP_SCRIPT="gcloud storage cp gs://cloud-samples-data/dlvm/rapids/rapids.zip /home/jupyter/rapids.zip && unzip /home/jupyter/rapids.zip -d /home/jupyter/ && chmod +x /home/jupyter/start-dask-worker.sh && chmod +x /home/jupyter/start-dask-cuda-worker.sh && chown -R jupyter:jupyter /home/jupyter/"
 
 
 function create_instance_template() {

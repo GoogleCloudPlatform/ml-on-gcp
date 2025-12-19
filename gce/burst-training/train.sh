@@ -21,7 +21,7 @@ IMAGE_FAMILY=$3
 
 TIMESTAMP=$(date +%s)
 
-gsutil cp census-analysis.py "$BUCKET_NAME/"
+gcloud storage cp census-analysis.py "$BUCKET_NAME/"
 
 gcloud compute instances create \
   --machine-type=n1-standard-64 \

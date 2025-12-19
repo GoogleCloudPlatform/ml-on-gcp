@@ -32,7 +32,7 @@ CV_ITERATIONS=$(curl http://metadata.google.internal/computeMetadata/v1/instance
 
 
 ### Download training script
-gsutil cp "$TRAINING_SCRIPT_DIR/$TRAINING_SCRIPT_FILE" .
+gcloud storage cp "$TRAINING_SCRIPT_DIR/$TRAINING_SCRIPT_FILE" .
 
 ### Run training script
 python $TRAINING_SCRIPT_FILE \
@@ -43,4 +43,3 @@ python $TRAINING_SCRIPT_FILE \
 
 ### Shutdown GCE instance
 sudo shutdown -h now
-

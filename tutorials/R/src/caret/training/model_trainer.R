@@ -25,7 +25,7 @@ features <- setdiff(header, c(target, key))
 
 load_data <- function(){
     print("Downloading data files from GCS...")
-    command <- paste("gsutil cp -r", gcs_data_dir, ".")
+    command <- paste("gcloud storage cp --recursive", gcs_data_dir, ".")
     system(command)
     print("Data files downloaded.")
     
@@ -81,7 +81,7 @@ export_model <- function(model){
     print("Model exported.")
     
     print("Uploading the saved model to GCS...")
-    command <- paste("gsutil cp", saved_model_dir, gcs_model_dir)
+    command <- paste("gcloud storage cp", saved_model_dir, gcs_model_dir)
     system(command)
     print("Saved model uploaded.")
 }

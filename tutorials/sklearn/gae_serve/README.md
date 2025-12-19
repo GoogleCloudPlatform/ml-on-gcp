@@ -1,4 +1,3 @@
-
 ## Introduction
 
 This is a simple sample that shows how to:
@@ -57,8 +56,8 @@ The benefits of this configuration include:
 1. Create a Cloud Storage bucket with your choice of a `BUCKET_NAME`, and copy the sample model file over:
 
     ```
-    gsutil mb gs://BUCKET_NAME
-    gsutil cp lr.pkl gs://BUCKET_NAME
+    gcloud storage buckets create gs://BUCKET_NAME
+    gcloud storage cp lr.pkl gs://BUCKET_NAME
     ```
 
 1. Update `app.yaml`:
