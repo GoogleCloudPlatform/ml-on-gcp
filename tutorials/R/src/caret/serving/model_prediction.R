@@ -23,7 +23,7 @@ model_dir <- paste0('models/', model_name)
 gcs_model_dir <- paste0("gs://", bucket, "/models/", model_name)
 
 print("Downloading model file from GCS...")
-command <- paste("gsutil cp -r", gcs_model_dir, ".")
+command <- paste("gcloud storage cp --recursive", gcs_model_dir, ".")
 system(command)
 print("model files downloaded.")
 
