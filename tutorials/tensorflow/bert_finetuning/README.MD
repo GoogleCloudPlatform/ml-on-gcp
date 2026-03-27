@@ -57,7 +57,7 @@ sudo systemctl stop jupyter.service
 Copy  script `build_asset.sh`
 
 ```
-gsutil cp gs://aihub/assets/script/build_asset.sh .
+gcloud storage cp gs://aihub/assets/script/build_asset.sh .
 
 ```
 

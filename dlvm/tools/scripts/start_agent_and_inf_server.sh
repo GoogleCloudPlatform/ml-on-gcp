@@ -60,7 +60,7 @@ Restart=always
 WantedBy=multi-user.target
 EOH
 
-gsutil cp gs://cloud-samples-data/dlvm/t4/model.tar.gz /root/model.tar.gz
+gcloud storage cp gs://cloud-samples-data/dlvm/t4/model.tar.gz /root/model.tar.gz
 tar -xzvf /root/model.tar.gz -C /root
 # Reload systemd manager configuration
 systemctl daemon-reload

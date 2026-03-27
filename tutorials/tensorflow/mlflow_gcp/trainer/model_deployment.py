@@ -45,7 +45,7 @@ def copy_artifacts(source_path, destination_path):
         'Moving model directory from {} to {}'.format(source_path,
                                                       destination_path))
     subprocess.call(
-        "gsutil -m cp -r {} {}".format(source_path, destination_path),
+        "gcloud storage cp --recursive {} {}".format(source_path, destination_path),
         shell=True)
 
 

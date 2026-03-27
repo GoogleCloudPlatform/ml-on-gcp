@@ -70,7 +70,7 @@ function run_notebook() {
     # Passing parameters file
     echo "Parameters file exists, running notebook now..."
     PARAMETERS_FILE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/attributes/parameters_file -H "Metadata-Flavor: Google")
-    gsutil cp "${PARAMETERS_FILE}" params.yaml
+    gcloud storage cp "${PARAMETERS_FILE}" params.yaml
     papermill "${INPUT_NOTEBOOK_PATH}" "${TMP_NOTEBOOK_PATH}" -f params.yaml --log-output    
   else
     metadata_exists parameters
@@ -87,7 +87,7 @@ function run_notebook() {
     fi    
   fi
   # Copy file to avoid GCS limitation: https://github.com/nteract/papermill/issues/312
-  gsutil cp "${TMP_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}"
+  gcloud storage cp "${TMP_NOTEBOOK_PATH}" "${OUTPUT_NOTEBOOK_PATH}"
 }
 
 
