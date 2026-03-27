@@ -91,8 +91,8 @@ which will generate the model and save it on the instance.
 ###### Option 2: Reading it from *Google Cloud Storage*
 Another solution is to read the dataset directly from a bucket in *GCS* (assuming we created the instance with the right scope). We use *gsutil* to create the bucket in *GCS*, and then copy the dataset into it:
 ```bash
-gsutil mb gs://$MY_BUCKET
-gsutil cp ./train.csv  gs://$MY_BUCKET/$MY_FOLDER/train.csv
+gcloud storage buckets create gs://$MY_BUCKET
+gcloud storage cp ./train.csv  gs://$MY_BUCKET/$MY_FOLDER/train.csv
 ```
 The advantage of using *gfile* in our python code is that we can use the exact same code and read the dataset from GCS:
 ```bash

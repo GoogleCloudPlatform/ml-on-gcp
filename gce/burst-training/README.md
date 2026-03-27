@@ -192,10 +192,10 @@ available to you locally, you can copy them over to the desired Cloud Storage
 path by running the following command from the directory containing those files:
 
 ```
-gsutil -m cp adult.* gs://<BUCKET-NAME>/census/
+gcloud storage cp adult.* gs://<BUCKET-NAME>/census/
 ```
 
-You may have to create the bucket first - either using `gsutil mb
+You may have to create the bucket first - either using `gcloud storage buckets create
 gs://<BUCKET-NAME>` or through the [Cloud Console Storage
 browser](https://console.cloud.google.com/storage/browser).
 
@@ -296,7 +296,7 @@ gcloud compute images create <BASE-IMAGE-NAME> --family <IMAGE-FAMILY>
 
 1. Put the Census income data into a Cloud Storage bucket:
 ```
-gsutil -m cp adult.* gs://<BUCKET-NAME>/census/
+gcloud storage cp adult.* gs://<BUCKET-NAME>/census/
 ```
 
 1. Run [train.sh](./train.sh).
