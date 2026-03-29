@@ -13,7 +13,7 @@ protobuf==3.5.0.post1
 python-dateutil==2.6.1
 pytz==2017.3
 scikit-learn==0.19.1
-scipy==1.0.0
+scipy==1.10.0
 six==1.11.0
 tensorflow==1.15.2
 tensorflow-tensorboard==0.4.0rc3
