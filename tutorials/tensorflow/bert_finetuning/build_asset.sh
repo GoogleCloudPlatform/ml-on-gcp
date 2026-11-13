@@ -53,5 +53,5 @@ nvidia-docker run \
   --ulimit memlock=-1 \
   --ulimit stack=67108864 \
   --publish 127.0.0.1:8888:8888 \
-  -it  nvcr.io/nvidia/tensorflow:${CONTAINER_VERSION} /bin/sh -c 'cd /workspace/bert; jupyter lab --ip=0.0.0.0 --port=8888 --allow-root --no-browser --NotebookApp.token="" --NotebookApp.password=""'
+  -it  nvcr.io/nvidia/tensorflow:${CONTAINER_VERSION} /bin/sh -c 'cd /workspace/bert; jupyter lab --ip=0.0.0.0 --port=8888 --allow-root --no-browser'
 
