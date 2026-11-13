@@ -252,8 +252,6 @@ Now you should be able to connect with a browser and run the notebook:
 BERT_TRT.ipynb
 ```
 
-Note: Verify you open the firewall, when accessing the notebook for external. Open TCP port 8080.
-
 The default configuration if set to run BERT base but there are options to also run BERT Large un-commenting the lines for the TensorRT 
 engine location and the vocab.txt file.
 
