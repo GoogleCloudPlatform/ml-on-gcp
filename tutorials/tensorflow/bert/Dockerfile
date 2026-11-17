@@ -24,6 +24,8 @@ ARG LD_LIBRARY_PATH
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/tensorrt/lib
 
 EXPOSE 8080
+RUN chown -R jupyter:jupyter /workspace
+USER jupyter
 ENTRYPOINT /usr/local/bin/start.sh
 
 

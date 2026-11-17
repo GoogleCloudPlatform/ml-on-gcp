@@ -72,6 +72,3 @@ Run the script to:
 ```
 sh build_asset.sh
 ```
-
-
-_Note: Verify you open the firewall, when accessing the notebook for external. Open TCP port 8888._

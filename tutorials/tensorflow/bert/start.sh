@@ -15,4 +15,4 @@
 
 cd /workspace/TensorRT/demo/BERT
 jupyter serverextension enable --py jupyter_aihub_deploy_extension
-jupyter lab --ip=0.0.0.0 --port=8080 --allow-root --no-browser --NotebookApp.token='' --NotebookApp.password=''
+jupyter lab --ip=0.0.0.0 --port=8080 --allow-root --no-browser
