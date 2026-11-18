@@ -132,7 +132,7 @@ def get_nvidia_smi_utilization(gpu_query_metric):
     usage = 0
     subprocess.check_call([
         '/bin/bash', '-c',
-        'nvidia-smi --query-gpu={gpu_query_metric} -u --format=csv'
+        'nvidia-smi --query-gpu={gpu_query_metric} --format=csv'
         ' > {csv_file_path}'.format(
             gpu_query_metric=gpu_query_metric.value,
             csv_file_path=csv_file_path)
